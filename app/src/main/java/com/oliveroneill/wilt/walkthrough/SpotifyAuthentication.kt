@@ -17,7 +17,7 @@ data class SpotifyAuthenticationRequest(private val clientID: String,
      * Create a Spotify instance from the wrapper
      */
     fun toAuthenticationRequest(): AuthenticationRequest{
-        val builder = AuthenticationRequest.Builder(clientID, AuthenticationResponse.Type.TOKEN, redirectUri)
+        val builder = AuthenticationRequest.Builder(clientID, AuthenticationResponse.Type.CODE, redirectUri)
         builder.setScopes(scope)
         return builder.build()
     }
@@ -26,14 +26,14 @@ data class SpotifyAuthenticationRequest(private val clientID: String,
 /**
  * A sealed class to signify either success or failure of the auth request.
  */
-sealed class SpotifyAuthenticationResponse() {
+sealed class SpotifyAuthenticationResponse {
     companion object {
         /**
          * Create a wrapper instance from the Spotify instance
          */
         fun fromAuthenticationResponse(response: AuthenticationResponse): SpotifyAuthenticationResponse {
             return when (response.type) {
-                AuthenticationResponse.Type.TOKEN -> Success(response.code)
+                AuthenticationResponse.Type.CODE -> Success(response.code)
                 AuthenticationResponse.Type.ERROR -> Failure(response.error)
                 else -> Failure("Unexpected response type: " + response.type)
             }

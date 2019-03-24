@@ -54,7 +54,7 @@ class WalkthroughFragment: Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == SPOTIFY_REQUEST_CODE) return;
+        if (requestCode != SPOTIFY_REQUEST_CODE) return;
         // This will be called due to Spotify authentication response
         val model = ViewModelProviders.of(this).get(WalkthroughFragmentViewModel::class.java)
         val response = AuthenticationClient.getResponse(resultCode, data)
