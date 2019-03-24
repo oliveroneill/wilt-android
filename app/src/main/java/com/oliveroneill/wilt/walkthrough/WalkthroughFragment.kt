@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.walkthrough_fragment.view.*
  */
 class WalkthroughFragment: Fragment() {
     // Random number for checking that login response comes from matching request
-    private val SPOTIFY_REQUEST_CODE: Int = 728974853
+    private val SPOTIFY_REQUEST_CODE: Int = 7253
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.walkthrough_fragment, container, false) as ViewGroup
