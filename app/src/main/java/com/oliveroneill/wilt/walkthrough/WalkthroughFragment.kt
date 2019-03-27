@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.oliveroneill.wilt.R
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import kotlinx.android.synthetic.main.walkthrough_fragment.view.*
@@ -23,7 +24,7 @@ class WalkthroughFragment: Fragment() {
         val rootView = inflater.inflate(R.layout.walkthrough_fragment, container, false) as ViewGroup
         rootView.viewPager.offscreenPageLimit = 2
         // Set adapter
-        activity?.supportFragmentManager?.let {
+        childFragmentManager.let {
             rootView.viewPager.adapter = WalkthroughPagerAdapter(it)
         }
         val model = ViewModelProviders.of(this).get(WalkthroughFragmentViewModel::class.java)
@@ -41,7 +42,7 @@ class WalkthroughFragment: Fragment() {
                     // TODO
                 }
                 is WalkthroughFragmentState.LoginError -> {
-                    // TODO
+                    findNavController(this).navigate(R.id.action_login_failure)
                 }
             }
         })

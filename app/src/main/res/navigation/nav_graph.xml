@@ -9,5 +9,15 @@
         android:id="@+id/walkthroughFragment"
         android:name="com.oliveroneill.wilt.walkthrough.WalkthroughFragment"
         android:label="WalkthroughFragment"
-        tools:layout="@layout/walkthrough_fragment" />
+        tools:layout="@layout/walkthrough_fragment" >
+        <action
+            android:id="@+id/action_login_failure"
+            app:destination="@id/loginErrorFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginErrorFragment"
+        android:name="com.oliveroneill.wilt.walkthrough.LoginErrorFragment"
+        android:label="LoginErrorFragment"
+        tools:layout="@layout/login_error" />
 </navigation>
