@@ -15,7 +15,8 @@ import kotlinx.android.synthetic.main.walkthrough_screen.view.*
  * Individual screen used in walkthrough
  *
  * I've decided to keep this logic here instead of within a ViewModel as it's
- * mostly view setup related and seems unnecessary to move this logic to a view.
+ * mostly related to setting up views and storing the strings and images in another class
+ * has no benefit that I can see.
  */
 class WalkthroughScreenFragment: Fragment() {
     // Optional views and data to be set
