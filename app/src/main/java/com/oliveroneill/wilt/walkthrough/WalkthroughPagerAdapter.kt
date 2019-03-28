@@ -12,7 +12,7 @@ class WalkthroughPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(f
     companion object {
         // Images for each screen
         private val IMAGE_RES_IDS = intArrayOf(
-            R.drawable.walthrough1,
+            R.drawable.walkthrough1,
             R.drawable.walkthrough2
         )
         // Subtitle for each screen
