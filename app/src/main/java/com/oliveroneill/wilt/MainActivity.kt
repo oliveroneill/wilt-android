@@ -16,8 +16,8 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         // Send result to relevant fragments in navigation
         (supportFragmentManager.fragments.first() as? NavHostFragment)?.let {
-            it.childFragmentManager.fragments.forEach {
-                it.onActivityResult(requestCode, resultCode, data)
+            it.childFragmentManager.fragments.forEach { fragment ->
+                fragment.onActivityResult(requestCode, resultCode, data)
             }
         }
     }

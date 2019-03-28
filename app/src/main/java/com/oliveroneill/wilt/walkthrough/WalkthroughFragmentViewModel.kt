@@ -10,18 +10,20 @@ import com.oliveroneill.wilt.R
 /**
  * States that the walkthrough screen can be in
  */
-sealed class WalkthroughFragmentState() {
-    data class LoggingIn(val request: SpotifyAuthenticationRequest): WalkthroughFragmentState();
-    data class LoggedIn(val code: String): WalkthroughFragmentState();
-    data class LoginError(val error: String): WalkthroughFragmentState();
+sealed class WalkthroughFragmentState {
+    data class LoggingIn(val request: SpotifyAuthenticationRequest): WalkthroughFragmentState()
+    data class LoggedIn(val code: String): WalkthroughFragmentState()
+    data class LoginError(val error: String): WalkthroughFragmentState()
 }
 
 /**
  * ViewModel for walkthrough. This primarily handles login
  */
 class WalkthroughFragmentViewModel(application: Application): AndroidViewModel(application) {
-    private val REDIRECT_URI = "wilt://spotify-login"
-    private val CLIENT_ID: String = application.getString(R.string.spotify_client_id)
+    companion object {
+        private const val REDIRECT_URI = "wilt://spotify-login"
+    }
+    private val clientID: String = application.getString(R.string.spotify_client_id)
 
     /**
      * Set this value to receive Spotify sign in events
@@ -37,7 +39,7 @@ class WalkthroughFragmentViewModel(application: Application): AndroidViewModel(a
         _state.value = Event(
             WalkthroughFragmentState.LoggingIn(
                 SpotifyAuthenticationRequest(
-                    CLIENT_ID,
+                    clientID,
                     REDIRECT_URI,
                     arrayOf("user-read-email", "user-read-recently-played", "user-top-read")
                 )

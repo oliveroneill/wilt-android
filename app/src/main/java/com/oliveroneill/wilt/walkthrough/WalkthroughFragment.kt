@@ -17,8 +17,10 @@ import kotlinx.android.synthetic.main.walkthrough_fragment.view.*
  * Fragment that displays pager of walkthrough screens
  */
 class WalkthroughFragment: Fragment() {
-    // Random number for checking that login response comes from matching request
-    private val SPOTIFY_REQUEST_CODE: Int = 7253
+    companion object {
+        // Random number for checking that login response comes from matching request
+        private const val SPOTIFY_REQUEST_CODE: Int = 7253
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.walkthrough_fragment, container, false) as ViewGroup
@@ -36,7 +38,7 @@ class WalkthroughFragment: Fragment() {
                         activity,
                         SPOTIFY_REQUEST_CODE,
                         it.request.toAuthenticationRequest()
-                    );
+                    )
                 }
                 is WalkthroughFragmentState.LoggedIn -> {
                     // TODO
@@ -55,7 +57,7 @@ class WalkthroughFragment: Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode != SPOTIFY_REQUEST_CODE) return;
+        if (requestCode != SPOTIFY_REQUEST_CODE) return
         // This will be called due to Spotify authentication response
         val model = ViewModelProviders.of(this).get(WalkthroughFragmentViewModel::class.java)
         val response = AuthenticationClient.getResponse(resultCode, data)

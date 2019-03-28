@@ -12,7 +12,6 @@ import com.oliveroneill.wilt.R
  */
 class LoginErrorFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.login_error, container, false) as ViewGroup
-        return rootView
+        return inflater.inflate(R.layout.login_error, container, false) as ViewGroup
     }
 }
