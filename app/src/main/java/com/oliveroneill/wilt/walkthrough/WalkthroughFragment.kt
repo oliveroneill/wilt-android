@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment.findNavController
+import com.oliveroneill.wilt.EventObserver
 import com.oliveroneill.wilt.R
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import kotlinx.android.synthetic.main.walkthrough_fragment.view.*
@@ -28,7 +28,7 @@ class WalkthroughFragment: Fragment() {
             rootView.viewPager.adapter = WalkthroughPagerAdapter(it)
         }
         val model = ViewModelProviders.of(this).get(WalkthroughFragmentViewModel::class.java)
-        model.state.observe(this, Observer {
+        model.state.observe(this, EventObserver {
             when (it) {
                 is WalkthroughFragmentState.LoggingIn -> {
                     // Start login activity

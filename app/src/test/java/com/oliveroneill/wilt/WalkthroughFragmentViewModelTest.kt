@@ -36,7 +36,7 @@ class WalkthroughFragmentViewModelTest {
         model.state
             .test()
             .assertHasValue()
-            .assertValue { it is WalkthroughFragmentState.LoggingIn }
+            .assertValue { it.getContentIfNotHandled() is WalkthroughFragmentState.LoggingIn }
     }
 
     @Test
@@ -49,8 +49,9 @@ class WalkthroughFragmentViewModelTest {
             .test()
             .assertHasValue()
             .assertValue {
-                when(it) {
-                    is WalkthroughFragmentState.LoggedIn -> it.code.equals(expected)
+                val state = it.getContentIfNotHandled()
+                when(state) {
+                    is WalkthroughFragmentState.LoggedIn -> state.code.equals(expected)
                     else -> false
                 }
             }
@@ -66,8 +67,9 @@ class WalkthroughFragmentViewModelTest {
             .test()
             .assertHasValue()
             .assertValue {
-                when(it) {
-                    is WalkthroughFragmentState.LoginError -> it.error.equals(expected)
+                val state = it.getContentIfNotHandled()
+                when(state) {
+                    is WalkthroughFragmentState.LoginError -> state.error.equals(expected)
                     else -> false
                 }
             }

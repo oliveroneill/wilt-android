@@ -2,8 +2,10 @@ package com.oliveroneill.wilt.walkthrough
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
-import com.oliveroneill.wilt.SingleLiveEvent
 
 /**
  * States that the walkthrough screen can be in
@@ -24,17 +26,21 @@ class WalkthroughFragmentViewModel(application: Application): AndroidViewModel(a
     /**
      * Set this value to receive Spotify sign in events
      */
-    val state = SingleLiveEvent<WalkthroughFragmentState>()
+    private val _state = MutableLiveData<Event<WalkthroughFragmentState>>()
+    val state : LiveData<Event<WalkthroughFragmentState>>
+        get() = _state
 
     /**
      * Start spotify sign up process
      */
     fun spotifySignup() {
-        state.value = WalkthroughFragmentState.LoggingIn(
-            SpotifyAuthenticationRequest(
-                CLIENT_ID,
-                REDIRECT_URI,
-                arrayOf("user-read-email", "user-read-recently-played", "user-top-read")
+        _state.value = Event(
+            WalkthroughFragmentState.LoggingIn(
+                SpotifyAuthenticationRequest(
+                    CLIENT_ID,
+                    REDIRECT_URI,
+                    arrayOf("user-read-email", "user-read-recently-played", "user-top-read")
+                )
             )
         )
     }
@@ -45,10 +51,10 @@ class WalkthroughFragmentViewModel(application: Application): AndroidViewModel(a
     fun onSpotifyLoginResponse(response: SpotifyAuthenticationResponse) {
         when (response) {
             is SpotifyAuthenticationResponse.Success -> {
-                state.value = WalkthroughFragmentState.LoggedIn(response.code)
+                _state.value = Event(WalkthroughFragmentState.LoggedIn(response.code))
             }
             is SpotifyAuthenticationResponse.Failure -> {
-                state.value = WalkthroughFragmentState.LoginError(response.error)
+                _state.value = Event(WalkthroughFragmentState.LoginError(response.error))
             }
         }
     }
