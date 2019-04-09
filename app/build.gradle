@@ -4,6 +4,12 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-allopen'
+
+allOpen {
+    // allows mocking for classes w/o directly opening them for release builds
+    annotation 'com.oliveroneill.wilt.testing.OpenClass'
+}
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -39,12 +45,13 @@ dependencies {
     implementation 'android.arch.navigation:navigation-fragment:1.0.0'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.23.0'
+    testImplementation 'org.mockito:mockito-core:2.24.0'
     testImplementation 'com.jraska.livedata:testing-ktx:1.1.0'
     testImplementation "android.arch.core:core-testing:1.1.1"
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'org.mockito:mockito-android:2.24.0'
     // Used for androidTest however is needed to be setup via debug (see https://stackoverflow.com/a/55244532 for
     // explanation)
     debugImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha05'

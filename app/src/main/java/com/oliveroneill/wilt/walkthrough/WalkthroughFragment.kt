@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.oliveroneill.wilt.EventObserver
@@ -22,6 +24,10 @@ class WalkthroughFragment: Fragment() {
         private const val SPOTIFY_REQUEST_CODE: Int = 7253
     }
 
+    // Specify a view model factory since this is useful for testing purposes
+    @VisibleForTesting
+    var viewModelFactory: AndroidViewModelFactory? = activity?.let { AndroidViewModelFactory(it.application) }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.walkthrough_fragment, container, false) as ViewGroup
         rootView.viewPager.offscreenPageLimit = 2
@@ -29,7 +35,7 @@ class WalkthroughFragment: Fragment() {
         childFragmentManager.let {
             rootView.viewPager.adapter = WalkthroughPagerAdapter(it)
         }
-        val model = ViewModelProviders.of(this).get(WalkthroughFragmentViewModel::class.java)
+        val model = ViewModelProviders.of(this, viewModelFactory).get(WalkthroughFragmentViewModel::class.java)
         model.state.observe(this, EventObserver {
             when (it) {
                 is WalkthroughFragmentState.LoggingIn -> {
@@ -59,7 +65,7 @@ class WalkthroughFragment: Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode != SPOTIFY_REQUEST_CODE) return
         // This will be called due to Spotify authentication response
-        val model = ViewModelProviders.of(this).get(WalkthroughFragmentViewModel::class.java)
+        val model = ViewModelProviders.of(this, viewModelFactory).get(WalkthroughFragmentViewModel::class.java)
         val response = AuthenticationClient.getResponse(resultCode, data)
         // Notify ViewModel
         model.onSpotifyLoginResponse(SpotifyAuthenticationResponse.fromAuthenticationResponse(response))

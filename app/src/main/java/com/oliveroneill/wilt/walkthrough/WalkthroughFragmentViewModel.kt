@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
+import com.oliveroneill.wilt.testing.OpenForTesting
 
 /**
  * States that the walkthrough screen can be in
@@ -19,6 +20,7 @@ sealed class WalkthroughFragmentState {
 /**
  * ViewModel for walkthrough. This primarily handles login
  */
+@OpenForTesting
 class WalkthroughFragmentViewModel(application: Application): AndroidViewModel(application) {
     companion object {
         private const val REDIRECT_URI = "wilt://spotify-login"
