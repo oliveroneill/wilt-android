@@ -15,10 +15,7 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.oliveroneill.wilt.walkthrough.SpotifyAuthenticationRequest
-import com.oliveroneill.wilt.walkthrough.WalkthroughFragment
-import com.oliveroneill.wilt.walkthrough.WalkthroughFragmentState
-import com.oliveroneill.wilt.walkthrough.WalkthroughFragmentViewModel
+import com.oliveroneill.wilt.walkthrough.*
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Before
 import org.junit.Test
@@ -81,7 +78,7 @@ class WalkthroughFragmentTest {
     fun shouldShowLoginError() {
         // Set error state
         stateData.postValue(Event(WalkthroughFragmentState.LoginError("Something bad happened")))
-        verify(navController).navigate(eq(R.id.action_login_failure))
+        verify(navController).navigate(eq(WalkthroughFragmentDirections.showLoginError()))
     }
 
     @Test
