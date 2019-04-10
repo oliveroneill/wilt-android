@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -19,8 +21,7 @@ import org.hamcrest.CoreMatchers.allOf
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
+import org.mockito.Mockito.*
 
 @RunWith(AndroidJUnit4::class)
 class WalkthroughFragmentTest {
@@ -29,6 +30,7 @@ class WalkthroughFragmentTest {
     val stateData = MutableLiveData<Event<WalkthroughFragmentState>>()
     // Create factory that returns the fake view model
     val factory = mock(ViewModelProvider.AndroidViewModelFactory::class.java)
+    val navController = mock(NavController::class.java)
 
     @Before
     fun setup() {
@@ -72,6 +74,24 @@ class WalkthroughFragmentTest {
 
     @Test
     fun shouldShowLoginError() {
-        // TODO
+        // Specify the fragment factory in order to set the view model factory
+        val scenario = launchFragmentInContainer<WalkthroughFragment>(
+            null,
+            R.style.AppTheme,
+            object : FragmentFactory() {
+                @Suppress("UNCHECKED_CAST")
+                override fun instantiate(classLoader: ClassLoader, className: String, args: Bundle?): Fragment {
+                    return (super.instantiate(classLoader, className, args) as WalkthroughFragment).also {
+                        it.viewModelFactory = factory
+                    }
+                }
+            }
+        )
+        scenario.onFragment { fragment ->
+            Navigation.setViewNavController(fragment.requireView(), navController)
+        }
+        // Set error state
+        stateData.postValue(Event(WalkthroughFragmentState.LoginError("Something bad happened")))
+        verify(navController).navigate(eq(R.id.action_login_failure))
     }
 }
