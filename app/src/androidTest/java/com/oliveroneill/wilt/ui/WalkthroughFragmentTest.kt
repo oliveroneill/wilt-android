@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt
+package com.oliveroneill.wilt.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -15,7 +15,11 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.oliveroneill.wilt.walkthrough.*
+import com.oliveroneill.wilt.Event
+import com.oliveroneill.wilt.R
+import com.oliveroneill.wilt.data.SpotifyAuthenticationRequest
+import com.oliveroneill.wilt.viewmodel.WalkthroughFragmentState
+import com.oliveroneill.wilt.viewmodel.WalkthroughFragmentViewModel
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Before
 import org.junit.Test

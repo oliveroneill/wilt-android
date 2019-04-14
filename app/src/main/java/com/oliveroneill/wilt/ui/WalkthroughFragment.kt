@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.walkthrough
+package com.oliveroneill.wilt.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +12,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.oliveroneill.wilt.EventObserver
 import com.oliveroneill.wilt.R
+import com.oliveroneill.wilt.data.SpotifyAuthenticationResponse
+import com.oliveroneill.wilt.viewmodel.WalkthroughFragmentState
+import com.oliveroneill.wilt.viewmodel.WalkthroughFragmentViewModel
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import kotlinx.android.synthetic.main.walkthrough_fragment.view.*
 
@@ -70,6 +73,10 @@ class WalkthroughFragment: Fragment() {
         val model = ViewModelProviders.of(this, viewModelFactory).get(WalkthroughFragmentViewModel::class.java)
         val response = AuthenticationClient.getResponse(resultCode, data)
         // Notify ViewModel
-        model.onSpotifyLoginResponse(SpotifyAuthenticationResponse.fromAuthenticationResponse(response))
+        model.onSpotifyLoginResponse(
+            SpotifyAuthenticationResponse.fromAuthenticationResponse(
+                response
+            )
+        )
     }
 }

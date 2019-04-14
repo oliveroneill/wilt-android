@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.walkthrough
+package com.oliveroneill.wilt.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
+import com.oliveroneill.wilt.data.SpotifyAuthenticationRequest
+import com.oliveroneill.wilt.data.SpotifyAuthenticationResponse
 import com.oliveroneill.wilt.testing.OpenForTesting
 
 /**

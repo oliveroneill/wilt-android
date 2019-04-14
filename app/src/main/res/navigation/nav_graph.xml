@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/walkthroughFragment"
-        android:name="com.oliveroneill.wilt.walkthrough.WalkthroughFragment"
+        android:name="com.oliveroneill.wilt.ui.WalkthroughFragment"
         android:label="WalkthroughFragment"
         tools:layout="@layout/walkthrough_fragment" >
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/loginErrorFragment"
-        android:name="com.oliveroneill.wilt.walkthrough.LoginErrorFragment"
+        android:name="com.oliveroneill.wilt.ui.LoginErrorFragment"
         android:label="LoginErrorFragment"
         tools:layout="@layout/login_error" />
 </navigation>

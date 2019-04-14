@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.walkthrough
+package com.oliveroneill.wilt.data
 
 import com.spotify.sdk.android.authentication.AuthenticationRequest
 import com.spotify.sdk.android.authentication.AuthenticationResponse
@@ -33,8 +33,12 @@ sealed class SpotifyAuthenticationResponse {
          */
         fun fromAuthenticationResponse(response: AuthenticationResponse): SpotifyAuthenticationResponse {
             return when (response.type) {
-                AuthenticationResponse.Type.CODE -> Success(response.code)
-                AuthenticationResponse.Type.ERROR -> Failure(response.error)
+                AuthenticationResponse.Type.CODE -> Success(
+                    response.code
+                )
+                AuthenticationResponse.Type.ERROR -> Failure(
+                    response.error
+                )
                 else -> Failure("Unexpected response type: " + response.type)
             }
         }

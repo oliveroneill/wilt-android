@@ -1,11 +1,9 @@
-package com.oliveroneill.wilt
+package com.oliveroneill.wilt.viewmodel
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.jraska.livedata.test
-import com.oliveroneill.wilt.walkthrough.SpotifyAuthenticationResponse
-import com.oliveroneill.wilt.walkthrough.WalkthroughFragmentState
-import com.oliveroneill.wilt.walkthrough.WalkthroughFragmentViewModel
+import com.oliveroneill.wilt.data.SpotifyAuthenticationResponse
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

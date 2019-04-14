@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.walkthrough
+package com.oliveroneill.wilt.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
