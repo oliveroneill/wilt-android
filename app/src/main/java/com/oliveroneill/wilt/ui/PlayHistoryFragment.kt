@@ -10,7 +10,7 @@ import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.databinding.HistoryScreenBinding
 
 /**
- * Created by Oliver O'Neill on 14/4/19.
+ * Shows a user's Spotify play history
  */
 class PlayHistoryFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
