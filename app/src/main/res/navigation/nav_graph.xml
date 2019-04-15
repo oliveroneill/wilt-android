@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_login_failure"
             app:destination="@id/loginErrorFragment" />
+        <action
+            android:id="@+id/action_login"
+            app:destination="@id/historyFragment" />
     </fragment>
 
     <fragment
@@ -20,4 +23,9 @@
         android:name="com.oliveroneill.wilt.ui.LoginErrorFragment"
         android:label="LoginErrorFragment"
         tools:layout="@layout/login_error" />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.oliveroneill.wilt.ui.HistoryFragment"
+        android:label="HistoryFragment"
+        tools:layout="@layout/history_screen" />
 </navigation>

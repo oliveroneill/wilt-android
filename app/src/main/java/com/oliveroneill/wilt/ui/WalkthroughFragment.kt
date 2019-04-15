@@ -50,7 +50,9 @@ class WalkthroughFragment: Fragment() {
                     )
                 }
                 is WalkthroughFragmentState.LoggedIn -> {
-                    // TODO
+                    findNavController(this).navigate(
+                        WalkthroughFragmentDirections.login()
+                    )
                 }
                 is WalkthroughFragmentState.LoginError -> {
                     findNavController(this).navigate(
