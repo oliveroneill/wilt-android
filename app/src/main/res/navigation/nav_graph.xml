@@ -25,7 +25,7 @@
         tools:layout="@layout/login_error" />
     <fragment
         android:id="@+id/historyFragment"
-        android:name="com.oliveroneill.wilt.ui.HistoryFragment"
+        android:name="com.oliveroneill.wilt.ui.PlayHistoryFragment"
         android:label="HistoryFragment"
         tools:layout="@layout/history_screen" />
 </navigation>

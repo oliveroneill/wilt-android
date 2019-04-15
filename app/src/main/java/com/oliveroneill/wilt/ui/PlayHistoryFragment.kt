@@ -12,7 +12,7 @@ import com.oliveroneill.wilt.databinding.HistoryScreenBinding
 /**
  * Created by Oliver O'Neill on 14/4/19.
  */
-class HistoryFragment: Fragment() {
+class PlayHistoryFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = DataBindingUtil.inflate<HistoryScreenBinding>(inflater, R.layout.history_screen,container, false)
         binding.loading = true
