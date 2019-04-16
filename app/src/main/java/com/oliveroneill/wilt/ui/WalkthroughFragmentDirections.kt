@@ -15,7 +15,7 @@ class WalkthroughFragmentDirections {
 
     private class LoggedIn : NavDirections {
         override fun getArguments() = Bundle()
-        override fun getActionId() = R.id.action_login_failure
+        override fun getActionId() = R.id.action_login
     }
 
     companion object {
