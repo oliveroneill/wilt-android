@@ -9,13 +9,17 @@ import com.oliveroneill.wilt.R
  */
 class WalkthroughFragmentDirections {
     private class LoginError : NavDirections {
-        override fun getArguments() = Bundle()
         override fun getActionId() = R.id.action_login_failure
+        override fun getArguments() = Bundle()
+        override fun equals(other: Any?) = (other is LoginError)
+        override fun hashCode() = javaClass.hashCode()
     }
 
     private class LoggedIn : NavDirections {
-        override fun getArguments() = Bundle()
         override fun getActionId() = R.id.action_login
+        override fun getArguments() = Bundle()
+        override fun equals(other: Any?) = (other is LoggedIn)
+        override fun hashCode() = javaClass.hashCode()
     }
 
     companion object {
