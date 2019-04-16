@@ -6,6 +6,8 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-allopen'
 
+apply plugin: 'kotlin-kapt'
+
 allOpen {
     // allows mocking for classes w/o directly opening them for release builds
     annotation 'com.oliveroneill.wilt.testing.OpenClass'
