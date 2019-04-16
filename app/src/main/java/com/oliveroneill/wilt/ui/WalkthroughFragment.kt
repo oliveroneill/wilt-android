@@ -51,7 +51,7 @@ class WalkthroughFragment: Fragment() {
                 }
                 is WalkthroughFragmentState.LoggedIn -> {
                     findNavController(this).navigate(
-                        WalkthroughFragmentDirections.login()
+                        WalkthroughFragmentDirections.showPlayHistory()
                     )
                 }
                 is WalkthroughFragmentState.LoginError -> {

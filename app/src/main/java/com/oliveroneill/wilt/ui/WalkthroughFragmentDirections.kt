@@ -15,15 +15,15 @@ class WalkthroughFragmentDirections {
         override fun hashCode() = javaClass.hashCode()
     }
 
-    private class LoggedIn : NavDirections {
+    private class PlayHistoryNavigation : NavDirections {
         override fun getActionId() = R.id.action_login
         override fun getArguments() = Bundle()
-        override fun equals(other: Any?) = (other is LoggedIn)
+        override fun equals(other: Any?) = (other is PlayHistoryNavigation)
         override fun hashCode() = javaClass.hashCode()
     }
 
     companion object {
         fun showLoginError(): NavDirections = LoginError()
-        fun login(): NavDirections = LoggedIn()
+        fun showPlayHistory(): NavDirections = PlayHistoryNavigation()
     }
 }
