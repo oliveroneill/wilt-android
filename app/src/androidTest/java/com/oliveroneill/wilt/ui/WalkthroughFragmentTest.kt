@@ -86,6 +86,12 @@ class WalkthroughFragmentTest {
     }
 
     @Test
+    fun shouldShowPlayHistory() {
+        stateData.postValue(Event(WalkthroughFragmentState.LoggedIn("Code_Example")))
+        verify(navController).navigate(eq(WalkthroughFragmentDirections.showPlayHistory()))
+    }
+
+    @Test
     fun shouldOpenSpotifyLoginOnClick() {
         onView(withId(R.id.signInButton)).perform(click())
         verify(viewModel).spotifySignup()
