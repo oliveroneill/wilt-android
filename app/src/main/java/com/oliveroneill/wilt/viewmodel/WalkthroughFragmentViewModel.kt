@@ -24,8 +24,8 @@ sealed class WalkthroughFragmentState {
  * ViewModel for walkthrough. This primarily handles login
  */
 @OpenForTesting
-class WalkthroughFragmentViewModel(application: Application,
-                                   private val firebase: FirebaseAuthentication = FirebaseAuthentication(application)
+class WalkthroughFragmentViewModel @JvmOverloads constructor(application: Application,
+                                                             private val firebase: FirebaseAuthentication = FirebaseAuthentication(application)
 ): AndroidViewModel(application) {
     companion object {
         private const val REDIRECT_URI = "wilt://spotify-login"
