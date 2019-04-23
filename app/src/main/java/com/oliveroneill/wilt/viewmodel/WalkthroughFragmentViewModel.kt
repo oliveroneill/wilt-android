@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
+import com.oliveroneill.wilt.data.FirebaseAuthentication
 import com.oliveroneill.wilt.data.SpotifyAuthenticationRequest
 import com.oliveroneill.wilt.data.SpotifyAuthenticationResponse
 import com.oliveroneill.wilt.testing.OpenForTesting
@@ -23,7 +24,9 @@ sealed class WalkthroughFragmentState {
  * ViewModel for walkthrough. This primarily handles login
  */
 @OpenForTesting
-class WalkthroughFragmentViewModel(application: Application): AndroidViewModel(application) {
+class WalkthroughFragmentViewModel(application: Application,
+                                   private val firebase: FirebaseAuthentication = FirebaseAuthentication(application)
+): AndroidViewModel(application) {
     companion object {
         private const val REDIRECT_URI = "wilt://spotify-login"
     }
@@ -57,11 +60,21 @@ class WalkthroughFragmentViewModel(application: Application): AndroidViewModel(a
     fun onSpotifyLoginResponse(response: SpotifyAuthenticationResponse) {
         when (response) {
             is SpotifyAuthenticationResponse.Success -> {
-                _state.value = Event(WalkthroughFragmentState.LoggedIn(response.code))
+                wiltLogin(response.code)
             }
             is SpotifyAuthenticationResponse.Failure -> {
                 _state.value = Event(WalkthroughFragmentState.LoginError(response.error))
             }
+        }
+    }
+
+    private fun wiltLogin(spotifyAuthCode: String) {
+        firebase.login(spotifyAuthCode) {
+            _state.value = it.fold({
+                Event(WalkthroughFragmentState.LoggedIn(it))
+            }, {
+                Event(WalkthroughFragmentState.LoginError("Firebase signUp failed"))
+            })
         }
     }
 }

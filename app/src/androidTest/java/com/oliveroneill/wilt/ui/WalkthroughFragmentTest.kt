@@ -96,4 +96,6 @@ class WalkthroughFragmentTest {
         onView(withId(R.id.signInButton)).perform(click())
         verify(viewModel).spotifySignup()
     }
+
+    // TODO: test that loading spinner is displayed - this isn't easy to do since the Spotify login page opens on top
 }

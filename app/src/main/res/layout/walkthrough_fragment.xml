@@ -1,55 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable name="loading" type="boolean"/>
+    </data>
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/pagerLayout"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="64dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.viewpager.widget.ViewPager
-                android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="64dp"
-                app:layout_constraintBottom_toBottomOf="@+id/pageIndicatorView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-        <com.rd.PageIndicatorView
-                android:id="@+id/pageIndicatorView"
+            <ProgressBar
+                android:id="@+id/loading_spinner"
+                style="@style/Widget.AppCompat.ProgressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
+                app:visibleGone="@{loading}" />
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/pagerLayout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="64dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:piv_animationType="scale"
-                app:piv_dynamicCount="true"
-                app:piv_interactiveAnimation="true"
-                app:piv_selectedColor="@color/lightGray"
-                app:piv_unselectedColor="@color/darkGray"
-                app:piv_viewPager="@id/viewPager" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:visibleGone="@{!loading}">
+
+            <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="64dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/pageIndicatorView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            <com.rd.PageIndicatorView
+                    android:id="@+id/pageIndicatorView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:piv_animationType="scale"
+                    app:piv_dynamicCount="true"
+                    app:piv_interactiveAnimation="true"
+                    app:piv_selectedColor="@color/lightGray"
+                    app:piv_unselectedColor="@color/darkGray"
+                    app:piv_viewPager="@id/viewPager" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+                android:text="@string/btn_sign_in_text"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:id="@+id/signInButton" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pagerLayout"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:visibleGone="@{!loading}"
+        />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <Button
-            android:text="@string/btn_sign_in_text"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:id="@+id/signInButton" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pagerLayout"
-            app:layout_constraintBottom_toBottomOf="parent"
-    />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

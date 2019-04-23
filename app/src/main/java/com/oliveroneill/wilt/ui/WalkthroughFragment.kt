@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 import androidx.lifecycle.ViewModelProviders
@@ -13,6 +14,7 @@ import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.oliveroneill.wilt.EventObserver
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.SpotifyAuthenticationResponse
+import com.oliveroneill.wilt.databinding.WalkthroughFragmentBinding
 import com.oliveroneill.wilt.viewmodel.WalkthroughFragmentState
 import com.oliveroneill.wilt.viewmodel.WalkthroughFragmentViewModel
 import com.spotify.sdk.android.authentication.AuthenticationClient
@@ -33,6 +35,12 @@ class WalkthroughFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.walkthrough_fragment, container, false) as ViewGroup
+        val binding = DataBindingUtil.inflate<WalkthroughFragmentBinding>(
+            inflater,
+            R.layout.walkthrough_fragment,
+            container,
+            false
+        )
         rootView.viewPager.offscreenPageLimit = 2
         // Set adapter
         childFragmentManager.let {
@@ -42,6 +50,7 @@ class WalkthroughFragment: Fragment() {
         model.state.observe(this, EventObserver {
             when (it) {
                 is WalkthroughFragmentState.LoggingIn -> {
+                    binding.loading = true
                     // Start login activity
                     AuthenticationClient.openLoginActivity(
                         activity,
