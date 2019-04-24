@@ -34,13 +34,13 @@ class WalkthroughFragment: Fragment() {
     var viewModelFactory: AndroidViewModelFactory? = activity?.let { AndroidViewModelFactory(it.application) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.walkthrough_fragment, container, false) as ViewGroup
         val binding = DataBindingUtil.inflate<WalkthroughFragmentBinding>(
             inflater,
             R.layout.walkthrough_fragment,
             container,
             false
         )
+        val rootView = binding.root
         rootView.viewPager.offscreenPageLimit = 2
         // Set adapter
         childFragmentManager.let {
