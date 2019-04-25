@@ -2,6 +2,7 @@ package com.oliveroneill.wilt.data
 
 import android.content.Context
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.functions.FirebaseFunctions
 import com.oliveroneill.wilt.testing.OpenForTesting
 
@@ -15,10 +16,10 @@ class FirebaseAuthentication(context: Context) {
     }
 
     /**
-     * Sign in this user with specified Spotify authorisation code. [callback] will be called with the authorisation
-     * token from the Firebase function
+     * Sign up this user with specified Spotify authorisation code. [callback] will be called with a custom
+     * authentication token from the Firebase function
      */
-    fun login(spotifyAuthCode: String, redirectUri: String, callback: (Result<String>) -> Unit) {
+    fun signUp(spotifyAuthCode: String, redirectUri: String, callback: (Result<String>) -> Unit) {
         FirebaseFunctions.getInstance()
             .getHttpsCallable("signUp")
             .call(
@@ -33,6 +34,19 @@ class FirebaseAuthentication(context: Context) {
             .addOnSuccessListener {
                 val data = it.data as Map<*, *>
                 callback(Result.success(data.get("token") as String))
+            }
+    }
+
+    /**
+     * Login this user with specified custom auth [token]. [callback] will be called with the username of the logged
+     * in user
+     */
+    fun login(token: String, callback: (Result<String>) -> Unit) {
+        FirebaseAuth.getInstance().signInWithCustomToken(token)
+            .addOnSuccessListener {
+                callback(Result.success(it.user.uid))
+            }.addOnFailureListener {
+                callback(Result.failure(it))
             }
     }
 }

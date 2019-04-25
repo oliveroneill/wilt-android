@@ -51,9 +51,13 @@ class WalkthroughFragmentViewModelTest {
     fun `should successfully login when response is successful`() {
         // Send login response
         val expected = "34157633321"
+        val token = "43543"
         val spotifyAuthCode = "542781"
-        whenever(firebase.login(eq(spotifyAuthCode), any(), any())).then {
-            it.getArgument<(Result<String>) -> Unit>(2)(Result.success(expected))
+        whenever(firebase.signUp(eq(spotifyAuthCode), any(), any())).then {
+            it.getArgument<(Result<String>) -> Unit>(2)(Result.success(token))
+        }
+        whenever(firebase.login(eq(token), any())).then {
+            it.getArgument<(Result<String>) -> Unit>(1)(Result.success(expected))
         }
         model.onSpotifyLoginResponse(SpotifyAuthenticationResponse.Success(spotifyAuthCode))
         // Assert that state gets set correctly
@@ -92,9 +96,35 @@ class WalkthroughFragmentViewModelTest {
         // Send login response
         val spotifyAuthCode = "542781"
         val expected = "Firebase signUp failed"
-        whenever(firebase.login(eq(spotifyAuthCode), any(), any())).then {
+        whenever(firebase.signUp(eq(spotifyAuthCode), any(), any())).then {
             // Throw an error when attempting to sign up
             it.getArgument<(Result<String>) -> Unit>(2)(Result.failure(Exception()))
+        }
+        model.onSpotifyLoginResponse(SpotifyAuthenticationResponse.Success(spotifyAuthCode))
+        // Assert that state gets set correctly
+        model.state
+            .test()
+            .assertHasValue()
+            .assertValue {
+                val state = it.getContentIfNotHandled()
+                when(state) {
+                    is WalkthroughFragmentState.LoginError -> state.error == expected
+                    else -> false
+                }
+            }
+    }
+
+    @Test
+    fun `should fail to login when the firebase auth fails`() {
+        // Send login response
+        val expected = "Firebase auth failed"
+        val token = "43543"
+        val spotifyAuthCode = "542781"
+        whenever(firebase.signUp(eq(spotifyAuthCode), any(), any())).then {
+            it.getArgument<(Result<String>) -> Unit>(2)(Result.success(token))
+        }
+        whenever(firebase.login(eq(token), any())).then {
+            it.getArgument<(Result<String>) -> Unit>(1)(Result.failure(Exception()))
         }
         model.onSpotifyLoginResponse(SpotifyAuthenticationResponse.Success(spotifyAuthCode))
         // Assert that state gets set correctly

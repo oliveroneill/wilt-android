@@ -53,6 +53,7 @@ dependencies {
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-functions:16.0.1'
+    implementation 'com.google.firebase:firebase-auth:16.0.1'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.24.0'
     testImplementation 'com.jraska.livedata:testing-ktx:1.1.0'
