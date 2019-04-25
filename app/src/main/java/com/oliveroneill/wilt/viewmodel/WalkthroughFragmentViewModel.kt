@@ -29,9 +29,7 @@ sealed class WalkthroughFragmentState {
 class WalkthroughFragmentViewModel @JvmOverloads constructor(application: Application,
                                                              private val firebase: FirebaseAuthentication = FirebaseAuthentication(application)
 ): AndroidViewModel(application) {
-    companion object {
-        private const val REDIRECT_URI = "wilt://spotify-login"
-    }
+    private val redirectUri = application.getString(R.string.spotify_redirect_uri)
     private val clientID: String = application.getString(R.string.spotify_client_id)
 
     /**
@@ -54,7 +52,7 @@ class WalkthroughFragmentViewModel @JvmOverloads constructor(application: Applic
             WalkthroughFragmentState.LoggingIn(
                 SpotifyAuthenticationRequest(
                     clientID,
-                    REDIRECT_URI,
+                    redirectUri,
                     arrayOf("user-read-email", "user-read-recently-played", "user-top-read")
                 )
             )
@@ -76,7 +74,7 @@ class WalkthroughFragmentViewModel @JvmOverloads constructor(application: Applic
     }
 
     private fun wiltLogin(spotifyAuthCode: String) {
-        firebase.login(spotifyAuthCode) {
+        firebase.login(spotifyAuthCode, redirectUri) {
             _state.postValue(
                 it.fold({
                     Event(WalkthroughFragmentState.LoggedIn(it))

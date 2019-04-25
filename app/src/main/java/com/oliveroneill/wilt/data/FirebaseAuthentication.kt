@@ -18,10 +18,15 @@ class FirebaseAuthentication(context: Context) {
      * Sign in this user with specified Spotify authorisation code. [callback] will be called with the authorisation
      * token from the Firebase function
      */
-    fun login(spotifyAuthCode: String, callback: (Result<String>) -> Unit) {
+    fun login(spotifyAuthCode: String, redirectUri: String, callback: (Result<String>) -> Unit) {
         FirebaseFunctions.getInstance()
             .getHttpsCallable("signUp")
-            .call(hashMapOf("spotifyAuthCode" to spotifyAuthCode))
+            .call(
+                hashMapOf(
+                    "spotifyAuthCode" to spotifyAuthCode,
+                    "spotifyRedirectUri" to redirectUri
+                )
+            )
             .addOnFailureListener {
                 callback(Result.failure(it))
             }
