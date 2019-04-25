@@ -15,6 +15,10 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.SpotifyAuthenticationRequest
@@ -24,22 +28,21 @@ import org.hamcrest.CoreMatchers.allOf
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.*
 
 @RunWith(AndroidJUnit4::class)
 class WalkthroughFragmentTest {
     // Create fake view model for sending events to the UI
-    val viewModel = mock(WalkthroughFragmentViewModel::class.java)
+    val viewModel = mock<WalkthroughFragmentViewModel>()
     val stateData = MutableLiveData<Event<WalkthroughFragmentState>>()
     // Create factory that returns the fake view model
-    val factory = mock(ViewModelProvider.AndroidViewModelFactory::class.java)
-    val navController = mock(NavController::class.java)
+    val factory = mock<ViewModelProvider.AndroidViewModelFactory>()
+    val navController = mock<NavController>()
     lateinit var scenario: FragmentScenario<WalkthroughFragment>
 
     @Before
     fun setup() {
-        `when`(factory.create(WalkthroughFragmentViewModel::class.java)).thenReturn(viewModel)
-        `when`(viewModel.state).thenReturn(stateData)
+        whenever(factory.create(WalkthroughFragmentViewModel::class.java)).thenReturn(viewModel)
+        whenever(viewModel.state).thenReturn(stateData)
         // Specify the fragment factory in order to set the view model factory
         scenario = launchFragmentInContainer<WalkthroughFragment>(
             null,
