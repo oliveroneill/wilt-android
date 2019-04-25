@@ -21,7 +21,7 @@ class FirebaseAuthentication(context: Context) {
     fun login(spotifyAuthCode: String, callback: (Result<String>) -> Unit) {
         FirebaseFunctions.getInstance()
             .getHttpsCallable("signUp")
-            .call(hashMapOf("user_id" to spotifyAuthCode))
+            .call(hashMapOf("spotifyAuthCode" to spotifyAuthCode))
             .addOnFailureListener {
                 callback(Result.failure(it))
             }
