@@ -15,6 +15,8 @@ import com.oliveroneill.wilt.testing.OpenForTesting
  * States that the walkthrough screen can be in
  */
 sealed class WalkthroughFragmentState {
+    // Initial state for displaying the walkthrough
+    object Walkthrough : WalkthroughFragmentState()
     data class LoggingIn(val request: SpotifyAuthenticationRequest): WalkthroughFragmentState()
     data class LoggedIn(val code: String): WalkthroughFragmentState()
     data class LoginError(val error: String): WalkthroughFragmentState()
@@ -38,6 +40,11 @@ class WalkthroughFragmentViewModel @JvmOverloads constructor(application: Applic
     private val _state = MutableLiveData<Event<WalkthroughFragmentState>>()
     val state : LiveData<Event<WalkthroughFragmentState>>
         get() = _state
+
+    init {
+        // Set initial state
+        _state.value = Event(WalkthroughFragmentState.Walkthrough)
+    }
 
     /**
      * Start spotify sign up process

@@ -29,6 +29,14 @@ class WalkthroughFragmentViewModelTest {
     }
 
     @Test
+    fun `should set initial state to walkthrough`() {
+        // Assert that state gets set correctly
+        model.state
+            .test()
+            .assertHasValue()
+            .assertValue { it.getContentIfNotHandled() is WalkthroughFragmentState.Walkthrough }
+    }
+    @Test
     fun `should start login request when starting spotify login`() {
         // Start login process
         model.spotifySignup()

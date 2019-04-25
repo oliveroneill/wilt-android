@@ -49,6 +49,9 @@ class WalkthroughFragment: Fragment() {
         val model = ViewModelProviders.of(this, viewModelFactory).get(WalkthroughFragmentViewModel::class.java)
         model.state.observe(this, EventObserver {
             when (it) {
+                is WalkthroughFragmentState.Walkthrough -> {
+                    binding.loading = false
+                }
                 is WalkthroughFragmentState.LoggingIn -> {
                     binding.loading = true
                     // Start login activity
