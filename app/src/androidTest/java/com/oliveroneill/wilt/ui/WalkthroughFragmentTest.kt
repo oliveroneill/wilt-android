@@ -75,7 +75,7 @@ class WalkthroughFragmentTest {
     fun shouldOpenSpotifyLoginEvent() {
         // Set login state
         val request = SpotifyAuthenticationRequest("", "x", emptyArray())
-        stateData.postValue(Event(WalkthroughFragmentState.LoggingIn(request)))
+        stateData.postValue(Event(WalkthroughFragmentState.AuthenticatingSpotify(request)))
         // Ensure that the walkthrough screen is hidden since the Spotify login screen should open
         onView(withId(R.id.textView)).check(doesNotExist())
         // Not sure whether there's something else to assert here since it's not my view that's opening...
