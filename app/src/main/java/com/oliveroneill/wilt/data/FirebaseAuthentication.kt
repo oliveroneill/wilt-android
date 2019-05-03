@@ -11,8 +11,18 @@ import com.oliveroneill.wilt.testing.OpenForTesting
  */
 @OpenForTesting
 class FirebaseAuthentication(context: Context) {
+    private val auth = FirebaseAuth.getInstance()
+    private val functions = FirebaseFunctions.getInstance()
+
     init {
         FirebaseApp.initializeApp(context)
+    }
+
+    /**
+     * Get the current logged in user, or null if there's no user logged in
+     */
+    val currentUser: String? by lazy {
+        auth.currentUser?.uid
     }
 
     /**
@@ -20,7 +30,7 @@ class FirebaseAuthentication(context: Context) {
      * authentication token from the Firebase function
      */
     fun signUp(spotifyAuthCode: String, redirectUri: String, callback: (Result<String>) -> Unit) {
-        FirebaseFunctions.getInstance()
+        functions
             .getHttpsCallable("signUp")
             .call(
                 hashMapOf(
@@ -42,7 +52,7 @@ class FirebaseAuthentication(context: Context) {
      * in user
      */
     fun login(token: String, callback: (Result<String>) -> Unit) {
-        FirebaseAuth.getInstance().signInWithCustomToken(token)
+        auth.signInWithCustomToken(token)
             .addOnSuccessListener {
                 callback(Result.success(it.user.uid))
             }.addOnFailureListener {

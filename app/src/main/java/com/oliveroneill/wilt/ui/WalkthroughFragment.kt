@@ -52,7 +52,7 @@ class WalkthroughFragment: Fragment() {
                 is WalkthroughFragmentState.Walkthrough -> {
                     binding.loading = false
                 }
-                is WalkthroughFragmentState.LoggingIn -> {
+                is WalkthroughFragmentState.AuthenticatingSpotify -> {
                     binding.loading = true
                     // Start login activity
                     AuthenticationClient.openLoginActivity(

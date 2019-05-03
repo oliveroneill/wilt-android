@@ -17,8 +17,8 @@ import com.oliveroneill.wilt.testing.OpenForTesting
 sealed class WalkthroughFragmentState {
     // Initial state for displaying the walkthrough
     object Walkthrough : WalkthroughFragmentState()
-    data class LoggingIn(val request: SpotifyAuthenticationRequest): WalkthroughFragmentState()
-    data class LoggedIn(val code: String): WalkthroughFragmentState()
+    data class AuthenticatingSpotify(val request: SpotifyAuthenticationRequest): WalkthroughFragmentState()
+    data class LoggedIn(val username: String): WalkthroughFragmentState()
     data class LoginError(val error: String): WalkthroughFragmentState()
 }
 
@@ -41,7 +41,11 @@ class WalkthroughFragmentViewModel @JvmOverloads constructor(application: Applic
 
     init {
         // Set initial state
-        _state.value = Event(WalkthroughFragmentState.Walkthrough)
+        _state.value = firebase.currentUser?.let {
+            Event(WalkthroughFragmentState.LoggedIn(it))
+        } ?: run {
+            Event(WalkthroughFragmentState.Walkthrough)
+        }
     }
 
     /**
@@ -49,7 +53,7 @@ class WalkthroughFragmentViewModel @JvmOverloads constructor(application: Applic
      */
     fun spotifySignup() {
         _state.value = Event(
-            WalkthroughFragmentState.LoggingIn(
+            WalkthroughFragmentState.AuthenticatingSpotify(
                 SpotifyAuthenticationRequest(
                     clientID,
                     redirectUri,

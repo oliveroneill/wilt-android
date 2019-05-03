@@ -15,15 +15,15 @@ class WalkthroughFragmentViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    private val application = mock<Application> {
+        // Mock value so that getString doesn't throw
+        on { getString(anyInt()) } doReturn ""
+    }
     private lateinit var model: WalkthroughFragmentViewModel
     private lateinit var firebase: FirebaseAuthentication
 
     @Before
     fun setup() {
-        val application = mock<Application> {
-            // Mock value so that getString doesn't throw
-            on { getString(anyInt()) } doReturn ""
-        }
         firebase = mock()
         model = WalkthroughFragmentViewModel(application, firebase)
     }
@@ -36,6 +36,25 @@ class WalkthroughFragmentViewModelTest {
             .assertHasValue()
             .assertValue { it.getContentIfNotHandled() is WalkthroughFragmentState.Walkthrough }
     }
+
+    @Test
+    fun `should set initial state to logged in if the user is logged in`() {
+        val expected = "username123"
+        whenever(firebase.currentUser).thenReturn(expected)
+        model = WalkthroughFragmentViewModel(application, firebase)
+        // Assert that state gets set correctly
+        model.state
+            .test()
+            .assertHasValue()
+            .assertValue {
+                val state = it.getContentIfNotHandled()
+                when(state) {
+                    is WalkthroughFragmentState.LoggedIn -> state.username == expected
+                    else -> false
+                }
+            }
+    }
+
     @Test
     fun `should start login request when starting spotify login`() {
         // Start login process
@@ -44,13 +63,13 @@ class WalkthroughFragmentViewModelTest {
         model.state
             .test()
             .assertHasValue()
-            .assertValue { it.getContentIfNotHandled() is WalkthroughFragmentState.LoggingIn }
+            .assertValue { it.getContentIfNotHandled() is WalkthroughFragmentState.AuthenticatingSpotify }
     }
 
     @Test
     fun `should successfully login when response is successful`() {
         // Send login response
-        val expected = "34157633321"
+        val expected = "username123"
         val token = "43543"
         val spotifyAuthCode = "542781"
         whenever(firebase.signUp(eq(spotifyAuthCode), any(), any())).then {
@@ -67,7 +86,7 @@ class WalkthroughFragmentViewModelTest {
             .assertValue {
                 val state = it.getContentIfNotHandled()
                 when(state) {
-                    is WalkthroughFragmentState.LoggedIn -> state.code == expected
+                    is WalkthroughFragmentState.LoggedIn -> state.username == expected
                     else -> false
                 }
             }
