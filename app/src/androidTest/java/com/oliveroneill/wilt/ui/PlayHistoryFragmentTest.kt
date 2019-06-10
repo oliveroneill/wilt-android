@@ -64,9 +64,12 @@ class PlayHistoryFragmentTest {
     }
 
     @Test
-    fun shouldDisplayRow() {
+    fun shouldDisplayRows() {
         // Given
-        val list = listOf(ArtistRank("Feb 2019", "Pinegrove", 0))
+        val list = listOf(
+            ArtistRank("Feb 2019", "Pinegrove", 0),
+            ArtistRank("Mar 2019", "Bon Iver", 1)
+        )
         val pagedList = mock<PagedList<ArtistRank>>()
         `when`(pagedList.get(ArgumentMatchers.anyInt())).then { invocation ->
             val index = invocation.arguments.first() as Int
@@ -76,8 +79,8 @@ class PlayHistoryFragmentTest {
         // When
         itemStateData.postValue(pagedList)
         // Then
-        onView(withText("Pinegrove")).check(matches(isDisplayed()));
-
+        onView(withText("Pinegrove")).check(matches(isDisplayed()))
+        onView(withText("Bon Iver")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -102,4 +105,52 @@ class PlayHistoryFragmentTest {
         onView(withText(error)).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
     }
+
+    @Test
+    fun shouldShowRowsWhileLoading() {
+        // Given
+        val list = listOf(
+            ArtistRank("Feb 2019", "Pinegrove", 0),
+            ArtistRank("Mar 2019", "Bon Iver", 1)
+        )
+        val pagedList = mock<PagedList<ArtistRank>>()
+        `when`(pagedList.get(ArgumentMatchers.anyInt())).then { invocation ->
+            val index = invocation.arguments.first() as Int
+            list[index]
+        }
+        `when`(pagedList.size).thenReturn(list.size)
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.LoadingMore))
+        // When
+        itemStateData.postValue(pagedList)
+        // Then
+        onView(withText("Pinegrove")).check(matches(isDisplayed()))
+        onView(withText("Bon Iver")).check(matches(isDisplayed()))
+        onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun shouldShowRowsWithError() {
+        // Given
+        val list = listOf(
+            ArtistRank("Feb 2019", "Pinegrove", 0),
+            ArtistRank("Mar 2019", "Bon Iver", 1)
+        )
+        val pagedList = mock<PagedList<ArtistRank>>()
+        `when`(pagedList.get(ArgumentMatchers.anyInt())).then { invocation ->
+            val index = invocation.arguments.first() as Int
+            list[index]
+        }
+        `when`(pagedList.size).thenReturn(list.size)
+        val error = "Some random error message string"
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.Failure(error)))
+        // When
+        itemStateData.postValue(pagedList)
+        // Then
+        onView(withText("Pinegrove")).check(matches(isDisplayed()))
+        onView(withText("Bon Iver")).check(matches(isDisplayed()))
+        onView(withText(error)).check(matches(isDisplayed()))
+        onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
+    }
+
+    // TODO: test retry
 }
