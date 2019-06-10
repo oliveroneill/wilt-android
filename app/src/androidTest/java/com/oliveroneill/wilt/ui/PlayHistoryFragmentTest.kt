@@ -10,9 +10,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.paging.PagedList
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -21,7 +22,7 @@ import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.viewmodel.ArtistRank
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentState
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentViewModel
-import org.hamcrest.CoreMatchers
+import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -75,11 +76,30 @@ class PlayHistoryFragmentTest {
         // When
         itemStateData.postValue(pagedList)
         // Then
-        Espresso.onView(
-            CoreMatchers.allOf(
-                ViewMatchers.withId(R.id.topArtist),
-                ViewMatchers.withText("Pinegrove")
-            )
-        ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText("Pinegrove")).check(matches(isDisplayed()));
+
+    }
+
+    @Test
+    fun shouldDisplayLoadingSpinner() {
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.LoadingMore))
+        // Then
+        onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun shouldHideLoadingSpinner() {
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.NotLoading))
+        // Then
+        onView(withId(R.id.progress_bar)).check(doesNotExist())
+    }
+
+    @Test
+    fun shouldShowError() {
+        val error = "Some random error message string"
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.Failure(error)))
+        // Then
+        onView(withText(error)).check(matches(isDisplayed()))
+        onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
     }
 }
