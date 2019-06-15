@@ -9,6 +9,7 @@ import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.viewmodel.ArtistRank
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentState
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -117,8 +118,41 @@ class ArtistRankDataSourceTest {
         loadingState
             .test()
             .assertHasValue()
-            .assertValue { it.getContentIfNotHandled() == PlayHistoryFragmentState.Failure(expected) }
+            .assertValue {
+                val state = it.getContentIfNotHandled()
+                state is PlayHistoryFragmentState.Failure && state.error == expected
+            }
     }
+
+    @Test
+    fun `should correctly set retry`() {
+        val expected = "This is a test error for ArtistRankDataSource"
+        val error = IOException(expected)
+        val date = LocalDate.parse("2019-02-25")
+        // We'll make the mock send back an error
+        whenever(firebase.topArtists(any(), any(), any())).then {
+            it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.failure(error))
+        }
+        val params = ItemKeyedDataSource.LoadInitialParams(date, 11, false)
+        dataSource.loadInitial(params, TestCallback {})
+        // Get the state that was sent
+        val state = loadingState.value?.getContentIfNotHandled()
+        when (state) {
+            is PlayHistoryFragmentState.Failure -> {
+                // Call retry
+                state.retry()
+                // Ensure that it makes the correct call. This will be the second call
+                verify(firebase, times(2)).topArtists(
+                    eq(1521896400), eq(1551013200), any()
+                )
+            }
+            else -> {
+                // Fail if we didn't get an error
+                fail()
+            }
+        }
+    }
+
 
     @Test
     fun `should use current date if none specified`() {

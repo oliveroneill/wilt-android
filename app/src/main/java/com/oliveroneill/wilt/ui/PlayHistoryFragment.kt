@@ -29,9 +29,7 @@ class PlayHistoryFragment: Fragment() {
         val binding = DataBindingUtil.inflate<HistoryScreenBinding>(inflater, R.layout.history_screen,container, false)
         val rootView = binding.root
         val model = ViewModelProviders.of(this, viewModelFactory).get(PlayHistoryFragmentViewModel::class.java)
-        val adapter = HistoryListAdapter {
-            model.retry()
-        }
+        val adapter = HistoryListAdapter()
         binding.historyList.adapter = adapter
         model.loadingState.observe(this, EventObserver {
             adapter.setNetworkState(it)

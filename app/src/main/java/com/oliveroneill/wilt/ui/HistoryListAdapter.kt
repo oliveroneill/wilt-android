@@ -11,8 +11,7 @@ import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentState
 /**
  * Adapter for displaying artist play history
  */
-class HistoryListAdapter(private val retryCallback: () -> Unit)
-    : PagedListAdapter<ArtistRank, RecyclerView.ViewHolder>(ITEM_COMPARATOR) {
+class HistoryListAdapter : PagedListAdapter<ArtistRank, RecyclerView.ViewHolder>(ITEM_COMPARATOR) {
     private var state: PlayHistoryFragmentState? = null
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
@@ -31,7 +30,7 @@ class HistoryListAdapter(private val retryCallback: () -> Unit)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             R.layout.artist_rank -> ArtistRankViewHolder.create(parent)
-            R.layout.network_state_item -> NetworkStateItemViewHolder.create(parent, retryCallback)
+            R.layout.network_state_item -> NetworkStateItemViewHolder.create(parent)
             else -> throw IllegalArgumentException("unknown view type $viewType")
         }
     }

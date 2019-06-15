@@ -11,6 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.paging.PagedList
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -22,6 +23,7 @@ import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.viewmodel.ArtistRank
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentState
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentViewModel
+import junit.framework.TestCase.assertEquals
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
@@ -102,7 +104,7 @@ class PlayHistoryFragmentTest {
     @Test
     fun shouldShowError() {
         val error = "Some random error message string"
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.Failure(error)))
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.Failure(error, {})))
         // Then
         onView(withText(error)).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
@@ -146,7 +148,7 @@ class PlayHistoryFragmentTest {
         }
         `when`(pagedList.size).thenReturn(list.size)
         val error = "Some random error message string"
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.Failure(error)))
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.Failure(error, {})))
         // When
         itemStateData.postValue(pagedList)
         // Then
@@ -158,5 +160,19 @@ class PlayHistoryFragmentTest {
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
     }
 
-    // TODO: test retry
+    @Test
+    fun shouldRetryOnPress() {
+        val error = "Some random error message string"
+        var retryCallCount = 0
+        loadingStateData.postValue(
+            Event(
+                PlayHistoryFragmentState.Failure(error) {
+                    retryCallCount += 1
+                }
+            )
+        )
+        // Then
+        onView(withId(R.id.retry_button)).perform(click())
+        assertEquals(1, retryCallCount)
+    }
 }

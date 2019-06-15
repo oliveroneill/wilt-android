@@ -68,7 +68,14 @@ class ArtistRankDataSource(
                 callback.onResult(it)
                 loadingState.postValue(Event(PlayHistoryFragmentState.NotLoading))
             }.onFailure {
-                loadingState.postValue(Event(PlayHistoryFragmentState.Failure(it.localizedMessage)))
+                loadingState.postValue(
+                    Event(
+                        PlayHistoryFragmentState.Failure(
+                            it.localizedMessage
+                            // Retry
+                        ) { topArtists(start, end, callback) }
+                    )
+                )
             }
         }
     }

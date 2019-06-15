@@ -30,7 +30,7 @@ sealed class PlayHistoryFragmentState {
     /**
      * If we failed to load the next page
      */
-    data class Failure(val error: String): PlayHistoryFragmentState()
+    data class Failure(val error: String, val retry: () -> Unit): PlayHistoryFragmentState()
 }
 
 /**
@@ -55,8 +55,4 @@ class PlayHistoryFragmentViewModel(firebase: FirebaseAPI = FirebaseAPI()): ViewM
     val itemDataSource = ArtistRankDataSourceFactory(_loadingState, firebase).toLiveData(
         initialLoadKey = LocalDate.now(), pageSize = 2
     )
-
-    fun retry() {
-        // TODO
-    }
 }
