@@ -130,4 +130,20 @@ class ArtistRankDataSourceTest {
         // should be good enough for now...
         verify(firebase).topArtists(any(), any(), any())
     }
+
+    @Test
+    fun `should load after a specified date`() {
+        val date = LocalDate.parse("2019-03-25")
+        val params = ItemKeyedDataSource.LoadParams(date, 11)
+        dataSource.loadAfter(params, TestCallback {})
+        verify(firebase).topArtists(eq(1521896400), eq(1551013200), any())
+    }
+
+    @Test
+    fun `should load before a specified date`() {
+        val date = LocalDate.parse("2018-02-25")
+        val params = ItemKeyedDataSource.LoadParams(date, 11)
+        dataSource.loadBefore(params, TestCallback {})
+        verify(firebase).topArtists(eq(1521896400), eq(1551013200), any())
+    }
 }

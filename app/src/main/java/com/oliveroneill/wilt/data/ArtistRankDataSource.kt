@@ -35,6 +35,32 @@ class ArtistRankDataSource(
         // Each page is a month, so we subtract months to decide what to request
         val startDate = endDate.minusMonths(params.requestedLoadSize.toLong())
         val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
+        topArtists(start, end, callback)
+    }
+
+    override fun loadAfter(params: LoadParams<LocalDate>, callback: LoadCallback<ArtistRank>) {
+        // Convert request to timestamps
+        // Subtract 1 month so that we don't include the month we've already got
+        val endDate = params.key.minusMonths(1)
+        val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
+        // Each page is a month, so we subtract months to decide what to request
+        val startDate = endDate.minusMonths(params.requestedLoadSize.toLong())
+        val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
+        topArtists(start, end, callback)
+    }
+
+    override fun loadBefore(params: LoadParams<LocalDate>, callback: LoadCallback<ArtistRank>) {
+        // Convert request to timestamps
+        // Add 1 month so that we don't include the month we've already got
+        val startDate = params.key.plusMonths(1)
+        val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
+        // Each page is a month, so we subtract months to decide what to request
+        val endDate = startDate.plusMonths(params.requestedLoadSize.toLong())
+        val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
+        topArtists(start, end, callback)
+    }
+
+    private fun topArtists(start: Long, end: Long, callback: LoadCallback<ArtistRank>) {
         // Update state
         loadingState.postValue(Event(PlayHistoryFragmentState.LoadingMore))
         firebase.topArtists(start.toInt(), end.toInt()) {
@@ -45,14 +71,6 @@ class ArtistRankDataSource(
                 loadingState.postValue(Event(PlayHistoryFragmentState.Failure(it.localizedMessage)))
             }
         }
-    }
-
-    override fun loadAfter(params: LoadParams<LocalDate>, callback: LoadCallback<ArtistRank>) {
-        callback.onResult(listOf())
-    }
-
-    override fun loadBefore(params: LoadParams<LocalDate>, callback: LoadCallback<ArtistRank>) {
-        callback.onResult(listOf())
     }
 
     override fun getKey(item: ArtistRank): LocalDate = LocalDate.parse(item.date)
