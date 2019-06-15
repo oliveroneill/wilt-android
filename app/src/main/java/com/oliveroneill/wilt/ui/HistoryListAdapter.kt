@@ -77,7 +77,7 @@ class HistoryListAdapter(private val retryCallback: () -> Unit)
                 oldItem == newItem
 
             override fun areItemsTheSame(oldItem: ArtistRank, newItem: ArtistRank): Boolean =
-                oldItem.periodName == newItem.periodName
+                oldItem.date == newItem.date
         }
     }
 }

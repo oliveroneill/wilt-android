@@ -7,15 +7,23 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.viewmodel.ArtistRank
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 /**
  * A view for displaying the most listened to artist for a specific period
  */
-class ArtistRankViewHolder(view: View): RecyclerView.ViewHolder(view) {
+class ArtistRankViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
     private val topArtistTextView: TextView = view.findViewById(R.id.topArtist)
+    private val subTextView: TextView = view.findViewById(R.id.subText)
 
     fun bind(item: ArtistRank?) {
-        topArtistTextView.text = item?.topArtist ?: "Loading..."
+        item?.let {
+            topArtistTextView.text = it.top_artist
+            // Parse date to be presented to UI
+            val date = LocalDate.parse(it.date, DateTimeFormatter.ISO_DATE)
+            subTextView.text = view.context.getString(R.string.subtext_format, it.count, date)
+        }
     }
 
     companion object {

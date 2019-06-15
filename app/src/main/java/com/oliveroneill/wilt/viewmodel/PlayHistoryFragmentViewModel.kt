@@ -6,13 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.paging.toLiveData
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.data.ArtistRankDataSourceFactory
+import com.oliveroneill.wilt.data.FirebaseAPI
 import com.oliveroneill.wilt.testing.OpenForTesting
+import java.time.LocalDate
 
 /**
  * The data to be displayed per row in the view
  */
 @OpenForTesting
-data class ArtistRank(val periodName: String, val topArtist: String, val index: Int)
+data class ArtistRank(val date: String, val top_artist: String, val count: Int)
 
 sealed class PlayHistoryFragmentState {
     /**
@@ -39,7 +41,7 @@ sealed class PlayHistoryFragmentState {
  * these two together without making the RecyclerView interactions more complicated.
  */
 @OpenForTesting
-class PlayHistoryFragmentViewModel: ViewModel() {
+class PlayHistoryFragmentViewModel(firebase: FirebaseAPI = FirebaseAPI()): ViewModel() {
     private val _loadingState = MutableLiveData<Event<PlayHistoryFragmentState>>()
     /**
      * Used to display a loading spinner or error message while a new page is loaded
@@ -50,7 +52,9 @@ class PlayHistoryFragmentViewModel: ViewModel() {
     /**
      * Used by the RecyclerView to request new pages
      */
-    val itemDataSource = ArtistRankDataSourceFactory(_loadingState).toLiveData(pageSize = 50)
+    val itemDataSource = ArtistRankDataSourceFactory(_loadingState, firebase).toLiveData(
+        initialLoadKey = LocalDate.now(), pageSize = 2
+    )
 
     fun retry() {
         // TODO

@@ -9,4 +9,6 @@
     <string name="login_error_text">Sorry, the Spotify login failed.</string>
 
     <string name="retry">Retry</string>
+
+    <string name="subtext_format">%1$d plays - %2$tb %2$tY</string>
 </resources>
