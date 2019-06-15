@@ -27,8 +27,6 @@ class PlayHistoryFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = DataBindingUtil.inflate<HistoryScreenBinding>(inflater, R.layout.history_screen,container, false)
-        // TODO: do I even need this binding for this view?
-        binding.loading = false
         val rootView = binding.root
         val model = ViewModelProviders.of(this, viewModelFactory).get(PlayHistoryFragmentViewModel::class.java)
         val adapter = HistoryListAdapter {
