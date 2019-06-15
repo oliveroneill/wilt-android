@@ -153,7 +153,6 @@ class ArtistRankDataSourceTest {
         }
     }
 
-
     @Test
     fun `should use current date if none specified`() {
         val params = ItemKeyedDataSource.LoadInitialParams<LocalDate>(
