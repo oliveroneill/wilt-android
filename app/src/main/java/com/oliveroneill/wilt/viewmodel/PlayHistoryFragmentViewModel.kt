@@ -53,6 +53,6 @@ class PlayHistoryFragmentViewModel(firebase: FirebaseAPI = FirebaseAPI()): ViewM
      * Used by the RecyclerView to request new pages
      */
     val itemDataSource = ArtistRankDataSourceFactory(_loadingState, firebase).toLiveData(
-        initialLoadKey = LocalDate.now(), pageSize = 2
+        initialLoadKey = LocalDate.now(), pageSize = 10
     )
 }
