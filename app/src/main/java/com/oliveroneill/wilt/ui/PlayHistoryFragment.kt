@@ -14,6 +14,7 @@ import com.oliveroneill.wilt.EventObserver
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.databinding.HistoryScreenBinding
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentViewModel
+import kotlinx.android.synthetic.main.history_screen.view.*
 
 /**
  * Shows a user's Spotify play history
@@ -26,12 +27,16 @@ class PlayHistoryFragment: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = DataBindingUtil.inflate<HistoryScreenBinding>(inflater, R.layout.history_screen,container, false)
+        val binding = DataBindingUtil.inflate<HistoryScreenBinding>(inflater, R.layout.history_screen, container, false)
         val rootView = binding.root
         val model = ViewModelProviders.of(this, viewModelFactory).get(PlayHistoryFragmentViewModel::class.java)
         val adapter = HistoryListAdapter()
+        rootView.swipe_refresh.setOnRefreshListener {
+            model.itemDataSource.value?.dataSource?.invalidate()
+        }
         binding.historyList.adapter = adapter
         model.loadingState.observe(this, EventObserver {
+            rootView.swipe_refresh.isRefreshing = false
             adapter.setNetworkState(it)
         })
         model.itemDataSource.observe(this, Observer {
