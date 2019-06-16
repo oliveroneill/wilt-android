@@ -11,7 +11,7 @@ import com.oliveroneill.wilt.viewmodel.ArtistRank
  */
 @OpenForTesting
 class FirebaseAPI {
-    private val functions = FirebaseFunctions.getInstance()
+    private val functions = FirebaseFunctions.getInstance("asia-northeast1")
 
     /**
      * Get the top artists each month between [from] and [to] specified as unix timestamps in seconds.

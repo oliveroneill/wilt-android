@@ -12,7 +12,7 @@ import com.oliveroneill.wilt.testing.OpenForTesting
 @OpenForTesting
 class FirebaseAuthentication(context: Context) {
     private val auth = FirebaseAuth.getInstance()
-    private val functions = FirebaseFunctions.getInstance()
+    private val functions = FirebaseFunctions.getInstance("asia-northeast1")
 
     init {
         FirebaseApp.initializeApp(context)
