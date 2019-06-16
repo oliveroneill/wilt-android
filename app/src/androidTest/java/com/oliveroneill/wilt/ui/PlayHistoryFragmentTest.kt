@@ -9,14 +9,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.paging.DataSource
 import androidx.paging.PagedList
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeDown
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
@@ -164,6 +167,7 @@ class PlayHistoryFragmentTest {
     fun shouldRetryOnPress() {
         val error = "Some random error message string"
         var retryCallCount = 0
+        // Given
         loadingStateData.postValue(
             Event(
                 PlayHistoryFragmentState.Failure(error) {
@@ -171,8 +175,22 @@ class PlayHistoryFragmentTest {
                 }
             )
         )
-        // Then
+        // When
         onView(withId(R.id.retry_button)).perform(click())
+        // Then
         assertEquals(1, retryCallCount)
+    }
+
+    @Test
+    fun shouldRefreshOnSwipe() {
+        val mockDataSource = mock<DataSource<*, ArtistRank>>()
+        val pagedList = mock<PagedList<ArtistRank>>()
+        whenever(pagedList.dataSource).then { mockDataSource }
+        // Given
+        itemStateData.postValue(pagedList)
+        // When
+        onView(withId(R.id.swipe_refresh)).perform(swipeDown())
+        // Then
+        verify(mockDataSource).invalidate()
     }
 }
