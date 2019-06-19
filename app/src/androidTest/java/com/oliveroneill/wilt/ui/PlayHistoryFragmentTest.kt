@@ -86,8 +86,10 @@ class PlayHistoryFragmentTest {
         // Then
         onView(withText("Pinegrove")).check(matches(isDisplayed()))
         onView(withText("Bon Iver")).check(matches(isDisplayed()))
-        onView(withText("99 plays - Feb 2019")).check(matches(isDisplayed()))
-        onView(withText("12 plays - Dec 2018")).check(matches(isDisplayed()))
+        onView(withText("99 plays")).check(matches(isDisplayed()))
+        onView(withText("Feb 2019")).check(matches(isDisplayed()))
+        onView(withText("12 plays")).check(matches(isDisplayed()))
+        onView(withText("Dec 2018")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -132,8 +134,10 @@ class PlayHistoryFragmentTest {
         // Then
         onView(withText("Pinegrove")).check(matches(isDisplayed()))
         onView(withText("Bon Iver")).check(matches(isDisplayed()))
-        onView(withText("99 plays - Feb 2019")).check(matches(isDisplayed()))
-        onView(withText("12 plays - Dec 2018")).check(matches(isDisplayed()))
+        onView(withText("99 plays")).check(matches(isDisplayed()))
+        onView(withText("Feb 2019")).check(matches(isDisplayed()))
+        onView(withText("12 plays")).check(matches(isDisplayed()))
+        onView(withText("Dec 2018")).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
     }
 
@@ -157,8 +161,10 @@ class PlayHistoryFragmentTest {
         // Then
         onView(withText("Pinegrove")).check(matches(isDisplayed()))
         onView(withText("Bon Iver")).check(matches(isDisplayed()))
-        onView(withText("99 plays - Feb 2019")).check(matches(isDisplayed()))
-        onView(withText("12 plays - Dec 2018")).check(matches(isDisplayed()))
+        onView(withText("99 plays")).check(matches(isDisplayed()))
+        onView(withText("Feb 2019")).check(matches(isDisplayed()))
+        onView(withText("12 plays")).check(matches(isDisplayed()))
+        onView(withText("Dec 2018")).check(matches(isDisplayed()))
         onView(withText(error)).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
     }
