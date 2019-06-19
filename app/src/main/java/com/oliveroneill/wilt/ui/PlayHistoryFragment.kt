@@ -16,6 +16,8 @@ import com.oliveroneill.wilt.databinding.HistoryScreenBinding
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentViewModel
 import kotlinx.android.synthetic.main.history_screen.view.*
 
+
+
 /**
  * Shows a user's Spotify play history
  */

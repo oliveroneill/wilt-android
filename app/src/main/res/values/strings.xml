@@ -10,5 +10,6 @@
 
     <string name="retry">Retry</string>
 
-    <string name="subtext_format">%1$d plays - %2$tb %2$tY</string>
+    <string name="playstext_format">%1$d plays</string>
+    <string name="datetext_format">%1$tb %1$tY</string>
 </resources>
