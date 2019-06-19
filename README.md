@@ -9,6 +9,7 @@ Create a file called `app/src/main/res/values/secrets.xml` with contents:
 ```xml
  <resources>
     <string name="spotify_client_id">ENTER-CLIENT-ID-HERE</string>
+    <string name="spotify_redirect_uri">ENTER-REDIRECT-URI</string>
  </resources>
 ```
 Put your `google-services.json` file in `app/`. Generate this file via the
