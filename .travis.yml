@@ -1,0 +1,6 @@
+language: android
+android:
+  components:
+    - android-28
+script:
+    - ./gradlew test
