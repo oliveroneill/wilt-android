@@ -1,7 +1,11 @@
 language: android
 android:
   components:
-    - android-28
-    - build-tools-28.0.3
+  - android-28
+  - build-tools-28.0.3
 script:
-    - ./gradlew test
+- "./gradlew test"
+before_install:
+# Decrypt the google-services.json file
+- openssl aes-256-cbc -K $encrypted_dfb6cccb808e_key -iv $encrypted_dfb6cccb808e_iv
+  -in google-services.json.enc -out google-services.json -d
