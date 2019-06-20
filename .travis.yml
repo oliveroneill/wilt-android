@@ -2,5 +2,6 @@ language: android
 android:
   components:
     - android-28
+    - build-tools-28.0.3
 script:
     - ./gradlew test
