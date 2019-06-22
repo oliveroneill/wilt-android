@@ -6,7 +6,7 @@ android:
   - android-28
   - build-tools-28.0.3
 script:
-- "./gradlew test"
+- "./gradlew testDebug"
 before_install:
 - openssl aes-256-cbc -K $encrypted_f20c58e0d760_key -iv $encrypted_f20c58e0d760_iv
   -in secrets.xml.enc -out app/src/main/res/values/secrets.xml -d
