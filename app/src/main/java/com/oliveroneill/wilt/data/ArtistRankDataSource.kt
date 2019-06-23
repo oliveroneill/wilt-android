@@ -29,7 +29,6 @@ class ArtistRankDataSource(
     private val loadingState: MutableLiveData<Event<PlayHistoryFragmentState>>,
     private val firebase: FirebaseAPI
 ): ItemKeyedDataSource<LocalDate, ArtistRank>() {
-    private var doneLoad = false
     override fun loadInitial(params: LoadInitialParams<LocalDate>, callback: LoadInitialCallback<ArtistRank>) {
         // Convert request to timestamps. Use now if no date was specified
         val endDate = params.requestedInitialKey ?: LocalDate.now()
