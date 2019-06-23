@@ -1,6 +1,5 @@
 package com.oliveroneill.wilt.ui
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.testing.FragmentScenario
@@ -49,8 +48,8 @@ class WalkthroughFragmentTest {
             R.style.AppTheme,
             object : FragmentFactory() {
                 @Suppress("UNCHECKED_CAST")
-                override fun instantiate(classLoader: ClassLoader, className: String, args: Bundle?): Fragment {
-                    return (super.instantiate(classLoader, className, args) as WalkthroughFragment).also {
+                override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
+                    return (super.instantiate(classLoader, className) as WalkthroughFragment).also {
                         it.viewModelFactory = factory
                     }
                 }
