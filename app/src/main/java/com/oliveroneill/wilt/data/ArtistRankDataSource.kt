@@ -8,6 +8,7 @@ import com.oliveroneill.wilt.viewmodel.ArtistRank
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentState
 import java.time.LocalDate
 import java.time.ZoneId
+import java.util.concurrent.Semaphore
 
 /**
  * Factory for creating page data sources for artist ranking
@@ -28,6 +29,7 @@ class ArtistRankDataSource(
     private val loadingState: MutableLiveData<Event<PlayHistoryFragmentState>>,
     private val firebase: FirebaseAPI
 ): ItemKeyedDataSource<LocalDate, ArtistRank>() {
+    private var doneLoad = false
     override fun loadInitial(params: LoadInitialParams<LocalDate>, callback: LoadInitialCallback<ArtistRank>) {
         // Convert request to timestamps. Use now if no date was specified
         val endDate = params.requestedInitialKey ?: LocalDate.now()
@@ -61,12 +63,17 @@ class ArtistRankDataSource(
     }
 
     private fun topArtists(start: Long, end: Long, callback: LoadCallback<ArtistRank>) {
+        // Apparently these functions need to be blocking. This seems bad but otherwise the RecyclerView
+        // seems to scroll to the bottom
+        val semaphore = Semaphore(0)
         // Update state
         loadingState.postValue(Event(PlayHistoryFragmentState.LoadingMore))
         firebase.topArtists(start.toInt(), end.toInt()) {
             it.onSuccess {
                 callback.onResult(it)
                 loadingState.postValue(Event(PlayHistoryFragmentState.NotLoading))
+                // Signal completion
+                semaphore.release()
             }.onFailure {
                 loadingState.postValue(
                     Event(
@@ -76,8 +83,12 @@ class ArtistRankDataSource(
                         ) { topArtists(start, end, callback) }
                     )
                 )
+                // Signal completion
+                semaphore.release()
             }
         }
+        // Wait for callback
+        semaphore.acquire()
     }
 
     override fun getKey(item: ArtistRank): LocalDate = LocalDate.parse(item.date)
