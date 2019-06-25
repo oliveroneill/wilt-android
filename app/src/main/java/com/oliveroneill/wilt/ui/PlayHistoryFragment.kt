@@ -38,10 +38,10 @@ class PlayHistoryFragment: Fragment() {
         }
         binding.historyList.adapter = adapter
         model.loadingState.observe(this, EventObserver {
-            rootView.swipe_refresh.isRefreshing = false
             adapter.setNetworkState(it)
         })
         model.itemDataSource.observe(this, Observer {
+            rootView.swipe_refresh.isRefreshing = false
             adapter.submitList(it)
         })
         return rootView
