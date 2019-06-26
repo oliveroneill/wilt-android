@@ -53,7 +53,7 @@ class ArtistRankDataSourceTest {
         val date = LocalDate.parse("2019-02-25")
         val params = ItemKeyedDataSource.LoadParams(date, 11)
         dataSource.loadAfter(params, TestCallback {})
-        verify(firebase).topArtists(eq(1519477200), eq(1548334800), any())
+        verify(firebase).topArtists(eq(1543755600), eq(1550408400), any())
     }
 
     @Test
@@ -61,7 +61,7 @@ class ArtistRankDataSourceTest {
         val date = LocalDate.parse("2019-03-25")
         val params = ItemKeyedDataSource.LoadParams(date, 4)
         dataSource.loadAfter(params, TestCallback {})
-        verify(firebase).topArtists(eq(1540386000), eq(1551013200), any())
+        verify(firebase).topArtists(eq(1550408400), eq(1552827600), any())
     }
 
     @Test
@@ -155,7 +155,7 @@ class ArtistRankDataSourceTest {
                 state.retry()
                 // Ensure that it makes the correct call. This will be the second call
                 verify(firebase, times(2)).topArtists(
-                    eq(1519477200), eq(1548334800), any()
+                    eq(1543755600), eq(1550408400), any()
                 )
             }
             else -> {
@@ -181,7 +181,7 @@ class ArtistRankDataSourceTest {
         val date = LocalDate.parse("2019-03-25")
         val params = ItemKeyedDataSource.LoadParams(date, 11)
         dataSource.loadAfter(params, TestCallback {})
-        verify(firebase).topArtists(eq(1521896400), eq(1551013200), any())
+        verify(firebase).topArtists(eq(1546174800), eq(1552827600), any())
     }
 
     @Test
@@ -189,6 +189,6 @@ class ArtistRankDataSourceTest {
         val date = LocalDate.parse("2018-02-25")
         val params = ItemKeyedDataSource.LoadParams(date, 11)
         dataSource.loadBefore(params, TestCallback {})
-        verify(firebase).topArtists(eq(1521896400), eq(1551013200), any())
+        verify(firebase).topArtists(eq(1520082000), eq(1526738400), any())
     }
 }

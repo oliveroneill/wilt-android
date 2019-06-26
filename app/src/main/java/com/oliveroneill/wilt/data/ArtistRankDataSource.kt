@@ -34,30 +34,30 @@ class ArtistRankDataSource(
         // We ignore the params initial requested key since it's just a hint
         val endDate = LocalDate.now()
         val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
-        // Each page is a month, so we subtract months to decide what to request
-        val startDate = endDate.minusMonths(params.requestedLoadSize.toLong())
+        // Each page is a week, so we subtract weeks to decide what to request
+        val startDate = endDate.minusWeeks(params.requestedLoadSize.toLong())
         val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
         topArtists(start, end, callback)
     }
 
     override fun loadAfter(params: LoadParams<LocalDate>, callback: LoadCallback<ArtistRank>) {
         // Convert request to timestamps
-        // Subtract 1 month so that we don't include the month we've already got
-        val endDate = params.key.minusMonths(1)
+        // Subtract 1 week so that we don't include the week we've already got
+        val endDate = params.key.minusWeeks(1)
         val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
-        // Each page is a month, so we subtract months to decide what to request
-        val startDate = endDate.minusMonths(params.requestedLoadSize.toLong())
+        // Each page is a week, so we subtract weeks to decide what to request
+        val startDate = endDate.minusWeeks(params.requestedLoadSize.toLong())
         val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
         topArtists(start, end, callback)
     }
 
     override fun loadBefore(params: LoadParams<LocalDate>, callback: LoadCallback<ArtistRank>) {
         // Convert request to timestamps
-        // Add 1 month so that we don't include the month we've already got
-        val startDate = params.key.plusMonths(1)
+        // Add 1 week so that we don't include the week we've already got
+        val startDate = params.key.plusWeeks(1)
         val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
-        // Each page is a month, so we subtract months to decide what to request
-        val endDate = startDate.plusMonths(params.requestedLoadSize.toLong())
+        // Each page is a week, so we subtract weeks to decide what to request
+        val endDate = startDate.plusWeeks(params.requestedLoadSize.toLong())
         val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
         topArtists(start, end, callback)
     }
