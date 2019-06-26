@@ -28,6 +28,10 @@ class ArtistRankDataSourceTest {
     @Before
     fun setup() {
         firebase = mock()
+        // Default value of firebase will be success
+        whenever(firebase.topArtists(any(), any(), any())).then {
+            it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf()))
+        }
         loadingState = MutableLiveData()
         dataSource = ArtistRankDataSource(loadingState, firebase)
     }
@@ -47,17 +51,17 @@ class ArtistRankDataSourceTest {
     @Test
     fun `should convert timestamps correctly`() {
         val date = LocalDate.parse("2019-02-25")
-        val params = ItemKeyedDataSource.LoadInitialParams(date, 11, false)
-        dataSource.loadInitial(params, TestCallback {})
-        verify(firebase).topArtists(eq(1521896400), eq(1551013200), any())
+        val params = ItemKeyedDataSource.LoadParams(date, 11)
+        dataSource.loadAfter(params, TestCallback {})
+        verify(firebase).topArtists(eq(1519477200), eq(1548334800), any())
     }
 
     @Test
     fun `should modify request based on page size`() {
         val date = LocalDate.parse("2019-03-25")
-        val params = ItemKeyedDataSource.LoadInitialParams(date, 4, false)
-        dataSource.loadInitial(params, TestCallback {})
-        verify(firebase).topArtists(eq(1543064400), eq(1553432400), any())
+        val params = ItemKeyedDataSource.LoadParams(date, 4)
+        dataSource.loadAfter(params, TestCallback {})
+        verify(firebase).topArtists(eq(1540386000), eq(1551013200), any())
     }
 
     @Test
@@ -80,13 +84,21 @@ class ArtistRankDataSourceTest {
 
     @Test
     fun `should update loading state while loading`() {
+        // Assertion is asynchronous and is checked once the network call is made
+        whenever(firebase.topArtists(any(), any(), any())).then {
+            // Assert loading state is loading
+            loadingState
+                .test()
+                .assertHasValue()
+                .assertValue { it.getContentIfNotHandled() is PlayHistoryFragmentState.LoadingMore }
+            // Send success value to stop blocking
+            it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf()))
+        }
         val date = LocalDate.parse("2019-02-25")
         val params = ItemKeyedDataSource.LoadInitialParams(date, 11, false)
         dataSource.loadInitial(params, TestCallback {})
-        loadingState
-            .test()
-            .assertHasValue()
-            .assertValue { it.getContentIfNotHandled() is PlayHistoryFragmentState.LoadingMore }
+        // Ensure that we fail if this isn't called since otherwise the assertions are never actually run
+        verify(firebase).topArtists(any(), any(), any())
     }
 
     @Test
@@ -133,8 +145,8 @@ class ArtistRankDataSourceTest {
         whenever(firebase.topArtists(any(), any(), any())).then {
             it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.failure(error))
         }
-        val params = ItemKeyedDataSource.LoadInitialParams(date, 11, false)
-        dataSource.loadInitial(params, TestCallback {})
+        val params = ItemKeyedDataSource.LoadParams(date, 11)
+        dataSource.loadAfter(params, TestCallback {})
         // Get the state that was sent
         val state = loadingState.value?.getContentIfNotHandled()
         when (state) {
@@ -143,7 +155,7 @@ class ArtistRankDataSourceTest {
                 state.retry()
                 // Ensure that it makes the correct call. This will be the second call
                 verify(firebase, times(2)).topArtists(
-                    eq(1521896400), eq(1551013200), any()
+                    eq(1519477200), eq(1548334800), any()
                 )
             }
             else -> {

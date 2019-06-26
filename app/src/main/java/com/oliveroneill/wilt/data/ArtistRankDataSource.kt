@@ -31,7 +31,8 @@ class ArtistRankDataSource(
 ): ItemKeyedDataSource<LocalDate, ArtistRank>() {
     override fun loadInitial(params: LoadInitialParams<LocalDate>, callback: LoadInitialCallback<ArtistRank>) {
         // Convert request to timestamps. Use now if no date was specified
-        val endDate = params.requestedInitialKey ?: LocalDate.now()
+        // We ignore the params initial requested key since it's just a hint
+        val endDate = LocalDate.now()
         val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
         // Each page is a month, so we subtract months to decide what to request
         val startDate = endDate.minusMonths(params.requestedLoadSize.toLong())
@@ -62,8 +63,7 @@ class ArtistRankDataSource(
     }
 
     private fun topArtists(start: Long, end: Long, callback: LoadCallback<ArtistRank>) {
-        // Apparently these functions need to be blocking. This seems bad but otherwise the RecyclerView
-        // seems to scroll to the bottom
+        // Apparently these functions need to be blocking
         val semaphore = Semaphore(0)
         // Update state
         loadingState.postValue(Event(PlayHistoryFragmentState.LoadingMore))

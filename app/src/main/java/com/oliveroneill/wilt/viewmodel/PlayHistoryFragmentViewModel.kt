@@ -8,7 +8,6 @@ import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.data.ArtistRankDataSourceFactory
 import com.oliveroneill.wilt.data.FirebaseAPI
 import com.oliveroneill.wilt.testing.OpenForTesting
-import java.time.LocalDate
 
 /**
  * The data to be displayed per row in the view
@@ -53,6 +52,6 @@ class PlayHistoryFragmentViewModel(firebase: FirebaseAPI = FirebaseAPI()): ViewM
      * Used by the RecyclerView to request new pages
      */
     val itemDataSource = ArtistRankDataSourceFactory(_loadingState, firebase).toLiveData(
-        initialLoadKey = LocalDate.now(), pageSize = 10
+        pageSize = 10
     )
 }
