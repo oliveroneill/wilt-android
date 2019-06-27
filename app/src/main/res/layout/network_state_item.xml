@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:padding="8dp">
     <TextView
-        android:id="@+id/error_msg"
+        android:id="@+id/error_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"/>
@@ -15,6 +15,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
+    <TextView
+        android:id="@+id/loading_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/play_history_loading_message"/>
     <Button
         android:id="@+id/retry_button"
         style="@style/Widget.AppCompat.Button.Colored"

@@ -96,6 +96,7 @@ class PlayHistoryFragmentTest {
         loadingStateData.postValue(Event(PlayHistoryFragmentState.LoadingMore))
         // Then
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
+        onView(withId(R.id.loading_txt)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -103,6 +104,7 @@ class PlayHistoryFragmentTest {
         loadingStateData.postValue(Event(PlayHistoryFragmentState.NotLoading))
         // Then
         onView(withId(R.id.progress_bar)).check(doesNotExist())
+        onView(withId(R.id.loading_txt)).check(doesNotExist())
     }
 
     @Test
@@ -112,6 +114,7 @@ class PlayHistoryFragmentTest {
         // Then
         onView(withText(error)).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.loading_txt)).check(matches(not(isDisplayed())))
     }
 
     @Test
@@ -138,6 +141,7 @@ class PlayHistoryFragmentTest {
         onView(withText("12 plays")).check(matches(isDisplayed()))
         onView(withText("Dec 2018")).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
+        onView(withId(R.id.loading_txt)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -166,6 +170,7 @@ class PlayHistoryFragmentTest {
         onView(withText("Dec 2018")).check(matches(isDisplayed()))
         onView(withText(error)).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.loading_txt)).check(matches(not(isDisplayed())))
     }
 
     @Test

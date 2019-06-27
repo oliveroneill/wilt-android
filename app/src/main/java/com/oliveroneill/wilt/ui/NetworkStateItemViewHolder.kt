@@ -16,30 +16,32 @@ import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentState
 class NetworkStateItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
     private val progressBar = view.findViewById<ProgressBar>(R.id.progress_bar)
     private val retry = view.findViewById<Button>(R.id.retry_button)
-    private val errorMsg = view.findViewById<TextView>(R.id.error_msg)
-    init {
-    }
+    private val errorMessage = view.findViewById<TextView>(R.id.error_txt)
+    private val loadingMessage = view.findViewById<TextView>(R.id.loading_txt)
 
     fun bind(state: PlayHistoryFragmentState?) {
         when (state) {
             is PlayHistoryFragmentState.Failure -> {
                 progressBar.visibility = View.GONE
+                loadingMessage.visibility = View.GONE
                 retry.visibility = View.VISIBLE
-                errorMsg.visibility = View.VISIBLE
-                errorMsg.text = state.error
+                errorMessage.visibility = View.VISIBLE
+                errorMessage.text = state.error
                 retry.setOnClickListener {
                     state.retry()
                 }
             }
             is PlayHistoryFragmentState.LoadingMore -> {
                 progressBar.visibility = View.VISIBLE
+                loadingMessage.visibility = View.VISIBLE
                 retry.visibility = View.GONE
-                errorMsg.visibility = View.GONE
+                errorMessage.visibility = View.GONE
             }
             is PlayHistoryFragmentState.NotLoading -> {
                 progressBar.visibility = View.GONE
+                loadingMessage.visibility = View.GONE
                 retry.visibility = View.GONE
-                errorMsg.visibility = View.GONE
+                errorMessage.visibility = View.GONE
             }
         }
     }

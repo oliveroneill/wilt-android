@@ -12,4 +12,5 @@
 
     <string name="playstext_format">%1$d plays</string>
     <string name="datetext_format">%1$tb %1$tY</string>
+    <string name="play_history_loading_message">Loading your favourite artists...</string>
 </resources>
