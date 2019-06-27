@@ -6,11 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import com.oliveroneill.wilt.EventObserver
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.SpotifyAuthenticationResponse
@@ -40,6 +43,7 @@ class WalkthroughFragment: Fragment() {
             container,
             false
         )
+        setupNavigation()
         val rootView = binding.root
         rootView.viewPager.offscreenPageLimit = 2
         // Set adapter
@@ -78,6 +82,19 @@ class WalkthroughFragment: Fragment() {
             model.spotifySignup()
         }
         return rootView
+    }
+
+    /**
+     * I wish the navigation graph could do this for me
+     */
+    private fun setupNavigation() {
+        // Set up the action bar so that the title is set via the Navigation graph
+        (activity as? AppCompatActivity)?.let {
+            // Set the fragments that cannot have a back button. The play history fragment should not have a back
+            // button so that you cannot return to the walkthrough
+            val appBarConfiguration = AppBarConfiguration(setOf(R.id.walkthroughFragment, R.id.historyFragment))
+            NavigationUI.setupActionBarWithNavController(it, findNavController(this), appBarConfiguration)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

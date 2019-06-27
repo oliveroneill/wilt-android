@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/walkthroughFragment"
         android:name="com.oliveroneill.wilt.ui.WalkthroughFragment"
-        android:label="WalkthroughFragment"
-        tools:layout="@layout/walkthrough_fragment" >
+        android:label="Welcome To Wilt"
+        tools:layout="@layout/walkthrough_fragment">
         <action
             android:id="@+id/action_login_failure"
             app:destination="@id/loginErrorFragment" />
@@ -21,11 +21,11 @@
     <fragment
         android:id="@+id/loginErrorFragment"
         android:name="com.oliveroneill.wilt.ui.LoginErrorFragment"
-        android:label="LoginErrorFragment"
+        android:label="Login Error"
         tools:layout="@layout/login_error" />
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.oliveroneill.wilt.ui.PlayHistoryFragment"
-        android:label="HistoryFragment"
+        android:label="Your Top Artists Per Week"
         tools:layout="@layout/history_screen" />
 </navigation>
