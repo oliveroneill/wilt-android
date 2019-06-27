@@ -15,7 +15,8 @@
             app:destination="@id/loginErrorFragment" />
         <action
             android:id="@+id/action_login"
-            app:destination="@id/historyFragment" />
+            app:destination="@id/historyFragment"
+            app:popUpTo="@+id/nav_graph" />
     </fragment>
 
     <fragment
