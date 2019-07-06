@@ -22,7 +22,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
-import com.oliveroneill.wilt.viewmodel.ArtistRank
+import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentState
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentViewModel
 import junit.framework.TestCase.assertEquals
@@ -71,8 +71,8 @@ class PlayHistoryFragmentTest {
     fun shouldDisplayRows() {
         // Given
         val list = listOf(
-            ArtistRank("2019-02-25", "Pinegrove", 99),
-            ArtistRank("2018-12-25", "Bon Iver", 12)
+            ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99),
+            ArtistRank("52-2018", "2018-12-25", "Bon Iver", 12)
         )
         val pagedList = mock<PagedList<ArtistRank>>()
         `when`(pagedList.get(ArgumentMatchers.anyInt())).then { invocation ->
@@ -121,8 +121,8 @@ class PlayHistoryFragmentTest {
     fun shouldShowRowsWhileLoading() {
         // Given
         val list = listOf(
-            ArtistRank("2019-02-25", "Pinegrove", 99),
-            ArtistRank("2018-12-25", "Bon Iver", 12)
+            ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99),
+            ArtistRank("52-2018", "2018-12-25", "Bon Iver", 12)
         )
         val pagedList = mock<PagedList<ArtistRank>>()
         `when`(pagedList.get(ArgumentMatchers.anyInt())).then { invocation ->
@@ -148,8 +148,8 @@ class PlayHistoryFragmentTest {
     fun shouldShowRowsWithError() {
         // Given
         val list = listOf(
-            ArtistRank("2019-02-25", "Pinegrove", 99),
-            ArtistRank("2018-12-25", "Bon Iver", 12)
+            ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99),
+            ArtistRank("52-2018", "2018-12-25", "Bon Iver", 12)
         )
         val pagedList = mock<PagedList<ArtistRank>>()
         `when`(pagedList.get(ArgumentMatchers.anyInt())).then { invocation ->

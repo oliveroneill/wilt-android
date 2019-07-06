@@ -1,19 +1,19 @@
 package com.oliveroneill.wilt.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import com.oliveroneill.wilt.Event
-import com.oliveroneill.wilt.data.ArtistRankDataSourceFactory
+import com.oliveroneill.wilt.data.ArtistRankBoundaryCallback
 import com.oliveroneill.wilt.data.FirebaseAPI
+import com.oliveroneill.wilt.data.dao.ArtistRank
+import com.oliveroneill.wilt.data.dao.PlayHistoryDatabase
 import com.oliveroneill.wilt.testing.OpenForTesting
-
-/**
- * The data to be displayed per row in the view
- */
-@OpenForTesting
-data class ArtistRank(val date: String, val top_artist: String, val count: Int)
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 sealed class PlayHistoryFragmentState {
     /**
@@ -40,7 +40,7 @@ sealed class PlayHistoryFragmentState {
  * these two together without making the RecyclerView interactions more complicated.
  */
 @OpenForTesting
-class PlayHistoryFragmentViewModel(firebase: FirebaseAPI = FirebaseAPI()): ViewModel() {
+class PlayHistoryFragmentViewModel @JvmOverloads constructor(application: Application, firebase: FirebaseAPI = FirebaseAPI()): AndroidViewModel(application) {
     private val _loadingState = MutableLiveData<Event<PlayHistoryFragmentState>>()
     /**
      * Used to display a loading spinner or error message while a new page is loaded
@@ -51,7 +51,18 @@ class PlayHistoryFragmentViewModel(firebase: FirebaseAPI = FirebaseAPI()): ViewM
     /**
      * Used by the RecyclerView to request new pages
      */
-    val itemDataSource = ArtistRankDataSourceFactory(_loadingState, firebase).toLiveData(
-        pageSize = 10
-    )
+    val itemDataSource: LiveData<PagedList<ArtistRank>>
+    init {
+        val pageSize = 10
+        // Get data from now onwards (back in time)
+        val startDate = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE)
+        // Create database
+        PlayHistoryDatabase.getDatabase(application).historyDao().also {
+            itemDataSource = it.loadPlayHistory(startDate).toLiveData(
+                pageSize = pageSize,
+                // This will be used to make network requests
+                boundaryCallback = ArtistRankBoundaryCallback(it, firebase, _loadingState, pageSize.toLong())
+            )
+        }
+    }
 }

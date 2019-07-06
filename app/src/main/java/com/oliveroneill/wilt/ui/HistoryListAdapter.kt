@@ -5,7 +5,7 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.oliveroneill.wilt.R
-import com.oliveroneill.wilt.viewmodel.ArtistRank
+import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentState
 
 /**

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.oliveroneill.wilt.R
-import com.oliveroneill.wilt.viewmodel.ArtistRank
+import com.oliveroneill.wilt.data.dao.ArtistRank
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

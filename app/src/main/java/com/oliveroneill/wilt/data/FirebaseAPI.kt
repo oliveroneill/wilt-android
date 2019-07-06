@@ -3,8 +3,8 @@ package com.oliveroneill.wilt.data
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.testing.OpenForTesting
-import com.oliveroneill.wilt.viewmodel.ArtistRank
 
 /**
  * API for making requests to Firebase
