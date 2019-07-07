@@ -14,4 +14,7 @@ interface PlayHistoryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(items: List<ArtistRank>)
+
+    @Query("DELETE FROM artistrank")
+    fun deleteAll()
 }

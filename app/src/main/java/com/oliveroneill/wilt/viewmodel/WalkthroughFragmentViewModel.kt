@@ -9,7 +9,9 @@ import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.FirebaseAuthentication
 import com.oliveroneill.wilt.data.SpotifyAuthenticationRequest
 import com.oliveroneill.wilt.data.SpotifyAuthenticationResponse
+import com.oliveroneill.wilt.data.dao.PlayHistoryDatabase
 import com.oliveroneill.wilt.testing.OpenForTesting
+import java.util.concurrent.Executors
 
 /**
  * States that the walkthrough screen can be in
@@ -31,6 +33,8 @@ class WalkthroughFragmentViewModel @JvmOverloads constructor(application: Applic
 ): AndroidViewModel(application) {
     private val redirectUri = application.getString(R.string.spotify_redirect_uri)
     private val clientID: String = application.getString(R.string.spotify_client_id)
+    // Used to complete the login task in the background
+    private val executor = Executors.newSingleThreadExecutor()
 
     /**
      * Set this value to receive Spotify sign in events
@@ -69,12 +73,26 @@ class WalkthroughFragmentViewModel @JvmOverloads constructor(application: Applic
     fun onSpotifyLoginResponse(response: SpotifyAuthenticationResponse) {
         when (response) {
             is SpotifyAuthenticationResponse.Success -> {
-                wiltLogin(response.code)
+                // In the background, we'll clear the cache and login to wilt
+                executor.execute {
+                    clearCache()
+                    wiltLogin(response.code)
+                }
             }
             is SpotifyAuthenticationResponse.Failure -> {
                 _state.value = Event(WalkthroughFragmentState.LoginError(response.error))
             }
         }
+    }
+
+    /**
+     * Since this user hasn't logged in before (or possibly got logged out), it's safest to empty
+     * the database since it's being used as a cache. This is a necessary step to avoid storing
+     * data of a different user. Potentially a better way to handle this would be to store the user
+     * and check whether it's different...
+     */
+    private fun clearCache() {
+        PlayHistoryDatabase.getDatabase(getApplication()).historyDao().deleteAll()
     }
 
     private fun wiltLogin(spotifyAuthCode: String) {
