@@ -8,7 +8,7 @@ import com.oliveroneill.wilt.R
 /**
  * Pager adapter for walkthrough screens
  */
-class WalkthroughPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+class WalkthroughPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     companion object {
         // Images for each screen
         private val IMAGE_RES_IDS = intArrayOf(
