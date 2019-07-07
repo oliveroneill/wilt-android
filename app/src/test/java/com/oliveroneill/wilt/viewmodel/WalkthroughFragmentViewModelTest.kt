@@ -23,14 +23,14 @@ class WalkthroughFragmentViewModelTest {
     }
     private lateinit var model: WalkthroughFragmentViewModel
     private lateinit var firebase: FirebaseAuthentication
-    private lateinit var db: PlayHistoryDao
+    private lateinit var dao: PlayHistoryDao
 
     @Before
     fun setup() {
         firebase = mock()
-        db = mock()
+        dao = mock()
         model = WalkthroughFragmentViewModel(
-            application, firebase, db,
+            application, firebase, dao,
             // Run login tasks on current thread
             executor = ArtistRankBoundaryCallbackTest.CurrentThreadExecutor()
         )
@@ -49,7 +49,7 @@ class WalkthroughFragmentViewModelTest {
     fun `should set initial state to logged in if the user is logged in`() {
         val expected = "username123"
         whenever(firebase.currentUser).thenReturn(expected)
-        model = WalkthroughFragmentViewModel(application, firebase, db)
+        model = WalkthroughFragmentViewModel(application, firebase, dao)
         // Assert that state gets set correctly
         model.state
             .test()
@@ -104,7 +104,7 @@ class WalkthroughFragmentViewModelTest {
     fun `should clear cache when signing in`() {
         val spotifyAuthCode = "542781"
         model.onSpotifyLoginResponse(SpotifyAuthenticationResponse.Success(spotifyAuthCode))
-        verify(db).deleteAll()
+        verify(dao).deleteAll()
     }
 
     @Test

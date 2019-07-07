@@ -34,7 +34,7 @@ class WalkthroughFragmentViewModel
 @JvmOverloads
 constructor(application: Application,
             private val firebase: FirebaseAuthentication = FirebaseAuthentication(application),
-            private val db: PlayHistoryDao = PlayHistoryDatabase.getDatabase(application).historyDao(),
+            private val dao: PlayHistoryDao = PlayHistoryDatabase.getDatabase(application).historyDao(),
             // Used to complete the login task in the background
             private val executor: Executor = Executors.newSingleThreadExecutor()
 ): AndroidViewModel(application) {
@@ -97,7 +97,7 @@ constructor(application: Application,
      * and check whether it's different...
      */
     private fun clearCache() {
-        db.deleteAll()
+        dao.deleteAll()
     }
 
     private fun wiltLogin(spotifyAuthCode: String) {

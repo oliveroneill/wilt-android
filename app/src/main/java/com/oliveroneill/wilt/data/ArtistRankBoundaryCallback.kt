@@ -12,7 +12,7 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class ArtistRankBoundaryCallback(
-    private val db: PlayHistoryDao,
+    private val dao: PlayHistoryDao,
     private val firebase: FirebaseAPI,
     private val loadingState: MutableLiveData<Event<PlayHistoryFragmentState>>,
     private val pageSize: Long,
@@ -68,7 +68,7 @@ class ArtistRankBoundaryCallback(
         firebase.topArtists(start.toInt(), end.toInt()) { result ->
             result.onSuccess {
                 executor.execute {
-                    db.insert(it)
+                    dao.insert(it)
                     loadingState.postValue(Event(PlayHistoryFragmentState.NotLoading))
                 }
             }.onFailure {
