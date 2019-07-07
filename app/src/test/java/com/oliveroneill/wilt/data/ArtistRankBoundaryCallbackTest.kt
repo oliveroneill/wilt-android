@@ -29,7 +29,7 @@ class ArtistRankBoundaryCallbackTest {
     /**
      * Useful executor for serialising functions for testing
      */
-    private class CurrentThreadExecutor: Executor {
+    class CurrentThreadExecutor: Executor {
         override fun execute(runnable: Runnable?) {
             runnable?.run()
         }

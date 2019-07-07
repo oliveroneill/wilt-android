@@ -9,8 +9,10 @@ import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.FirebaseAuthentication
 import com.oliveroneill.wilt.data.SpotifyAuthenticationRequest
 import com.oliveroneill.wilt.data.SpotifyAuthenticationResponse
+import com.oliveroneill.wilt.data.dao.PlayHistoryDao
 import com.oliveroneill.wilt.data.dao.PlayHistoryDatabase
 import com.oliveroneill.wilt.testing.OpenForTesting
+import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 /**
@@ -28,13 +30,16 @@ sealed class WalkthroughFragmentState {
  * ViewModel for walkthrough. This primarily handles login
  */
 @OpenForTesting
-class WalkthroughFragmentViewModel @JvmOverloads constructor(application: Application,
-                                                             private val firebase: FirebaseAuthentication = FirebaseAuthentication(application)
+class WalkthroughFragmentViewModel
+@JvmOverloads
+constructor(application: Application,
+            private val firebase: FirebaseAuthentication = FirebaseAuthentication(application),
+            private val db: PlayHistoryDao = PlayHistoryDatabase.getDatabase(application).historyDao(),
+            // Used to complete the login task in the background
+            private val executor: Executor = Executors.newSingleThreadExecutor()
 ): AndroidViewModel(application) {
     private val redirectUri = application.getString(R.string.spotify_redirect_uri)
     private val clientID: String = application.getString(R.string.spotify_client_id)
-    // Used to complete the login task in the background
-    private val executor = Executors.newSingleThreadExecutor()
 
     /**
      * Set this value to receive Spotify sign in events
@@ -92,7 +97,7 @@ class WalkthroughFragmentViewModel @JvmOverloads constructor(application: Applic
      * and check whether it's different...
      */
     private fun clearCache() {
-        PlayHistoryDatabase.getDatabase(getApplication()).historyDao().deleteAll()
+        db.deleteAll()
     }
 
     private fun wiltLogin(spotifyAuthCode: String) {
