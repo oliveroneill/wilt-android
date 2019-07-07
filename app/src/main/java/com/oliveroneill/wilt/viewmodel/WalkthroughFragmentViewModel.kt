@@ -79,19 +79,19 @@ class WalkthroughFragmentViewModel @JvmOverloads constructor(application: Applic
 
     private fun wiltLogin(spotifyAuthCode: String) {
         firebase.signUp(spotifyAuthCode, redirectUri) {
-            it.onSuccess {
-                firebase.login(it) {
+            it.onSuccess { firebaseToken ->
+                firebase.login(firebaseToken) { result ->
                     _state.postValue(
-                        it.fold({
-                            Event(WalkthroughFragmentState.LoggedIn(it))
-                        }, {
-                            it.printStackTrace()
+                        result.fold({userId ->
+                            Event(WalkthroughFragmentState.LoggedIn(userId))
+                        }, { error ->
+                            error.printStackTrace()
                             Event(WalkthroughFragmentState.LoginError("Firebase auth failed"))
                         })
                     )
                 }
-            }.onFailure {
-                it.printStackTrace()
+            }.onFailure { error ->
+                error.printStackTrace()
                 _state.postValue(Event(WalkthroughFragmentState.LoginError("Firebase signUp failed")))
             }
         }
