@@ -22,12 +22,14 @@ class ArtistRankBoundaryCallback(
      * Database returned 0 items. We should query the backend for more items.
      */
     override fun onZeroItemsLoaded() {
-        // Convert request to timestamps. Use now if no date was specified
-        // We ignore the params initial requested key since it's just a hint
-        val endDate = LocalDate.now()
+        // The last date we'll request from is one week ahead of now. We add one week since otherwise the
+        // query might not include the current week
+        val endDate = LocalDate.now().plusWeeks(1)
         val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
         // Each page is a week, so we subtract weeks to decide what to request
-        val startDate = endDate.minusWeeks(pageSize)
+        // Increasing the page size seems to fix scrolling issues
+        val weeksToRequest = pageSize * 2
+        val startDate = endDate.minusWeeks(weeksToRequest)
         val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
         topArtists(start, end)
     }
@@ -38,12 +40,12 @@ class ArtistRankBoundaryCallback(
     override fun onItemAtFrontLoaded(itemAtFront: ArtistRank) {
         val date = LocalDate.parse(itemAtFront.date)
         // Convert request to timestamps
-        // Subtract 1 week so that we don't include the week we've already got
-        val endDate = date.minusWeeks(1)
-        val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
-        // Each page is a week, so we subtract weeks to decide what to request
-        val startDate = endDate.minusWeeks(pageSize)
+        // Add 1 week so that we don't include the week we've already got
+        val startDate = date.plusWeeks(1)
         val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
+        // Each page is a week, so we subtract weeks to decide what to request
+        val endDate = startDate.plusWeeks(pageSize)
+        val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
         topArtists(start, end)
     }
 
@@ -53,12 +55,12 @@ class ArtistRankBoundaryCallback(
     override fun onItemAtEndLoaded(itemAtEnd: ArtistRank) {
         val date = LocalDate.parse(itemAtEnd.date)
         // Convert request to timestamps
-        // Add 1 week so that we don't include the week we've already got
-        val startDate = date.plusWeeks(1)
-        val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
-        // Each page is a week, so we subtract weeks to decide what to request
-        val endDate = startDate.plusWeeks(pageSize)
+        // Subtract 1 week so that we don't include the week we've already got
+        val endDate = date.minusWeeks(1)
         val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
+        // Each page is a week, so we subtract weeks to decide what to request
+        val startDate = endDate.minusWeeks(pageSize)
+        val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
         topArtists(start, end)
     }
 

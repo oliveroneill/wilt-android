@@ -54,7 +54,7 @@ class ArtistRankBoundaryCallbackTest {
     @Test
     fun `should convert timestamps correctly`() {
         val item = ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99)
-        boundaryCallback.onItemAtFrontLoaded(item)
+        boundaryCallback.onItemAtEndLoaded(item)
         verify(firebase).topArtists(eq(1543755600), eq(1550408400), any())
     }
 
@@ -62,7 +62,7 @@ class ArtistRankBoundaryCallbackTest {
     fun `should modify request based on page size`() {
         boundaryCallback = ArtistRankBoundaryCallback(dao, firebase, loadingState, 4L)
         val item = ArtistRank("13-2019", "2019-03-25", "Pinegrove", 99)
-        boundaryCallback.onItemAtFrontLoaded(item)
+        boundaryCallback.onItemAtEndLoaded(item)
         verify(firebase).topArtists(eq(1550408400), eq(1552827600), any())
     }
 
@@ -140,7 +140,7 @@ class ArtistRankBoundaryCallbackTest {
             it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.failure(error))
         }
         val item = ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99)
-        boundaryCallback.onItemAtFrontLoaded(item)
+        boundaryCallback.onItemAtEndLoaded(item)
         // Get the state that was sent
         val state = loadingState.value?.getContentIfNotHandled()
         when (state) {
@@ -170,14 +170,14 @@ class ArtistRankBoundaryCallbackTest {
     @Test
     fun `should load after a specified date`() {
         val item = ArtistRank("09-2018", "2018-02-25", "Pinegrove", 99)
-        boundaryCallback.onItemAtEndLoaded(item)
+        boundaryCallback.onItemAtFrontLoaded(item)
         verify(firebase).topArtists(eq(1520082000), eq(1526738400), any())
     }
 
     @Test
     fun `should load before a specified date`() {
         val item = ArtistRank("13-2019", "2019-03-25", "Pinegrove", 99)
-        boundaryCallback.onItemAtFrontLoaded(item)
+        boundaryCallback.onItemAtEndLoaded(item)
         verify(firebase).topArtists(eq(1546174800), eq(1552827600), any())
     }
 }
