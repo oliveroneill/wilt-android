@@ -19,8 +19,8 @@ import org.mockito.Mockito.verify
 
 @RunWith(AndroidJUnit4::class)
 class LoginErrorFragmentTest {
-    lateinit var scenario: FragmentScenario<LoginErrorFragment>
-    val navController = mock(NavController::class.java)
+    private lateinit var scenario: FragmentScenario<LoginErrorFragment>
+    private val navController = mock(NavController::class.java)
 
     @Before
     fun setup() {

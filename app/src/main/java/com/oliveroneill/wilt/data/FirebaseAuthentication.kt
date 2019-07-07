@@ -43,7 +43,7 @@ class FirebaseAuthentication(context: Context) {
             }
             .addOnSuccessListener {
                 val data = it.data as Map<*, *>
-                callback(Result.success(data.get("token") as String))
+                callback(Result.success(data["token"] as String))
             }
     }
 

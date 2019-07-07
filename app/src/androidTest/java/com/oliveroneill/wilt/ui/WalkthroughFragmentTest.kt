@@ -30,13 +30,13 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class WalkthroughFragmentTest {
+    private lateinit var scenario: FragmentScenario<WalkthroughFragment>
     // Create fake view model for sending events to the UI
-    val viewModel = mock<WalkthroughFragmentViewModel>()
-    val stateData = MutableLiveData<Event<WalkthroughFragmentState>>()
+    private val viewModel = mock<WalkthroughFragmentViewModel>()
+    private val stateData = MutableLiveData<Event<WalkthroughFragmentState>>()
     // Create factory that returns the fake view model
-    val factory = mock<ViewModelProvider.AndroidViewModelFactory>()
-    val navController = mock<NavController>()
-    lateinit var scenario: FragmentScenario<WalkthroughFragment>
+    private val factory = mock<ViewModelProvider.AndroidViewModelFactory>()
+    private val navController = mock<NavController>()
 
     @Before
     fun setup() {

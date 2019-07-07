@@ -83,14 +83,14 @@ class ArtistRankBoundaryCallbackTest {
     @Test
     fun `should update loading state while loading`() {
         // Assertion is asynchronous and is checked once the network call is made
-        whenever(firebase.topArtists(any(), any(), any())).then {
+        whenever(firebase.topArtists(any(), any(), any())).then { invocation ->
             // Assert loading state is loading
             loadingState
                 .test()
                 .assertHasValue()
                 .assertValue { it.getContentIfNotHandled() is PlayHistoryFragmentState.LoadingMore }
             // Send success value to stop blocking
-            it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf()))
+            invocation.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf()))
         }
         val item = ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99)
         boundaryCallback.onItemAtFrontLoaded(item)

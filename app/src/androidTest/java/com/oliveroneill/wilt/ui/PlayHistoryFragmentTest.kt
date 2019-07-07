@@ -35,14 +35,14 @@ import org.mockito.Mockito.`when`
 
 @RunWith(AndroidJUnit4::class)
 class PlayHistoryFragmentTest {
-    lateinit var scenario: FragmentScenario<PlayHistoryFragment>
+    private lateinit var scenario: FragmentScenario<PlayHistoryFragment>
     // Create fake view model for sending events to the UI
-    val viewModel = mock<PlayHistoryFragmentViewModel>()
-    val itemStateData = MutableLiveData<PagedList<ArtistRank>>()
-    val loadingStateData = MutableLiveData<Event<PlayHistoryFragmentState>>()
+    private val viewModel = mock<PlayHistoryFragmentViewModel>()
+    private val itemStateData = MutableLiveData<PagedList<ArtistRank>>()
+    private val loadingStateData = MutableLiveData<Event<PlayHistoryFragmentState>>()
     // Create factory that returns the fake view model
-    val factory = mock<ViewModelProvider.AndroidViewModelFactory>()
-    val navController = mock<NavController>()
+    private val factory = mock<ViewModelProvider.AndroidViewModelFactory>()
+    private val navController = mock<NavController>()
 
     @Before
     fun setup() {
@@ -75,7 +75,7 @@ class PlayHistoryFragmentTest {
             ArtistRank("52-2018", "2018-12-25", "Bon Iver", 12)
         )
         val pagedList = mock<PagedList<ArtistRank>>()
-        `when`(pagedList.get(ArgumentMatchers.anyInt())).then { invocation ->
+        `when`(pagedList[ArgumentMatchers.anyInt()]).then { invocation ->
             val index = invocation.arguments.first() as Int
             list[index]
         }
@@ -110,7 +110,7 @@ class PlayHistoryFragmentTest {
     @Test
     fun shouldShowError() {
         val error = "Some random error message string"
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.Failure(error, {})))
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.Failure(error) {}))
         // Then
         onView(withText(error)).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
@@ -125,7 +125,7 @@ class PlayHistoryFragmentTest {
             ArtistRank("52-2018", "2018-12-25", "Bon Iver", 12)
         )
         val pagedList = mock<PagedList<ArtistRank>>()
-        `when`(pagedList.get(ArgumentMatchers.anyInt())).then { invocation ->
+        `when`(pagedList[ArgumentMatchers.anyInt()]).then { invocation ->
             val index = invocation.arguments.first() as Int
             list[index]
         }
@@ -152,13 +152,13 @@ class PlayHistoryFragmentTest {
             ArtistRank("52-2018", "2018-12-25", "Bon Iver", 12)
         )
         val pagedList = mock<PagedList<ArtistRank>>()
-        `when`(pagedList.get(ArgumentMatchers.anyInt())).then { invocation ->
+        `when`(pagedList[ArgumentMatchers.anyInt()]).then { invocation ->
             val index = invocation.arguments.first() as Int
             list[index]
         }
         `when`(pagedList.size).thenReturn(list.size)
         val error = "Some random error message string"
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.Failure(error, {})))
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.Failure(error) {}))
         // When
         itemStateData.postValue(pagedList)
         // Then
