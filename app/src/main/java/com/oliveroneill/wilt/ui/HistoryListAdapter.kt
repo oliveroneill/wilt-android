@@ -13,9 +13,36 @@ import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentState
  */
 class HistoryListAdapter : PagedListAdapter<ArtistRank, RecyclerView.ViewHolder>(ITEM_COMPARATOR) {
     private var state: PlayHistoryFragmentState? = null
+    /**
+     * The position index where the loading spinner is displayed, or null if it should not be displayed
+     */
+    private val loadingIndex
+        get() = when(state) {
+            is PlayHistoryFragmentState.LoadingFromTop -> 0
+            is PlayHistoryFragmentState.FailureAtTop -> 0
+            is PlayHistoryFragmentState.LoadingFromBottom -> itemCount - 1
+            is PlayHistoryFragmentState.FailureAtBottom -> itemCount - 1
+            else -> null
+        }
+
+    /**
+     * Get the item position while handling the loading spinner. This is necessary since the spinner may push the views
+     * down by one
+     */
+    fun correctedPosition(position: Int): Int {
+        return if (loadingIndex == 0) {
+            // If the loading spinner is at the top then we should shift every element down.
+            // Since the zeroth element is taken by the spinner, we want every corresponding element
+            // to be the previous index in the list
+            position - 1
+        } else {
+            position
+        }
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
-            R.layout.artist_rank -> (holder as ArtistRankViewHolder).bind(getItem(position))
+            R.layout.artist_rank -> (holder as ArtistRankViewHolder).bind(getItem(correctedPosition(position)))
             R.layout.network_state_item -> (holder as NetworkStateItemViewHolder).bind(state)
         }
     }
@@ -41,7 +68,7 @@ class HistoryListAdapter : PagedListAdapter<ArtistRank, RecyclerView.ViewHolder>
     private fun hasExtraRow() = state != null && state != PlayHistoryFragmentState.NotLoading
 
     override fun getItemViewType(position: Int): Int {
-        return if (hasExtraRow() && position == itemCount - 1) {
+        return if (hasExtraRow() && position == loadingIndex) {
             // Display the loading spinner or error message
             R.layout.network_state_item
         } else {
@@ -56,17 +83,22 @@ class HistoryListAdapter : PagedListAdapter<ArtistRank, RecyclerView.ViewHolder>
     fun setNetworkState(newState: PlayHistoryFragmentState?) {
         val previousState = this.state
         val hadExtraRow = hasExtraRow()
+        val previousLoadingIndex = loadingIndex
         this.state = newState
         val hasExtraRow = hasExtraRow()
         // Notify the view if we need to add or remove a row
         if (hadExtraRow != hasExtraRow) {
             if (hadExtraRow) {
-                notifyItemRemoved(super.getItemCount())
+                // Delete loading spinner
+                notifyItemRemoved(previousLoadingIndex ?: return)
             } else {
-                notifyItemInserted(super.getItemCount())
+                // Insert loading spinner
+                notifyItemInserted(loadingIndex ?: return)
+                // This should ensure that we scroll to the top and also push every element down by 1
+                if (loadingIndex == 0) notifyDataSetChanged()
             }
         } else if (hasExtraRow && previousState != newState) {
-            notifyItemChanged(itemCount - 1)
+            notifyItemChanged(loadingIndex ?: return)
         }
     }
 

@@ -81,19 +81,37 @@ class ArtistRankBoundaryCallbackTest {
     }
 
     @Test
-    fun `should update loading state while loading`() {
+    fun `should update loading state when loading from top`() {
         // Assertion is asynchronous and is checked once the network call is made
         whenever(firebase.topArtists(any(), any(), any())).then { invocation ->
             // Assert loading state is loading
             loadingState
                 .test()
                 .assertHasValue()
-                .assertValue { it.getContentIfNotHandled() is PlayHistoryFragmentState.LoadingMore }
+                .assertValue { it.getContentIfNotHandled() is PlayHistoryFragmentState.LoadingFromTop }
             // Send success value to stop blocking
             invocation.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf()))
         }
         val item = ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99)
         boundaryCallback.onItemAtFrontLoaded(item)
+        // Ensure that we fail if this isn't called since otherwise the assertions are never actually run
+        verify(firebase).topArtists(any(), any(), any())
+    }
+
+    @Test
+    fun `should update loading state when loading from bottom`() {
+        // Assertion is asynchronous and is checked once the network call is made
+        whenever(firebase.topArtists(any(), any(), any())).then { invocation ->
+            // Assert loading state is loading
+            loadingState
+                .test()
+                .assertHasValue()
+                .assertValue { it.getContentIfNotHandled() is PlayHistoryFragmentState.LoadingFromBottom }
+            // Send success value to stop blocking
+            invocation.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf()))
+        }
+        val item = ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99)
+        boundaryCallback.onItemAtEndLoaded(item)
         // Ensure that we fail if this isn't called since otherwise the assertions are never actually run
         verify(firebase).topArtists(any(), any(), any())
     }
@@ -113,7 +131,7 @@ class ArtistRankBoundaryCallbackTest {
     }
 
     @Test
-    fun `should handle error`() {
+    fun `should handle error when loading from top`() {
         val expected = "This is a test error for ArtistRankDataSource"
         val error = IOException(expected)
         // We'll make the mock send back an error
@@ -127,12 +145,59 @@ class ArtistRankBoundaryCallbackTest {
             .assertHasValue()
             .assertValue {
                 val state = it.getContentIfNotHandled()
-                state is PlayHistoryFragmentState.Failure && state.error == expected
+                state is PlayHistoryFragmentState.FailureAtTop && state.error == expected
             }
     }
 
     @Test
-    fun `should correctly set retry`() {
+    fun `should correctly set retry when loading from top`() {
+        val expected = "This is a test error for ArtistRankDataSource"
+        val error = IOException(expected)
+        // We'll make the mock send back an error
+        whenever(firebase.topArtists(any(), any(), any())).then {
+            it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.failure(error))
+        }
+        val item = ArtistRank("09-2018", "2018-02-25", "Pinegrove", 99)
+        boundaryCallback.onItemAtFrontLoaded(item)
+        // Get the state that was sent
+        val state = loadingState.value?.getContentIfNotHandled()
+        when (state) {
+            is PlayHistoryFragmentState.FailureAtTop -> {
+                // Call retry
+                state.retry()
+                // Ensure that it makes the correct call. This will be the second call
+                verify(firebase, times(2)).topArtists(
+                    eq(1520082000), eq(1526738400), any()
+                )
+            }
+            else -> {
+                // Fail if we didn't get an error
+                TestCase.fail()
+            }
+        }
+    }
+
+    @Test
+    fun `should handle error when loading from bottom`() {
+        val expected = "This is a test error for ArtistRankDataSource"
+        val error = IOException(expected)
+        // We'll make the mock send back an error
+        whenever(firebase.topArtists(any(), any(), any())).then {
+            it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.failure(error))
+        }
+        val item = ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99)
+        boundaryCallback.onItemAtEndLoaded(item)
+        loadingState
+            .test()
+            .assertHasValue()
+            .assertValue {
+                val state = it.getContentIfNotHandled()
+                state is PlayHistoryFragmentState.FailureAtBottom && state.error == expected
+            }
+    }
+
+    @Test
+    fun `should correctly set retry when loading from bottom`() {
         val expected = "This is a test error for ArtistRankDataSource"
         val error = IOException(expected)
         // We'll make the mock send back an error
@@ -144,7 +209,7 @@ class ArtistRankBoundaryCallbackTest {
         // Get the state that was sent
         val state = loadingState.value?.getContentIfNotHandled()
         when (state) {
-            is PlayHistoryFragmentState.Failure -> {
+            is PlayHistoryFragmentState.FailureAtBottom -> {
                 // Call retry
                 state.retry()
                 // Ensure that it makes the correct call. This will be the second call

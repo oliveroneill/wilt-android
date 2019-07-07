@@ -17,9 +17,14 @@ import java.time.format.DateTimeFormatter
 
 sealed class PlayHistoryFragmentState {
     /**
-     * If new rows are being loaded
+     * If new rows are being loaded at the top of the list
      */
-    object LoadingMore : PlayHistoryFragmentState()
+    object LoadingFromTop : PlayHistoryFragmentState()
+
+    /**
+     * If new rows are being loaded at the bottom of the list
+     */
+    object LoadingFromBottom : PlayHistoryFragmentState()
 
     /**
      * If nothing is currently loading
@@ -29,7 +34,12 @@ sealed class PlayHistoryFragmentState {
     /**
      * If we failed to load the next page
      */
-    data class Failure(val error: String, val retry: () -> Unit): PlayHistoryFragmentState()
+    data class FailureAtTop(val error: String, val retry: () -> Unit): PlayHistoryFragmentState()
+
+    /**
+     * If we failed to load the next page
+     */
+    data class FailureAtBottom(val error: String, val retry: () -> Unit): PlayHistoryFragmentState()
 }
 
 /**

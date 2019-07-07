@@ -21,7 +21,10 @@ class NetworkStateItemViewHolder(val view: View): RecyclerView.ViewHolder(view) 
 
     fun bind(state: PlayHistoryFragmentState?) {
         when (state) {
-            is PlayHistoryFragmentState.Failure -> {
+            // The two failure setup is completely duplicated. I wanted to avoid this but I couldn't figure
+            // out how to inherit the state as well as some common error format. I suppose they could
+            // have separate styling at some point
+            is PlayHistoryFragmentState.FailureAtBottom -> {
                 progressBar.visibility = View.GONE
                 loadingMessage.visibility = View.GONE
                 retry.visibility = View.VISIBLE
@@ -31,7 +34,17 @@ class NetworkStateItemViewHolder(val view: View): RecyclerView.ViewHolder(view) 
                     state.retry()
                 }
             }
-            is PlayHistoryFragmentState.LoadingMore -> {
+            is PlayHistoryFragmentState.FailureAtTop -> {
+                progressBar.visibility = View.GONE
+                loadingMessage.visibility = View.GONE
+                retry.visibility = View.VISIBLE
+                errorMessage.visibility = View.VISIBLE
+                errorMessage.text = state.error
+                retry.setOnClickListener {
+                    state.retry()
+                }
+            }
+            is PlayHistoryFragmentState.LoadingFromBottom, is PlayHistoryFragmentState.LoadingFromTop -> {
                 progressBar.visibility = View.VISIBLE
                 loadingMessage.visibility = View.VISIBLE
                 retry.visibility = View.GONE

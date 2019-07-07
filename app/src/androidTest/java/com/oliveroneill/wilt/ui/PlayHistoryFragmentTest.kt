@@ -13,6 +13,8 @@ import androidx.paging.PagedList
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeDown
+import androidx.test.espresso.assertion.PositionAssertions.isCompletelyAbove
+import androidx.test.espresso.assertion.PositionAssertions.isCompletelyBelow
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -92,8 +94,16 @@ class PlayHistoryFragmentTest {
     }
 
     @Test
-    fun shouldDisplayLoadingSpinner() {
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.LoadingMore))
+    fun shouldDisplayLoadingSpinnerAtBottom() {
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.LoadingFromBottom))
+        // Then
+        onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
+        onView(withId(R.id.loading_txt)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun shouldDisplayLoadingSpinnerAtTop() {
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.LoadingFromTop))
         // Then
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.loading_txt)).check(matches(isDisplayed()))
@@ -108,9 +118,9 @@ class PlayHistoryFragmentTest {
     }
 
     @Test
-    fun shouldShowError() {
+    fun shouldShowErrorAtBottom() {
         val error = "Some random error message string"
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.Failure(error) {}))
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.FailureAtBottom(error) {}))
         // Then
         onView(withText(error)).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
@@ -118,7 +128,17 @@ class PlayHistoryFragmentTest {
     }
 
     @Test
-    fun shouldShowRowsWhileLoading() {
+    fun shouldShowErrorAtTop() {
+        val error = "Some random error message string"
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.FailureAtTop(error) {}))
+        // Then
+        onView(withText(error)).check(matches(isDisplayed()))
+        onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.loading_txt)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun shouldShowRowsWhileLoadingFromBottom() {
         // Given
         val list = listOf(
             ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99),
@@ -130,7 +150,7 @@ class PlayHistoryFragmentTest {
             list[index]
         }
         `when`(pagedList.size).thenReturn(list.size)
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.LoadingMore))
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.LoadingFromBottom))
         // When
         itemStateData.postValue(pagedList)
         // Then
@@ -142,10 +162,41 @@ class PlayHistoryFragmentTest {
         onView(withText("Dec 2018")).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.loading_txt)).check(matches(isDisplayed()))
+        // Check that the spinner is below the rows
+        onView(withId(R.id.loading_txt)).check(isCompletelyBelow(withText("Bon Iver")))
     }
 
     @Test
-    fun shouldShowRowsWithError() {
+    fun shouldShowRowsWhileLoadingFromTop() {
+        // Given
+        val list = listOf(
+            ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99),
+            ArtistRank("52-2018", "2018-12-25", "Bon Iver", 12)
+        )
+        val pagedList = mock<PagedList<ArtistRank>>()
+        `when`(pagedList[ArgumentMatchers.anyInt()]).then { invocation ->
+            val index = invocation.arguments.first() as Int
+            list[index]
+        }
+        `when`(pagedList.size).thenReturn(list.size)
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.LoadingFromTop))
+        // When
+        itemStateData.postValue(pagedList)
+        // Then
+        onView(withText("Pinegrove")).check(matches(isDisplayed()))
+        onView(withText("Bon Iver")).check(matches(isDisplayed()))
+        onView(withText("99 plays")).check(matches(isDisplayed()))
+        onView(withText("Feb 2019")).check(matches(isDisplayed()))
+        onView(withText("12 plays")).check(matches(isDisplayed()))
+        onView(withText("Dec 2018")).check(matches(isDisplayed()))
+        onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
+        onView(withId(R.id.loading_txt)).check(matches(isDisplayed()))
+        // Check that the spinner is above the rows
+        onView(withId(R.id.loading_txt)).check(isCompletelyAbove(withText("Pinegrove")))
+    }
+
+    @Test
+    fun shouldShowRowsWithErrorAtBottom() {
         // Given
         val list = listOf(
             ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99),
@@ -158,7 +209,7 @@ class PlayHistoryFragmentTest {
         }
         `when`(pagedList.size).thenReturn(list.size)
         val error = "Some random error message string"
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.Failure(error) {}))
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.FailureAtBottom(error) {}))
         // When
         itemStateData.postValue(pagedList)
         // Then
@@ -171,16 +222,67 @@ class PlayHistoryFragmentTest {
         onView(withText(error)).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.loading_txt)).check(matches(not(isDisplayed())))
+        // Check that the error is below the rows
+        onView(withText(error)).check(isCompletelyBelow(withText("Bon Iver")))
     }
 
     @Test
-    fun shouldRetryOnPress() {
+    fun shouldShowRowsWithErrorAtTop() {
+        // Given
+        val list = listOf(
+            ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99),
+            ArtistRank("52-2018", "2018-12-25", "Bon Iver", 12)
+        )
+        val pagedList = mock<PagedList<ArtistRank>>()
+        `when`(pagedList[ArgumentMatchers.anyInt()]).then { invocation ->
+            val index = invocation.arguments.first() as Int
+            list[index]
+        }
+        `when`(pagedList.size).thenReturn(list.size)
+        val error = "Some random error message string"
+        loadingStateData.postValue(Event(PlayHistoryFragmentState.FailureAtTop(error) {}))
+        // When
+        itemStateData.postValue(pagedList)
+        // Then
+        onView(withText("Pinegrove")).check(matches(isDisplayed()))
+        onView(withText("Bon Iver")).check(matches(isDisplayed()))
+        onView(withText("99 plays")).check(matches(isDisplayed()))
+        onView(withText("Feb 2019")).check(matches(isDisplayed()))
+        onView(withText("12 plays")).check(matches(isDisplayed()))
+        onView(withText("Dec 2018")).check(matches(isDisplayed()))
+        onView(withText(error)).check(matches(isDisplayed()))
+        onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.loading_txt)).check(matches(not(isDisplayed())))
+        // Check that the error is above the rows
+        onView(withText(error)).check(isCompletelyAbove(withText("Pinegrove")))
+    }
+
+    @Test
+    fun shouldRetryOnPressErrorAtBottom() {
         val error = "Some random error message string"
         var retryCallCount = 0
         // Given
         loadingStateData.postValue(
             Event(
-                PlayHistoryFragmentState.Failure(error) {
+                PlayHistoryFragmentState.FailureAtBottom(error) {
+                    retryCallCount += 1
+                }
+            )
+        )
+        // When
+        onView(withId(R.id.retry_button)).perform(click())
+        // Then
+        assertEquals(1, retryCallCount)
+    }
+
+    @Test
+    fun shouldRetryOnPressErrorAtTop() {
+        val error = "Some random error message string"
+        var retryCallCount = 0
+        // Given
+        loadingStateData.postValue(
+            Event(
+                PlayHistoryFragmentState.FailureAtTop(error) {
                     retryCallCount += 1
                 }
             )

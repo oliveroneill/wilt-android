@@ -61,12 +61,16 @@ class ArtistRankBoundaryCallback(
         // Each page is a week, so we subtract weeks to decide what to request
         val startDate = endDate.minusWeeks(pageSize)
         val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
-        topArtists(start, end)
+        topArtists(start, end, loadingFromTop = false)
     }
 
-    private fun topArtists(start: Long, end: Long) {
+    private fun topArtists(start: Long, end: Long, loadingFromTop: Boolean = true) {
         // Update state
-        loadingState.postValue(Event(PlayHistoryFragmentState.LoadingMore))
+        if (loadingFromTop) {
+            loadingState.postValue(Event(PlayHistoryFragmentState.LoadingFromTop))
+        } else {
+            loadingState.postValue(Event(PlayHistoryFragmentState.LoadingFromBottom))
+        }
         firebase.topArtists(start.toInt(), end.toInt()) { result ->
             result.onSuccess {
                 executor.execute {
@@ -74,14 +78,18 @@ class ArtistRankBoundaryCallback(
                     loadingState.postValue(Event(PlayHistoryFragmentState.NotLoading))
                 }
             }.onFailure {
-                loadingState.postValue(
-                    Event(
-                        PlayHistoryFragmentState.Failure(
-                            it.localizedMessage
-                            // Retry
-                        ) { topArtists(start, end) }
-                    )
-                )
+                val failure = if (loadingFromTop) {
+                    PlayHistoryFragmentState.FailureAtTop(
+                        it.localizedMessage
+                        // Retry
+                    ) { topArtists(start, end) }
+                } else {
+                    PlayHistoryFragmentState.FailureAtBottom(
+                        it.localizedMessage
+                        // Retry
+                    ) { topArtists(start, end) }
+                }
+                loadingState.postValue(Event(failure))
             }
         }
     }
