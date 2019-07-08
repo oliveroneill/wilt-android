@@ -65,10 +65,10 @@ class PlayHistoryFragmentViewModel @JvmOverloads constructor(application: Applic
     init {
         val pageSize = 10
         // Get data from now onwards (back in time)
-        val startDate = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE)
+        val endDate = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE)
         // Create database
         PlayHistoryDatabase.getDatabase(application).historyDao().also {
-            itemDataSource = it.loadPlayHistory(startDate).toLiveData(
+            itemDataSource = it.loadPlayHistory(endDate).toLiveData(
                 pageSize = pageSize,
                 // This will be used to make network requests
                 boundaryCallback = ArtistRankBoundaryCallback(it, firebase, _loadingState, pageSize.toLong())
