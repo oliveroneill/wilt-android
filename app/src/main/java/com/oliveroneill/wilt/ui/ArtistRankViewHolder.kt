@@ -7,8 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.dao.ArtistRank
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 /**
  * A view for displaying the most listened to artist for a specific period
@@ -20,11 +18,9 @@ class ArtistRankViewHolder(private val view: View): RecyclerView.ViewHolder(view
 
     fun bind(item: ArtistRank?) {
         item?.let {
-            topArtistTextView.text = it.top_artist
-            // Parse date to be presented to UI
-            val date = LocalDate.parse(it.date, DateTimeFormatter.ISO_DATE)
+            topArtistTextView.text = it.topArtist
             playsTextView.text = view.context.getString(R.string.playstext_format, it.count)
-            dateTextView.text = view.context.getString(R.string.datetext_format, date)
+            dateTextView.text = view.context.getString(R.string.datetext_format, it.date)
         }
     }
 

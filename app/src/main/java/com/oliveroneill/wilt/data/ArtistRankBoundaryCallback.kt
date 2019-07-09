@@ -38,7 +38,7 @@ class ArtistRankBoundaryCallback(
      * Load items that are more recent than [itemAtFront]
      */
     override fun onItemAtFrontLoaded(itemAtFront: ArtistRank) {
-        val date = LocalDate.parse(itemAtFront.date)
+        val date = itemAtFront.date
         // Convert request to timestamps
         // Add 1 week so that we don't include the week we've already got
         val startDate = date.plusWeeks(1)
@@ -53,7 +53,7 @@ class ArtistRankBoundaryCallback(
      * Load items that are older than [itemAtEnd]
      */
     override fun onItemAtEndLoaded(itemAtEnd: ArtistRank) {
-        val date = LocalDate.parse(itemAtEnd.date)
+        val date = itemAtEnd.date
         // Convert request to timestamps
         // Subtract 1 week so that we don't include the week we've already got
         val endDate = date.minusWeeks(1)

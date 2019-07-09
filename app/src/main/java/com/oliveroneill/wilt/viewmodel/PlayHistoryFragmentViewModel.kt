@@ -13,7 +13,6 @@ import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.data.dao.PlayHistoryDatabase
 import com.oliveroneill.wilt.testing.OpenForTesting
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 sealed class PlayHistoryFragmentState {
     /**
@@ -65,7 +64,7 @@ class PlayHistoryFragmentViewModel @JvmOverloads constructor(application: Applic
     init {
         val pageSize = 10
         // Get data from now onwards (back in time)
-        val endDate = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE)
+        val endDate = LocalDate.now()
         // Create database
         PlayHistoryDatabase.getDatabase(application).historyDao().also {
             itemDataSource = it.loadPlayHistory(endDate).toLiveData(

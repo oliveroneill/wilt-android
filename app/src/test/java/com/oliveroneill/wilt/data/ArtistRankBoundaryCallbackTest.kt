@@ -13,6 +13,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
+import java.time.LocalDate
 import java.util.concurrent.Executor
 
 class ArtistRankBoundaryCallbackTest {
@@ -53,7 +54,7 @@ class ArtistRankBoundaryCallbackTest {
 
     @Test
     fun `should convert timestamps correctly`() {
-        val item = ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99)
+        val item = ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99)
         boundaryCallback.onItemAtEndLoaded(item)
         verify(firebase).topArtists(eq(1543755600), eq(1550408400), any())
     }
@@ -61,7 +62,7 @@ class ArtistRankBoundaryCallbackTest {
     @Test
     fun `should modify request based on page size`() {
         boundaryCallback = ArtistRankBoundaryCallback(dao, firebase, loadingState, 4L)
-        val item = ArtistRank("13-2019", "2019-03-25", "Pinegrove", 99)
+        val item = ArtistRank("13-2019", LocalDate.parse("2019-03-25"), "Pinegrove", 99)
         boundaryCallback.onItemAtEndLoaded(item)
         verify(firebase).topArtists(eq(1550408400), eq(1552827600), any())
     }
@@ -69,13 +70,13 @@ class ArtistRankBoundaryCallbackTest {
     @Test
     fun `should insert loaded data`() {
         val expected = listOf(
-            ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99),
-            ArtistRank("52-2018", "2018-12-25", "Bon Iver", 12)
+            ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99),
+            ArtistRank("52-2018", LocalDate.parse("2018-12-25"), "Bon Iver", 12)
         )
         whenever(firebase.topArtists(any(), any(), any())).then {
             it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(expected))
         }
-        val item = ArtistRank("47-2018", "2018-11-25", "Tyler, The Creator", 10)
+        val item = ArtistRank("47-2018", LocalDate.parse("2018-11-25"), "Tyler, The Creator", 10)
         boundaryCallback.onItemAtFrontLoaded(item)
         verify(dao).insert(eq(expected))
     }
@@ -92,7 +93,7 @@ class ArtistRankBoundaryCallbackTest {
             // Send success value to stop blocking
             invocation.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf()))
         }
-        val item = ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99)
+        val item = ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99)
         boundaryCallback.onItemAtFrontLoaded(item)
         // Ensure that we fail if this isn't called since otherwise the assertions are never actually run
         verify(firebase).topArtists(any(), any(), any())
@@ -110,7 +111,7 @@ class ArtistRankBoundaryCallbackTest {
             // Send success value to stop blocking
             invocation.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf()))
         }
-        val item = ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99)
+        val item = ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99)
         boundaryCallback.onItemAtEndLoaded(item)
         // Ensure that we fail if this isn't called since otherwise the assertions are never actually run
         verify(firebase).topArtists(any(), any(), any())
@@ -122,7 +123,7 @@ class ArtistRankBoundaryCallbackTest {
         whenever(firebase.topArtists(any(), any(), any())).then {
             it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf()))
         }
-        val item = ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99)
+        val item = ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99)
         boundaryCallback.onItemAtFrontLoaded(item)
         loadingState
             .test()
@@ -138,7 +139,7 @@ class ArtistRankBoundaryCallbackTest {
         whenever(firebase.topArtists(any(), any(), any())).then {
             it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.failure(error))
         }
-        val item = ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99)
+        val item = ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99)
         boundaryCallback.onItemAtFrontLoaded(item)
         loadingState
             .test()
@@ -157,7 +158,7 @@ class ArtistRankBoundaryCallbackTest {
         whenever(firebase.topArtists(any(), any(), any())).then {
             it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.failure(error))
         }
-        val item = ArtistRank("09-2018", "2018-02-25", "Pinegrove", 99)
+        val item = ArtistRank("09-2018", LocalDate.parse("2018-02-25"), "Pinegrove", 99)
         boundaryCallback.onItemAtFrontLoaded(item)
         // Get the state that was sent
         val state = loadingState.value?.getContentIfNotHandled()
@@ -185,7 +186,7 @@ class ArtistRankBoundaryCallbackTest {
         whenever(firebase.topArtists(any(), any(), any())).then {
             it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.failure(error))
         }
-        val item = ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99)
+        val item = ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99)
         boundaryCallback.onItemAtEndLoaded(item)
         loadingState
             .test()
@@ -204,7 +205,7 @@ class ArtistRankBoundaryCallbackTest {
         whenever(firebase.topArtists(any(), any(), any())).then {
             it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.failure(error))
         }
-        val item = ArtistRank("09-2019", "2019-02-25", "Pinegrove", 99)
+        val item = ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99)
         boundaryCallback.onItemAtEndLoaded(item)
         // Get the state that was sent
         val state = loadingState.value?.getContentIfNotHandled()
@@ -234,14 +235,14 @@ class ArtistRankBoundaryCallbackTest {
 
     @Test
     fun `should load after a specified date`() {
-        val item = ArtistRank("09-2018", "2018-02-25", "Pinegrove", 99)
+        val item = ArtistRank("09-2018", LocalDate.parse("2018-02-25"), "Pinegrove", 99)
         boundaryCallback.onItemAtFrontLoaded(item)
         verify(firebase).topArtists(eq(1520082000), eq(1526738400), any())
     }
 
     @Test
     fun `should load before a specified date`() {
-        val item = ArtistRank("13-2019", "2019-03-25", "Pinegrove", 99)
+        val item = ArtistRank("13-2019", LocalDate.parse("2019-03-25"), "Pinegrove", 99)
         boundaryCallback.onItemAtEndLoaded(item)
         verify(firebase).topArtists(eq(1546174800), eq(1552827600), any())
     }
