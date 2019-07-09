@@ -29,7 +29,7 @@ class HistoryListAdapter : PagedListAdapter<ArtistRank, RecyclerView.ViewHolder>
      * Get the item position while handling the loading spinner. This is necessary since the spinner may push the views
      * down by one
      */
-    fun correctedPosition(position: Int): Int {
+    private fun correctedPosition(position: Int): Int {
         return if (loadingIndex == 0) {
             // If the loading spinner is at the top then we should shift every element down.
             // Since the zeroth element is taken by the spinner, we want every corresponding element
@@ -76,9 +76,7 @@ class HistoryListAdapter : PagedListAdapter<ArtistRank, RecyclerView.ViewHolder>
         }
     }
 
-    override fun getItemCount(): Int {
-        return super.getItemCount() + if (hasExtraRow()) 1 else 0
-    }
+    override fun getItemCount() = super.getItemCount() + if (hasExtraRow()) 1 else 0
 
     fun setNetworkState(newState: PlayHistoryFragmentState?) {
         val previousState = this.state
@@ -104,11 +102,9 @@ class HistoryListAdapter : PagedListAdapter<ArtistRank, RecyclerView.ViewHolder>
 
     companion object {
         val ITEM_COMPARATOR = object : DiffUtil.ItemCallback<ArtistRank>() {
-            override fun areContentsTheSame(oldItem: ArtistRank, newItem: ArtistRank): Boolean =
-                oldItem == newItem
+            override fun areContentsTheSame(oldItem: ArtistRank, newItem: ArtistRank) = oldItem == newItem
 
-            override fun areItemsTheSame(oldItem: ArtistRank, newItem: ArtistRank): Boolean =
-                oldItem.date == newItem.date
+            override fun areItemsTheSame(oldItem: ArtistRank, newItem: ArtistRank) = oldItem.date == newItem.date
         }
     }
 }
