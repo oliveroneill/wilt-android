@@ -6,22 +6,22 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.dao.ArtistRank
-import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentState
+import com.oliveroneill.wilt.viewmodel.PlayHistoryNetworkState
 
 /**
  * Adapter for displaying artist play history
  */
 class HistoryListAdapter : PagedListAdapter<ArtistRank, RecyclerView.ViewHolder>(ITEM_COMPARATOR) {
-    private var state: PlayHistoryFragmentState? = null
+    private var state: PlayHistoryNetworkState? = null
     /**
      * The position index where the loading spinner is displayed, or null if it should not be displayed
      */
     private val loadingIndex
         get() = when(state) {
-            is PlayHistoryFragmentState.LoadingFromTop -> 0
-            is PlayHistoryFragmentState.FailureAtTop -> 0
-            is PlayHistoryFragmentState.LoadingFromBottom -> itemCount - 1
-            is PlayHistoryFragmentState.FailureAtBottom -> itemCount - 1
+            is PlayHistoryNetworkState.LoadingFromTop -> 0
+            is PlayHistoryNetworkState.FailureAtTop -> 0
+            is PlayHistoryNetworkState.LoadingFromBottom -> itemCount - 1
+            is PlayHistoryNetworkState.FailureAtBottom -> itemCount - 1
             else -> null
         }
 
@@ -65,7 +65,7 @@ class HistoryListAdapter : PagedListAdapter<ArtistRank, RecyclerView.ViewHolder>
     /**
      * We'll display an extra row for a loading spinner if we're loading or displaying an error
      */
-    private fun hasExtraRow() = state != null && state != PlayHistoryFragmentState.NotLoading
+    private fun hasExtraRow() = state != null && state != PlayHistoryNetworkState.NotLoading
 
     override fun getItemViewType(position: Int): Int {
         return if (hasExtraRow() && position == loadingIndex) {
@@ -78,7 +78,7 @@ class HistoryListAdapter : PagedListAdapter<ArtistRank, RecyclerView.ViewHolder>
 
     override fun getItemCount() = super.getItemCount() + if (hasExtraRow()) 1 else 0
 
-    fun setNetworkState(newState: PlayHistoryFragmentState?) {
+    fun setNetworkState(newState: PlayHistoryNetworkState?) {
         val previousState = this.state
         val hadExtraRow = hasExtraRow()
         val previousLoadingIndex = loadingIndex

@@ -7,7 +7,7 @@ import com.nhaarman.mockitokotlin2.*
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.data.dao.PlayHistoryDao
-import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentState
+import com.oliveroneill.wilt.viewmodel.PlayHistoryNetworkState
 import junit.framework.TestCase
 import org.junit.Before
 import org.junit.Rule
@@ -24,7 +24,7 @@ class ArtistRankBoundaryCallbackTest {
     private val pageSize = 11L
     private lateinit var firebase: FirebaseAPI
     private lateinit var dao: PlayHistoryDao
-    private lateinit var loadingState: MutableLiveData<Event<PlayHistoryFragmentState>>
+    private lateinit var loadingState: MutableLiveData<Event<PlayHistoryNetworkState>>
     private lateinit var boundaryCallback: ArtistRankBoundaryCallback
 
     /**
@@ -89,7 +89,7 @@ class ArtistRankBoundaryCallbackTest {
             loadingState
                 .test()
                 .assertHasValue()
-                .assertValue { it.getContentIfNotHandled() is PlayHistoryFragmentState.LoadingFromTop }
+                .assertValue { it.getContentIfNotHandled() is PlayHistoryNetworkState.LoadingFromTop }
             // Send success value to stop blocking
             invocation.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf()))
         }
@@ -107,7 +107,7 @@ class ArtistRankBoundaryCallbackTest {
             loadingState
                 .test()
                 .assertHasValue()
-                .assertValue { it.getContentIfNotHandled() is PlayHistoryFragmentState.LoadingFromBottom }
+                .assertValue { it.getContentIfNotHandled() is PlayHistoryNetworkState.LoadingFromBottom }
             // Send success value to stop blocking
             invocation.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf()))
         }
@@ -128,7 +128,7 @@ class ArtistRankBoundaryCallbackTest {
         loadingState
             .test()
             .assertHasValue()
-            .assertValue { it.getContentIfNotHandled() is PlayHistoryFragmentState.NotLoading }
+            .assertValue { it.getContentIfNotHandled() is PlayHistoryNetworkState.NotLoading }
     }
 
     @Test
@@ -146,7 +146,7 @@ class ArtistRankBoundaryCallbackTest {
             .assertHasValue()
             .assertValue {
                 val state = it.getContentIfNotHandled()
-                state is PlayHistoryFragmentState.FailureAtTop && state.error == expected
+                state is PlayHistoryNetworkState.FailureAtTop && state.error == expected
             }
     }
 
@@ -163,7 +163,7 @@ class ArtistRankBoundaryCallbackTest {
         // Get the state that was sent
         val state = loadingState.value?.getContentIfNotHandled()
         when (state) {
-            is PlayHistoryFragmentState.FailureAtTop -> {
+            is PlayHistoryNetworkState.FailureAtTop -> {
                 // Call retry
                 state.retry()
                 // Ensure that it makes the correct call. This will be the second call
@@ -193,7 +193,7 @@ class ArtistRankBoundaryCallbackTest {
             .assertHasValue()
             .assertValue {
                 val state = it.getContentIfNotHandled()
-                state is PlayHistoryFragmentState.FailureAtBottom && state.error == expected
+                state is PlayHistoryNetworkState.FailureAtBottom && state.error == expected
             }
     }
 
@@ -210,7 +210,7 @@ class ArtistRankBoundaryCallbackTest {
         // Get the state that was sent
         val state = loadingState.value?.getContentIfNotHandled()
         when (state) {
-            is PlayHistoryFragmentState.FailureAtBottom -> {
+            is PlayHistoryNetworkState.FailureAtBottom -> {
                 // Call retry
                 state.retry()
                 // Ensure that it makes the correct call. This will be the second call

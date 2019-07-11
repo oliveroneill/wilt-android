@@ -14,31 +14,72 @@ import com.oliveroneill.wilt.data.dao.PlayHistoryDatabase
 import com.oliveroneill.wilt.testing.OpenForTesting
 import java.time.LocalDate
 
-sealed class PlayHistoryFragmentState {
+/**
+ * The data necessary to display the network state for this view model.
+ * By default nothing is displayed
+ */
+data class PlayHistoryNetworkStateViewData(
+    val loadingMessageVisible: Boolean = false,
+    val progressBarVisible: Boolean = false,
+    val retryButtonVisible: Boolean = false,
+    // If the error message is null then it should not be displayed
+    val errorMessage: String? = null,
+    val retry: (() -> Unit)? = null
+)
+
+sealed class PlayHistoryNetworkState {
     /**
      * If new rows are being loaded at the top of the list
      */
-    object LoadingFromTop : PlayHistoryFragmentState()
+    object LoadingFromTop : PlayHistoryNetworkState()
 
     /**
      * If new rows are being loaded at the bottom of the list
      */
-    object LoadingFromBottom : PlayHistoryFragmentState()
+    object LoadingFromBottom : PlayHistoryNetworkState()
 
     /**
      * If nothing is currently loading
      */
-    object NotLoading : PlayHistoryFragmentState()
+    object NotLoading : PlayHistoryNetworkState()
 
     /**
      * If we failed to load the next page
      */
-    data class FailureAtTop(val error: String, val retry: () -> Unit): PlayHistoryFragmentState()
+    data class FailureAtTop(val error: String, val retry: () -> Unit): PlayHistoryNetworkState()
 
     /**
      * If we failed to load the next page
      */
-    data class FailureAtBottom(val error: String, val retry: () -> Unit): PlayHistoryFragmentState()
+    data class FailureAtBottom(val error: String, val retry: () -> Unit): PlayHistoryNetworkState()
+
+    /**
+     * Convert state into a set of necessary data for displaying the view
+     */
+    fun toViewData(): PlayHistoryNetworkStateViewData {
+        return when (this) {
+            is PlayHistoryNetworkState.FailureAtBottom -> {
+                PlayHistoryNetworkStateViewData(
+                    retryButtonVisible = true, errorMessage = error, retry = retry
+                )
+            }
+            is PlayHistoryNetworkState.FailureAtTop -> {
+                PlayHistoryNetworkStateViewData(
+                    retryButtonVisible = true, errorMessage = error, retry = retry
+                )
+            }
+            is PlayHistoryNetworkState.LoadingFromBottom, is PlayHistoryNetworkState.LoadingFromTop -> {
+                PlayHistoryNetworkStateViewData(
+                    progressBarVisible = true, loadingMessageVisible = true
+                )
+            }
+            is PlayHistoryNetworkState.NotLoading -> {
+                PlayHistoryNetworkStateViewData(
+                    progressBarVisible = true, loadingMessageVisible = true
+                )
+            }
+        }
+    }
 }
 
 /**
@@ -49,12 +90,14 @@ sealed class PlayHistoryFragmentState {
  * these two together without making the RecyclerView interactions more complicated.
  */
 @OpenForTesting
-class PlayHistoryFragmentViewModel @JvmOverloads constructor(application: Application, firebase: FirebaseAPI = FirebaseAPI()): AndroidViewModel(application) {
-    private val _loadingState = MutableLiveData<Event<PlayHistoryFragmentState>>()
+class PlayHistoryFragmentViewModel @JvmOverloads constructor(
+    application: Application, firebase: FirebaseAPI = FirebaseAPI()
+): AndroidViewModel(application) {
+    private val _loadingState = MutableLiveData<Event<PlayHistoryNetworkState>>()
     /**
      * Used to display a loading spinner or error message while a new page is loaded
      */
-    val loadingState : LiveData<Event<PlayHistoryFragmentState>>
+    val loadingState : LiveData<Event<PlayHistoryNetworkState>>
         get() = _loadingState
 
     /**

@@ -5,7 +5,7 @@ import androidx.paging.PagedList
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.data.dao.PlayHistoryDao
-import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentState
+import com.oliveroneill.wilt.viewmodel.PlayHistoryNetworkState
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.concurrent.Executor
@@ -14,7 +14,7 @@ import java.util.concurrent.Executors
 class ArtistRankBoundaryCallback(
     private val dao: PlayHistoryDao,
     private val firebase: FirebaseAPI,
-    private val loadingState: MutableLiveData<Event<PlayHistoryFragmentState>>,
+    private val loadingState: MutableLiveData<Event<PlayHistoryNetworkState>>,
     private val pageSize: Long,
     private val executor: Executor = Executors.newSingleThreadExecutor()
 ): PagedList.BoundaryCallback<ArtistRank>() {
@@ -67,24 +67,24 @@ class ArtistRankBoundaryCallback(
     private fun topArtists(start: Long, end: Long, loadingFromTop: Boolean = true) {
         // Update state
         if (loadingFromTop) {
-            loadingState.postValue(Event(PlayHistoryFragmentState.LoadingFromTop))
+            loadingState.postValue(Event(PlayHistoryNetworkState.LoadingFromTop))
         } else {
-            loadingState.postValue(Event(PlayHistoryFragmentState.LoadingFromBottom))
+            loadingState.postValue(Event(PlayHistoryNetworkState.LoadingFromBottom))
         }
         firebase.topArtists(start.toInt(), end.toInt()) { result ->
             result.onSuccess {
                 executor.execute {
                     dao.insert(it)
-                    loadingState.postValue(Event(PlayHistoryFragmentState.NotLoading))
+                    loadingState.postValue(Event(PlayHistoryNetworkState.NotLoading))
                 }
             }.onFailure {
                 val failure = if (loadingFromTop) {
-                    PlayHistoryFragmentState.FailureAtTop(
+                    PlayHistoryNetworkState.FailureAtTop(
                         it.localizedMessage
                         // Retry
                     ) { topArtists(start, end) }
                 } else {
-                    PlayHistoryFragmentState.FailureAtBottom(
+                    PlayHistoryNetworkState.FailureAtBottom(
                         it.localizedMessage
                         // Retry
                     ) { topArtists(start, end) }

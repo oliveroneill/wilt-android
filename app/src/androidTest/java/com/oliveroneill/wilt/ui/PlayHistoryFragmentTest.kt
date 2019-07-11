@@ -25,8 +25,8 @@ import com.nhaarman.mockitokotlin2.whenever
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.dao.ArtistRank
-import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentState
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentViewModel
+import com.oliveroneill.wilt.viewmodel.PlayHistoryNetworkState
 import junit.framework.TestCase.assertEquals
 import org.hamcrest.Matchers.not
 import org.junit.Before
@@ -42,7 +42,7 @@ class PlayHistoryFragmentTest {
     // Create fake view model for sending events to the UI
     private val viewModel = mock<PlayHistoryFragmentViewModel>()
     private val itemStateData = MutableLiveData<PagedList<ArtistRank>>()
-    private val loadingStateData = MutableLiveData<Event<PlayHistoryFragmentState>>()
+    private val loadingStateData = MutableLiveData<Event<PlayHistoryNetworkState>>()
     // Create factory that returns the fake view model
     private val factory = mock<ViewModelProvider.AndroidViewModelFactory>()
     private val navController = mock<NavController>()
@@ -96,7 +96,7 @@ class PlayHistoryFragmentTest {
 
     @Test
     fun shouldDisplayLoadingSpinnerAtBottom() {
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.LoadingFromBottom))
+        loadingStateData.postValue(Event(PlayHistoryNetworkState.LoadingFromBottom))
         // Then
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.loading_txt)).check(matches(isDisplayed()))
@@ -104,7 +104,7 @@ class PlayHistoryFragmentTest {
 
     @Test
     fun shouldDisplayLoadingSpinnerAtTop() {
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.LoadingFromTop))
+        loadingStateData.postValue(Event(PlayHistoryNetworkState.LoadingFromTop))
         // Then
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.loading_txt)).check(matches(isDisplayed()))
@@ -112,7 +112,7 @@ class PlayHistoryFragmentTest {
 
     @Test
     fun shouldHideLoadingSpinner() {
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.NotLoading))
+        loadingStateData.postValue(Event(PlayHistoryNetworkState.NotLoading))
         // Then
         onView(withId(R.id.progress_bar)).check(doesNotExist())
         onView(withId(R.id.loading_txt)).check(doesNotExist())
@@ -121,7 +121,7 @@ class PlayHistoryFragmentTest {
     @Test
     fun shouldShowErrorAtBottom() {
         val error = "Some random error message string"
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.FailureAtBottom(error) {}))
+        loadingStateData.postValue(Event(PlayHistoryNetworkState.FailureAtBottom(error) {}))
         // Then
         onView(withText(error)).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
@@ -131,7 +131,7 @@ class PlayHistoryFragmentTest {
     @Test
     fun shouldShowErrorAtTop() {
         val error = "Some random error message string"
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.FailureAtTop(error) {}))
+        loadingStateData.postValue(Event(PlayHistoryNetworkState.FailureAtTop(error) {}))
         // Then
         onView(withText(error)).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
@@ -151,7 +151,7 @@ class PlayHistoryFragmentTest {
             list[index]
         }
         `when`(pagedList.size).thenReturn(list.size)
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.LoadingFromBottom))
+        loadingStateData.postValue(Event(PlayHistoryNetworkState.LoadingFromBottom))
         // When
         itemStateData.postValue(pagedList)
         // Then
@@ -180,7 +180,7 @@ class PlayHistoryFragmentTest {
             list[index]
         }
         `when`(pagedList.size).thenReturn(list.size)
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.LoadingFromTop))
+        loadingStateData.postValue(Event(PlayHistoryNetworkState.LoadingFromTop))
         // When
         itemStateData.postValue(pagedList)
         // Then
@@ -210,7 +210,7 @@ class PlayHistoryFragmentTest {
         }
         `when`(pagedList.size).thenReturn(list.size)
         val error = "Some random error message string"
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.FailureAtBottom(error) {}))
+        loadingStateData.postValue(Event(PlayHistoryNetworkState.FailureAtBottom(error) {}))
         // When
         itemStateData.postValue(pagedList)
         // Then
@@ -241,7 +241,7 @@ class PlayHistoryFragmentTest {
         }
         `when`(pagedList.size).thenReturn(list.size)
         val error = "Some random error message string"
-        loadingStateData.postValue(Event(PlayHistoryFragmentState.FailureAtTop(error) {}))
+        loadingStateData.postValue(Event(PlayHistoryNetworkState.FailureAtTop(error) {}))
         // When
         itemStateData.postValue(pagedList)
         // Then
@@ -265,7 +265,7 @@ class PlayHistoryFragmentTest {
         // Given
         loadingStateData.postValue(
             Event(
-                PlayHistoryFragmentState.FailureAtBottom(error) {
+                PlayHistoryNetworkState.FailureAtBottom(error) {
                     retryCallCount += 1
                 }
             )
@@ -283,7 +283,7 @@ class PlayHistoryFragmentTest {
         // Given
         loadingStateData.postValue(
             Event(
-                PlayHistoryFragmentState.FailureAtTop(error) {
+                PlayHistoryNetworkState.FailureAtTop(error) {
                     retryCallCount += 1
                 }
             )
