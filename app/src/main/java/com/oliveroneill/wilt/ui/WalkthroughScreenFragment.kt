@@ -22,21 +22,21 @@ class WalkthroughScreenFragment: Fragment() {
     // Optional views and data to be set
     private var image: ImageView? = null
     private var imageResId: Int? = null
-    private var title: TextView? = null
-    private var titleResId: Int? = null
+    private var titleView: TextView? = null
+    private var title: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Retrieve image and title from arguments set in newInstance() below
         imageResId = arguments?.getInt(IMG_ID)
-        titleResId = arguments?.getInt(TITLE_ID)
+        title = arguments?.getString(TITLE_ID)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.walkthrough_screen, container, false) as ViewGroup
         // Store the views that we'll display the relevant data on
         image = rootView.imageView
-        title = rootView.textView
+        titleView = rootView.textView
         return rootView
     }
 
@@ -44,7 +44,7 @@ class WalkthroughScreenFragment: Fragment() {
         super.onActivityCreated(savedInstanceState)
         // Set the views using the relevant data. We'll return early if things are missing
         // TODO: maybe crashing makes more sense if things are unset
-        title?.setText(titleResId ?: return)
+        titleView?.text = (title ?: return)
         Glide.with(this)
             .load(imageResId ?: return)
             .centerCrop()
@@ -55,12 +55,12 @@ class WalkthroughScreenFragment: Fragment() {
         private const val IMG_ID = "imgId"
         private const val TITLE_ID = "titleId"
 
-        fun newInstance(imageResId: Int, titleResId: Int): WalkthroughScreenFragment {
+        fun newInstance(imageResId: Int, title: String): WalkthroughScreenFragment {
             return WalkthroughScreenFragment().also {
                 // Set arguments to be read by onCreate() above
                 val args = Bundle()
                 args.putInt(IMG_ID, imageResId)
-                args.putInt(TITLE_ID, titleResId)
+                args.putString(TITLE_ID, title)
                 it.arguments = args
             }
         }

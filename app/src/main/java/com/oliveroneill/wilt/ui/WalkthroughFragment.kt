@@ -46,11 +46,13 @@ class WalkthroughFragment: Fragment() {
         setupNavigation()
         val rootView = binding.root
         rootView.viewPager.offscreenPageLimit = 2
+        val model = ViewModelProviders.of(
+            this, viewModelFactory
+        ).get(WalkthroughFragmentViewModel::class.java)
         // Set adapter
         childFragmentManager.let {
-            rootView.viewPager.adapter = WalkthroughPagerAdapter(it)
+            rootView.viewPager.adapter = WalkthroughPagerAdapter(model, it)
         }
-        val model = ViewModelProviders.of(this, viewModelFactory).get(WalkthroughFragmentViewModel::class.java)
         model.state.observe(this, EventObserver {
             when (it) {
                 is WalkthroughFragmentState.Walkthrough -> {

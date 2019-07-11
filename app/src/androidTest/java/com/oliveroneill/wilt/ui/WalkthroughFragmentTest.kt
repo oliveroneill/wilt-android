@@ -23,6 +23,7 @@ import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.SpotifyAuthenticationRequest
 import com.oliveroneill.wilt.viewmodel.WalkthroughFragmentState
 import com.oliveroneill.wilt.viewmodel.WalkthroughFragmentViewModel
+import com.oliveroneill.wilt.viewmodel.WalkthroughPage
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Before
 import org.junit.Test
@@ -37,11 +38,22 @@ class WalkthroughFragmentTest {
     // Create factory that returns the fake view model
     private val factory = mock<ViewModelProvider.AndroidViewModelFactory>()
     private val navController = mock<NavController>()
+    /**
+     * These pages are exactly the same as the ones in the real view model. I'm not sure whether this is
+     * the best idea because this wouldn't catch an edge case like the view not using the viewmodel's
+     * pages. On the other hand, it does mean that our tests ensure the text it shows is exactly
+     * what I'd expect from the view as opposed to some other text that means nothing
+     */
+    val pages = listOf(
+        WalkthroughPage(title = "Welcome to page 1, yeah!", imageResID = R.drawable.walkthrough1),
+        WalkthroughPage(title = "Welcome to the second page!!", imageResID = R.drawable.walkthrough2)
+    )
 
     @Before
     fun setup() {
         whenever(factory.create(WalkthroughFragmentViewModel::class.java)).thenReturn(viewModel)
         whenever(viewModel.state).thenReturn(stateData)
+        whenever(viewModel.pages).thenReturn(pages)
         // Specify the fragment factory in order to set the view model factory
         scenario = launchFragmentInContainer<WalkthroughFragment>(
             null,
@@ -65,7 +77,7 @@ class WalkthroughFragmentTest {
         onView(
             allOf(
                 withId(R.id.textView),
-                withText("Welcome to Wilt. We\'ll keep track of what you listen to.")
+                withText(pages[0].title)
             )
         ).check(matches(isDisplayed()))
     }

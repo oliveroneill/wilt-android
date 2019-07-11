@@ -27,6 +27,20 @@ sealed class WalkthroughFragmentState {
 }
 
 /**
+ * A page that the user will swipe through to get an intro to the app
+ */
+data class WalkthroughPage(
+    /**
+     * The subtitle to the image that will displayed on this page
+     */
+    val title: String,
+    /**
+     * An ID for the image to be displayed
+     */
+    val imageResID: Int
+)
+
+/**
  * ViewModel for walkthrough. This primarily handles login
  */
 @OpenForTesting
@@ -40,6 +54,13 @@ constructor(application: Application,
 ): AndroidViewModel(application) {
     private val redirectUri = application.getString(R.string.spotify_redirect_uri)
     private val clientID: String = application.getString(R.string.spotify_client_id)
+    /**
+     * The pages to display
+     */
+    val pages = listOf(
+        WalkthroughPage(title = application.getString(R.string.walkthrough1_text), imageResID = R.drawable.walkthrough1),
+        WalkthroughPage(title = application.getString(R.string.walkthrough2_text), imageResID = R.drawable.walkthrough2)
+    )
 
     /**
      * Set this value to receive Spotify sign in events
