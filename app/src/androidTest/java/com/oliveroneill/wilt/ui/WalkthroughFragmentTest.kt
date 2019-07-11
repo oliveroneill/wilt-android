@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -74,6 +74,34 @@ class WalkthroughFragmentTest {
 
     @Test
     fun shouldDisplayWalkthrough() {
+        onView(
+            allOf(
+                withId(R.id.textView),
+                withText(pages[0].title)
+            )
+        ).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun shouldDisplaySecondPageOnSwipe() {
+        // Swipe left
+        onView(withId(R.id.viewPager)).perform(swipeLeft())
+        // Ensure the second page is displayed
+        onView(
+            allOf(
+                withId(R.id.textView),
+                withText(pages[1].title)
+            )
+        ).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun shouldDisplayFirstPageWhenSwipingLeftThenRight() {
+        // Swipe left
+        onView(withId(R.id.viewPager)).perform(swipeLeft())
+        // Swipe back
+        onView(withId(R.id.viewPager)).perform(swipeRight())
+        // Ensure the second page is displayed
         onView(
             allOf(
                 withId(R.id.textView),
