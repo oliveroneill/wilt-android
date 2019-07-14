@@ -10,6 +10,9 @@ import com.oliveroneill.wilt.viewmodel.PlayHistoryNetworkState
 
 /**
  * Adapter for displaying artist play history
+ *
+ * TODO: there's a lot of logic in this class that should be moved to a ViewModel. I couldn't figure out a
+ * clean way to do this
  */
 class HistoryListAdapter : PagedListAdapter<ArtistRank, RecyclerView.ViewHolder>(ITEM_COMPARATOR) {
     private var state: PlayHistoryNetworkState? = null
