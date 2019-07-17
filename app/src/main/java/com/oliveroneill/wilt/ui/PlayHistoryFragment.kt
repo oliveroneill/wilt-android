@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.oliveroneill.wilt.EventObserver
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.databinding.HistoryScreenBinding
@@ -29,7 +31,9 @@ class PlayHistoryFragment: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = DataBindingUtil.inflate<HistoryScreenBinding>(inflater, R.layout.history_screen, container, false)
+        val binding = DataBindingUtil.inflate<HistoryScreenBinding>(
+            inflater, R.layout.history_screen, container, false
+        )
         val rootView = binding.root
         val model = ViewModelProviders.of(this, viewModelFactory).get(PlayHistoryFragmentViewModel::class.java)
         val adapter = HistoryListAdapter()
@@ -45,5 +49,11 @@ class PlayHistoryFragment: Fragment() {
             adapter.submitList(it)
         })
         return rootView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        view.bottom_navigation.setupWithNavController(
+            NavHostFragment.findNavController(this)
+        )
     }
 }

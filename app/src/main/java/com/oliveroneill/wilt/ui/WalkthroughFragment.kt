@@ -94,7 +94,7 @@ class WalkthroughFragment: Fragment() {
         (activity as? AppCompatActivity)?.let {
             // Set the fragments that cannot have a back button. The play history fragment should not have a back
             // button so that you cannot return to the walkthrough
-            val appBarConfiguration = AppBarConfiguration(setOf(R.id.walkthroughFragment, R.id.historyFragment))
+            val appBarConfiguration = AppBarConfiguration(setOf(R.id.walkthroughFragment, R.id.navigation_feed))
             NavigationUI.setupActionBarWithNavController(it, findNavController(this), appBarConfiguration)
         }
     }

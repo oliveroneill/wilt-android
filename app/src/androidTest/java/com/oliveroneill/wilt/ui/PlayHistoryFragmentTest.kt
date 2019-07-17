@@ -1,7 +1,5 @@
 package com.oliveroneill.wilt.ui
 
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.MutableLiveData
@@ -55,18 +53,17 @@ class PlayHistoryFragmentTest {
         // Specify the fragment factory in order to set the view model factory
         scenario = launchFragmentInContainer<PlayHistoryFragment>(
             null,
-            R.style.AppTheme,
-            object : FragmentFactory() {
-                @Suppress("UNCHECKED_CAST")
-                override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
-                    return (super.instantiate(classLoader, className) as PlayHistoryFragment).also {
-                        it.viewModelFactory = factory
+            R.style.AppTheme
+        ) {
+            PlayHistoryFragment().also {
+                it.viewModelFactory = factory
+                it.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
+                    if (viewLifecycleOwner != null) {
+                        // The fragment’s view has just been created
+                        Navigation.setViewNavController(it.requireView(), navController)
                     }
                 }
             }
-        )
-        scenario.onFragment {
-            Navigation.setViewNavController(it.requireView(), navController)
         }
     }
 
