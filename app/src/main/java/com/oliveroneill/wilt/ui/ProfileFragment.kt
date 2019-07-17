@@ -10,7 +10,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.databinding.ProfileFragmentBinding
-import kotlinx.android.synthetic.main.history_screen.view.*
+import kotlinx.android.synthetic.main.history_fragment.view.*
 
 class ProfileFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
