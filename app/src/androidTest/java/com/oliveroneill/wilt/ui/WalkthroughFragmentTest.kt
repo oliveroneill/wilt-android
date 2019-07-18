@@ -14,10 +14,7 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.SpotifyAuthenticationRequest
@@ -124,13 +121,13 @@ class WalkthroughFragmentTest {
     fun shouldShowLoginError() {
         // Set error state
         stateData.postValue(Event(WalkthroughFragmentState.LoginError("Something bad happened")))
-        verify(navController).navigate(eq(WalkthroughFragmentDirections.showLoginError()))
+        verify(navController, timeout(1000)).navigate(eq(WalkthroughFragmentDirections.showLoginError()))
     }
 
     @Test
     fun shouldShowPlayHistory() {
         stateData.postValue(Event(WalkthroughFragmentState.LoggedIn("Code_Example")))
-        verify(navController).navigate(eq(WalkthroughFragmentDirections.showPlayHistory()))
+        verify(navController, timeout(1000)).navigate(eq(WalkthroughFragmentDirections.showPlayHistory()))
     }
 
     @Test
