@@ -3,7 +3,7 @@ package com.oliveroneill.wilt
 /**
  * Used as a wrapper for data that is exposed via a LiveData that represents an event.
  *
- * Take from: https://gist.github.com/JoseAlcerreca/5b661f1800e1e654f07cc54fe87441af#file-event-kt
+ * Taken from: https://gist.github.com/JoseAlcerreca/5b661f1800e1e654f07cc54fe87441af#file-event-kt
  */
 open class Event<out T>(private val content: T) {
 
