@@ -15,7 +15,7 @@
             app:destination="@id/loginErrorFragment" />
         <action
             android:id="@+id/action_login"
-            app:destination="@id/navigation_feed"
+            app:destination="@+id/navigation_profile"
             app:popUpTo="@+id/nav_graph" />
     </fragment>
 
@@ -32,5 +32,10 @@
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.oliveroneill.wilt.ui.ProfileFragment"
-        android:label="ProfileFragment" />
+        android:label="About You"
+        tools:layout="@layout/profile_fragment">
+        <action
+            android:id="@+id/action_logout"
+            app:destination="@id/walkthroughFragment" />
+    </fragment>
 </navigation>

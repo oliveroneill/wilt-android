@@ -15,4 +15,8 @@
     <string name="play_history_loading_message">Loading your favourite artists…</string>
     <string name="title_profile">Profile</string>
     <string name="title_feed">Feed</string>
+
+    <string name="favourite_artist_title">Your favourite artist</string>
+    <string name="last_listened_format">Last listened to %1$s</string>
+    <string name="plays_format">%1$d plays since joining Wilt</string>
 </resources>
