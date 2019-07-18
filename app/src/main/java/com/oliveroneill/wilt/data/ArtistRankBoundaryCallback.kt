@@ -2,10 +2,12 @@ package com.oliveroneill.wilt.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
+import com.google.firebase.functions.FirebaseFunctionsException
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.data.dao.PlayHistoryDao
 import com.oliveroneill.wilt.viewmodel.PlayHistoryNetworkState
+import com.oliveroneill.wilt.viewmodel.PlayHistoryState
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.concurrent.Executor
@@ -14,7 +16,7 @@ import java.util.concurrent.Executors
 class ArtistRankBoundaryCallback(
     private val dao: PlayHistoryDao,
     private val firebase: FirebaseAPI,
-    private val loadingState: MutableLiveData<Event<PlayHistoryNetworkState>>,
+    private val loadingState: MutableLiveData<Event<PlayHistoryState>>,
     private val pageSize: Long,
     private val executor: Executor = Executors.newSingleThreadExecutor()
 ): PagedList.BoundaryCallback<ArtistRank>() {
@@ -66,18 +68,31 @@ class ArtistRankBoundaryCallback(
 
     private fun topArtists(start: Long, end: Long, loadingFromTop: Boolean = true) {
         // Update state
-        if (loadingFromTop) {
-            loadingState.postValue(Event(PlayHistoryNetworkState.LoadingFromTop))
+        val state = if (loadingFromTop) {
+            PlayHistoryNetworkState.LoadingFromTop
         } else {
-            loadingState.postValue(Event(PlayHistoryNetworkState.LoadingFromBottom))
+            PlayHistoryNetworkState.LoadingFromBottom
         }
+        loadingState.postValue(Event(PlayHistoryState.LoggedIn(state)))
         firebase.topArtists(start.toInt(), end.toInt()) { result ->
             result.onSuccess {
                 executor.execute {
                     dao.insert(it)
-                    loadingState.postValue(Event(PlayHistoryNetworkState.NotLoading))
+                    loadingState.postValue(
+                        Event(
+                            PlayHistoryState.LoggedIn(PlayHistoryNetworkState.NotLoading)
+                        )
+                    )
                 }
             }.onFailure {
+                // Check whether we've logged out
+                if (it is FirebaseFunctionsException &&
+                    it.code == FirebaseFunctionsException.Code.UNAUTHENTICATED) {
+                    // Send back a logged out error
+                    loadingState.postValue(Event(PlayHistoryState.LoggedOut))
+                    // Short circuit
+                    return@onFailure
+                }
                 val failure = if (loadingFromTop) {
                     PlayHistoryNetworkState.FailureAtTop(
                         it.localizedMessage
@@ -89,7 +104,7 @@ class ArtistRankBoundaryCallback(
                         // Retry
                     ) { topArtists(start, end) }
                 }
-                loadingState.postValue(Event(failure))
+                loadingState.postValue(Event(PlayHistoryState.LoggedIn(failure)))
             }
         }
     }

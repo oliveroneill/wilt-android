@@ -17,14 +17,13 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentViewModel
 import com.oliveroneill.wilt.viewmodel.PlayHistoryNetworkState
+import com.oliveroneill.wilt.viewmodel.PlayHistoryState
 import junit.framework.TestCase.assertEquals
 import org.hamcrest.Matchers.not
 import org.junit.Before
@@ -40,7 +39,7 @@ class PlayHistoryFragmentTest {
     // Create fake view model for sending events to the UI
     private val viewModel = mock<PlayHistoryFragmentViewModel>()
     private val itemStateData = MutableLiveData<PagedList<ArtistRank>>()
-    private val loadingStateData = MutableLiveData<Event<PlayHistoryNetworkState>>()
+    private val loadingStateData = MutableLiveData<Event<PlayHistoryState>>()
     // Create factory that returns the fake view model
     private val factory = mock<ViewModelProvider.AndroidViewModelFactory>()
     private val navController = mock<NavController>()
@@ -93,7 +92,11 @@ class PlayHistoryFragmentTest {
 
     @Test
     fun shouldDisplayLoadingSpinnerAtBottom() {
-        loadingStateData.postValue(Event(PlayHistoryNetworkState.LoadingFromBottom))
+        loadingStateData.postValue(
+            Event(
+                PlayHistoryState.LoggedIn(PlayHistoryNetworkState.LoadingFromBottom)
+            )
+        )
         // Then
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.loading_txt)).check(matches(isDisplayed()))
@@ -101,7 +104,11 @@ class PlayHistoryFragmentTest {
 
     @Test
     fun shouldDisplayLoadingSpinnerAtTop() {
-        loadingStateData.postValue(Event(PlayHistoryNetworkState.LoadingFromTop))
+        loadingStateData.postValue(
+            Event(
+                PlayHistoryState.LoggedIn(PlayHistoryNetworkState.LoadingFromTop)
+            )
+        )
         // Then
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.loading_txt)).check(matches(isDisplayed()))
@@ -109,7 +116,11 @@ class PlayHistoryFragmentTest {
 
     @Test
     fun shouldHideLoadingSpinner() {
-        loadingStateData.postValue(Event(PlayHistoryNetworkState.NotLoading))
+        loadingStateData.postValue(
+            Event(
+                PlayHistoryState.LoggedIn(PlayHistoryNetworkState.NotLoading)
+            )
+        )
         // Then
         onView(withId(R.id.progress_bar)).check(doesNotExist())
         onView(withId(R.id.loading_txt)).check(doesNotExist())
@@ -118,7 +129,11 @@ class PlayHistoryFragmentTest {
     @Test
     fun shouldShowErrorAtBottom() {
         val error = "Some random error message string"
-        loadingStateData.postValue(Event(PlayHistoryNetworkState.FailureAtBottom(error) {}))
+        loadingStateData.postValue(
+            Event(
+                PlayHistoryState.LoggedIn(PlayHistoryNetworkState.FailureAtBottom(error) {})
+            )
+        )
         // Then
         onView(withText(error)).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
@@ -128,7 +143,11 @@ class PlayHistoryFragmentTest {
     @Test
     fun shouldShowErrorAtTop() {
         val error = "Some random error message string"
-        loadingStateData.postValue(Event(PlayHistoryNetworkState.FailureAtTop(error) {}))
+        loadingStateData.postValue(
+            Event(
+                PlayHistoryState.LoggedIn(PlayHistoryNetworkState.FailureAtTop(error) {})
+            )
+        )
         // Then
         onView(withText(error)).check(matches(isDisplayed()))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
@@ -148,7 +167,11 @@ class PlayHistoryFragmentTest {
             list[index]
         }
         `when`(pagedList.size).thenReturn(list.size)
-        loadingStateData.postValue(Event(PlayHistoryNetworkState.LoadingFromBottom))
+        loadingStateData.postValue(
+            Event(
+                PlayHistoryState.LoggedIn(PlayHistoryNetworkState.LoadingFromBottom)
+            )
+        )
         // When
         itemStateData.postValue(pagedList)
         // Then
@@ -177,7 +200,11 @@ class PlayHistoryFragmentTest {
             list[index]
         }
         `when`(pagedList.size).thenReturn(list.size)
-        loadingStateData.postValue(Event(PlayHistoryNetworkState.LoadingFromTop))
+        loadingStateData.postValue(
+            Event(
+                PlayHistoryState.LoggedIn(PlayHistoryNetworkState.LoadingFromTop)
+            )
+        )
         // When
         itemStateData.postValue(pagedList)
         // Then
@@ -207,7 +234,11 @@ class PlayHistoryFragmentTest {
         }
         `when`(pagedList.size).thenReturn(list.size)
         val error = "Some random error message string"
-        loadingStateData.postValue(Event(PlayHistoryNetworkState.FailureAtBottom(error) {}))
+        loadingStateData.postValue(
+            Event(
+                PlayHistoryState.LoggedIn(PlayHistoryNetworkState.FailureAtBottom(error) {})
+            )
+        )
         // When
         itemStateData.postValue(pagedList)
         // Then
@@ -238,7 +269,11 @@ class PlayHistoryFragmentTest {
         }
         `when`(pagedList.size).thenReturn(list.size)
         val error = "Some random error message string"
-        loadingStateData.postValue(Event(PlayHistoryNetworkState.FailureAtTop(error) {}))
+        loadingStateData.postValue(
+            Event(
+                PlayHistoryState.LoggedIn(PlayHistoryNetworkState.FailureAtTop(error) {})
+            )
+        )
         // When
         itemStateData.postValue(pagedList)
         // Then
@@ -262,9 +297,11 @@ class PlayHistoryFragmentTest {
         // Given
         loadingStateData.postValue(
             Event(
-                PlayHistoryNetworkState.FailureAtBottom(error) {
-                    retryCallCount += 1
-                }
+                PlayHistoryState.LoggedIn(
+                    PlayHistoryNetworkState.FailureAtBottom(error) {
+                        retryCallCount += 1
+                    }
+                )
             )
         )
         // When
@@ -280,9 +317,11 @@ class PlayHistoryFragmentTest {
         // Given
         loadingStateData.postValue(
             Event(
-                PlayHistoryNetworkState.FailureAtTop(error) {
-                    retryCallCount += 1
-                }
+                PlayHistoryState.LoggedIn(
+                    PlayHistoryNetworkState.FailureAtTop(error) {
+                        retryCallCount += 1
+                    }
+                )
             )
         )
         // When
@@ -302,5 +341,12 @@ class PlayHistoryFragmentTest {
         onView(withId(R.id.swipe_refresh)).perform(swipeDown())
         // Then
         verify(mockDataSource).invalidate()
+    }
+
+    @Test
+    fun shouldLogout() {
+        // Set state
+        loadingStateData.postValue(Event(PlayHistoryState.LoggedOut))
+        verify(navController, timeout(1000)).navigate(eq(PlayHistoryFragmentDirections.logout()))
     }
 }

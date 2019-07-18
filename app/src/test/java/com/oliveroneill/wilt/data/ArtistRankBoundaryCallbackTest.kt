@@ -2,12 +2,14 @@ package com.oliveroneill.wilt.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.functions.FirebaseFunctionsException
 import com.jraska.livedata.test
 import com.nhaarman.mockitokotlin2.*
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.data.dao.PlayHistoryDao
 import com.oliveroneill.wilt.viewmodel.PlayHistoryNetworkState
+import com.oliveroneill.wilt.viewmodel.PlayHistoryState
 import junit.framework.TestCase
 import org.junit.Before
 import org.junit.Rule
@@ -24,7 +26,7 @@ class ArtistRankBoundaryCallbackTest {
     private val pageSize = 11L
     private lateinit var firebase: FirebaseAPI
     private lateinit var dao: PlayHistoryDao
-    private lateinit var loadingState: MutableLiveData<Event<PlayHistoryNetworkState>>
+    private lateinit var loadingState: MutableLiveData<Event<PlayHistoryState>>
     private lateinit var boundaryCallback: ArtistRankBoundaryCallback
 
     /**
@@ -51,6 +53,16 @@ class ArtistRankBoundaryCallbackTest {
         )
     }
 
+    /**
+     * Helper function to unwrap the event and the state. This will return null if there's no value or
+     * you're not logged in
+     */
+    fun Event<PlayHistoryState>.unwrapState(): PlayHistoryNetworkState? {
+        val state = getContentIfNotHandled()
+        if (state is PlayHistoryState.LoggedIn) return state.state
+        TestCase.fail()
+        return null
+    }
 
     @Test
     fun `should convert timestamps correctly`() {
@@ -89,7 +101,7 @@ class ArtistRankBoundaryCallbackTest {
             loadingState
                 .test()
                 .assertHasValue()
-                .assertValue { it.getContentIfNotHandled() is PlayHistoryNetworkState.LoadingFromTop }
+                .assertValue { it.unwrapState() is PlayHistoryNetworkState.LoadingFromTop }
             // Send success value to stop blocking
             invocation.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf()))
         }
@@ -107,7 +119,7 @@ class ArtistRankBoundaryCallbackTest {
             loadingState
                 .test()
                 .assertHasValue()
-                .assertValue { it.getContentIfNotHandled() is PlayHistoryNetworkState.LoadingFromBottom }
+                .assertValue { it.unwrapState() is PlayHistoryNetworkState.LoadingFromBottom }
             // Send success value to stop blocking
             invocation.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf()))
         }
@@ -128,7 +140,7 @@ class ArtistRankBoundaryCallbackTest {
         loadingState
             .test()
             .assertHasValue()
-            .assertValue { it.getContentIfNotHandled() is PlayHistoryNetworkState.NotLoading }
+            .assertValue { it.unwrapState() is PlayHistoryNetworkState.NotLoading }
     }
 
     @Test
@@ -145,7 +157,7 @@ class ArtistRankBoundaryCallbackTest {
             .test()
             .assertHasValue()
             .assertValue {
-                val state = it.getContentIfNotHandled()
+                val state = it.unwrapState()
                 state is PlayHistoryNetworkState.FailureAtTop && state.error == expected
             }
     }
@@ -161,7 +173,7 @@ class ArtistRankBoundaryCallbackTest {
         val item = ArtistRank("09-2018", LocalDate.parse("2018-02-25"), "Pinegrove", 99)
         boundaryCallback.onItemAtFrontLoaded(item)
         // Get the state that was sent
-        val state = loadingState.value?.getContentIfNotHandled()
+        val state = loadingState.value?.unwrapState()
         when (state) {
             is PlayHistoryNetworkState.FailureAtTop -> {
                 // Call retry
@@ -192,7 +204,7 @@ class ArtistRankBoundaryCallbackTest {
             .test()
             .assertHasValue()
             .assertValue {
-                val state = it.getContentIfNotHandled()
+                val state = it.unwrapState()
                 state is PlayHistoryNetworkState.FailureAtBottom && state.error == expected
             }
     }
@@ -208,7 +220,7 @@ class ArtistRankBoundaryCallbackTest {
         val item = ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99)
         boundaryCallback.onItemAtEndLoaded(item)
         // Get the state that was sent
-        val state = loadingState.value?.getContentIfNotHandled()
+        val state = loadingState.value?.unwrapState()
         when (state) {
             is PlayHistoryNetworkState.FailureAtBottom -> {
                 // Call retry
@@ -245,5 +257,23 @@ class ArtistRankBoundaryCallbackTest {
         val item = ArtistRank("13-2019", LocalDate.parse("2019-03-25"), "Pinegrove", 99)
         boundaryCallback.onItemAtEndLoaded(item)
         verify(firebase).topArtists(eq(1546174800), eq(1552827600), any())
+    }
+
+    @Test
+    fun `should handle unauthenticated error`() {
+        val error = mock<FirebaseFunctionsException>()
+        whenever(error.code).thenReturn(FirebaseFunctionsException.Code.UNAUTHENTICATED)
+        // We'll make the mock send back an error
+        whenever(firebase.topArtists(any(), any(), any())).then {
+            it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.failure(error))
+        }
+        val item = ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99)
+        boundaryCallback.onItemAtEndLoaded(item)
+        loadingState
+            .test()
+            .assertHasValue()
+            .assertValue {
+                it.getContentIfNotHandled() is PlayHistoryState.LoggedOut
+            }
     }
 }

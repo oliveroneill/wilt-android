@@ -16,6 +16,7 @@ import com.oliveroneill.wilt.EventObserver
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.databinding.HistoryFragmentBinding
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentViewModel
+import com.oliveroneill.wilt.viewmodel.PlayHistoryState
 import kotlinx.android.synthetic.main.history_fragment.view.*
 
 
@@ -42,7 +43,17 @@ class PlayHistoryFragment: Fragment() {
         }
         binding.historyList.adapter = adapter
         model.loadingState.observe(this, EventObserver {
-            adapter.setNetworkState(it)
+            when (it) {
+                is PlayHistoryState.LoggedIn -> {
+                    adapter.setNetworkState(it.state)
+                }
+                is PlayHistoryState.LoggedOut -> {
+                    NavHostFragment.findNavController(this).navigate(
+                        PlayHistoryFragmentDirections.logout()
+                    )
+                }
+            }
+
         })
         model.itemDataSource.observe(this, Observer {
             rootView.swipe_refresh.isRefreshing = false

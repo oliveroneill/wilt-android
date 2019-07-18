@@ -27,6 +27,15 @@ data class PlayHistoryNetworkStateViewData(
     val retry: (() -> Unit)? = null
 )
 
+/**
+ * The state of the view model. There's a hierarchy here, since there's a lot of states
+ * but only if the user is logged in
+ */
+sealed class PlayHistoryState {
+    data class LoggedIn(val state: PlayHistoryNetworkState) : PlayHistoryState()
+    object LoggedOut: PlayHistoryState()
+}
+
 sealed class PlayHistoryNetworkState {
     /**
      * If new rows are being loaded at the top of the list
@@ -93,11 +102,11 @@ sealed class PlayHistoryNetworkState {
 class PlayHistoryFragmentViewModel @JvmOverloads constructor(
     application: Application, firebase: FirebaseAPI = FirebaseAPI()
 ): AndroidViewModel(application) {
-    private val _loadingState = MutableLiveData<Event<PlayHistoryNetworkState>>()
+    private val _loadingState = MutableLiveData<Event<PlayHistoryState>>()
     /**
      * Used to display a loading spinner or error message while a new page is loaded
      */
-    val loadingState : LiveData<Event<PlayHistoryNetworkState>>
+    val loadingState : LiveData<Event<PlayHistoryState>>
         get() = _loadingState
 
     /**

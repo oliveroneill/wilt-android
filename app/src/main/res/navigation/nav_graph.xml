@@ -28,7 +28,11 @@
         android:id="@+id/navigation_feed"
         android:name="com.oliveroneill.wilt.ui.PlayHistoryFragment"
         android:label="Your Top Artists Per Week"
-        tools:layout="@layout/history_fragment" />
+        tools:layout="@layout/history_fragment" >
+        <action
+            android:id="@+id/action_logout"
+            app:destination="@id/walkthroughFragment" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.oliveroneill.wilt.ui.ProfileFragment"
