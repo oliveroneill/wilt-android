@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
+        <variable name="loading" type="boolean"/>
         <variable name="profile_name" type="String"/>
         <variable name="favourite_artist" type="String"/>
         <variable name="last_listened" type="String"/>
-        <variable name="plays" type="int"/>
+        <variable name="plays" type="String"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,6 +37,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ProgressBar
+            android:id="@+id/loading_spinner"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/favouriteArtistTitleText"
+            app:visibleGone="@{loading}" />
+
         <TextView
             android:id="@+id/favouriteArtistTitleText"
             android:layout_width="match_parent"
@@ -62,7 +76,8 @@
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/favouriteArtistTitleText" />
+            app:layout_constraintTop_toBottomOf="@+id/favouriteArtistTitleText"
+            app:visibleGone="@{!loading}" />
 
         <TextView
             android:id="@+id/lastListenText"
@@ -71,11 +86,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="@{@string/last_listened_format(last_listened)}"
+            android:text="@{last_listened}"
             android:textAlignment="textStart"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/favouriteArtistText" />
+            app:layout_constraintTop_toBottomOf="@+id/favouriteArtistText"
+            app:visibleGone="@{!loading}" />
 
         <TextView
             android:id="@+id/playsText"
@@ -84,11 +100,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="@{@string/plays_format(plays)}"
+            android:text="@{plays}"
             android:textAlignment="textStart"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lastListenText" />
+            app:layout_constraintTop_toBottomOf="@+id/lastListenText"
+            app:visibleGone="@{!loading}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
         <com.google.android.material.bottomnavigation.BottomNavigationView

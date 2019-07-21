@@ -1,31 +1,130 @@
 package com.oliveroneill.wilt.viewmodel
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.github.marlonlom.utilities.timeago.TimeAgo
 import com.oliveroneill.wilt.Event
-import com.oliveroneill.wilt.data.FirebaseAuthentication
+import com.oliveroneill.wilt.R
+import com.oliveroneill.wilt.data.FirebaseAPI
 import com.oliveroneill.wilt.testing.OpenForTesting
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 @OpenForTesting
 class ProfileFragmentViewModel @JvmOverloads constructor(
-    application: Application, firebase: FirebaseAuthentication = FirebaseAuthentication(application)
+    application: Application, private val firebase: FirebaseAPI = FirebaseAPI()
 ): AndroidViewModel(application) {
-    private val _loginState = MutableLiveData<Event<ProfileLogInState>>()
-    val loginState : LiveData<Event<ProfileLogInState>>
-        get() = _loginState
+    private val _state = MutableLiveData<Event<ProfileState>>()
+    val state : LiveData<Event<ProfileState>>
+        get() = _state
+
     init {
         val profileName = firebase.currentUser
         if (profileName == null) {
-            _loginState.postValue(Event(ProfileLogInState.LoggedOut))
+            _state.postValue(Event(ProfileState.LoggedOut))
         } else {
-            _loginState.postValue(Event(ProfileLogInState.LoggedIn(profileName)))
+            loadTopArtist(profileName)
+        }
+    }
+
+    private fun loadTopArtist(profileName: String) {
+        _state.postValue(
+            // Signal loading state
+            Event(
+                ProfileState.LoggedIn(ProfileNetworkState.Loading(profileName))
+            )
+        )
+        firebase.topArtist {
+            it.onSuccess {
+                // Post successful response
+                _state.postValue(
+                    Event(
+                        ProfileState.LoggedIn(
+                            ProfileNetworkState.LoadedTopArtist(profileName, it)
+                        )
+                    )
+                )
+            }.onFailure {
+                // TODO: handle failure
+                it.printStackTrace()
+            }
         }
     }
 }
 
-sealed class ProfileLogInState {
-    data class LoggedIn(val profileName: String) : ProfileLogInState()
-    object LoggedOut : ProfileLogInState()
+/**
+ * The state of the profile fragment. You can either be logged in or logged out. There are
+ * extra fields for the logged in state to communicate the response
+ */
+sealed class ProfileState {
+    data class LoggedIn(val networkState: ProfileNetworkState) : ProfileState()
+    object LoggedOut : ProfileState()
 }
+
+/**
+ * A user's favourite artist. [lastPlayed] will be null if it has never been played since joining Wilt
+ */
+data class TopArtist(val name: String, val totalPlays: Int, val lastPlayed: LocalDateTime?)
+
+/**
+ * The states available when the profile screen is logged in
+ */
+sealed class ProfileNetworkState {
+    data class Loading(val profileName: String): ProfileNetworkState()
+    data class LoadedTopArtist(val profileName: String, val artist: TopArtist): ProfileNetworkState()
+
+    /**
+     * Convert state into a set of necessary data for displaying the view
+     */
+    fun toViewData(context: Context): ProfileStateViewData {
+        when (this) {
+            is Loading -> {
+                return ProfileStateViewData(
+                    loading = true,
+                    profileName = profileName
+                )
+            }
+            is LoadedTopArtist -> {
+                // If lastPlayed is null then we don't have data about how often it was played and
+                // when it was played
+                if (artist.lastPlayed == null) {
+                    return ProfileStateViewData(
+                        profileName = profileName,
+                        artistName = artist.name,
+                        // We'll leave the strings empty if the date is null. The date will be null
+                        // if this artist hasn't been played since joining Wilt
+                        lastListenedText = "",
+                        playText = ""
+                    )
+                }
+                val lastPlayedRelative = artist.lastPlayed.toRelative()
+                return ProfileStateViewData(
+                    profileName = profileName,
+                    artistName = artist.name,
+                    lastListenedText = context.getString(R.string.last_listened_format, lastPlayedRelative),
+                    playText = context.getString(R.string.plays_format, artist.totalPlays)
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Convert date into relative timespan since now. For example, "2 days ago"
+ */
+private fun LocalDateTime.toRelative() = TimeAgo.using(toEpochSecond(ZoneOffset.UTC) * 1000)
+
+/**
+ * The data necessary to display the network state for this view model.
+ * By default nothing is displayed
+ */
+data class ProfileStateViewData(
+    val loading: Boolean = false,
+    val profileName: String? = null,
+    val artistName: String? = null,
+    val lastListenedText: String? = null,
+    val playText: String? = null
+)

@@ -74,7 +74,7 @@ class ArtistRankBoundaryCallback(
             PlayHistoryNetworkState.LoadingFromBottom
         }
         loadingState.postValue(Event(PlayHistoryState.LoggedIn(state)))
-        firebase.topArtists(start.toInt(), end.toInt()) { result ->
+        firebase.topArtistsPerWeek(start.toInt(), end.toInt()) { result ->
             result.onSuccess {
                 executor.execute {
                     dao.insert(it)

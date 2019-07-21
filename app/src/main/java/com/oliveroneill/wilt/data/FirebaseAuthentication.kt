@@ -1,7 +1,6 @@
 package com.oliveroneill.wilt.data
 
 import android.content.Context
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.functions.FirebaseFunctions
 import com.oliveroneill.wilt.testing.OpenForTesting
@@ -13,10 +12,6 @@ import com.oliveroneill.wilt.testing.OpenForTesting
 class FirebaseAuthentication(context: Context) {
     private val auth = FirebaseAuth.getInstance()
     private val functions = FirebaseFunctions.getInstance("asia-northeast1")
-
-    init {
-        FirebaseApp.initializeApp(context)
-    }
 
     /**
      * Get the current logged in user, or null if there's no user logged in

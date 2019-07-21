@@ -15,7 +15,7 @@ import com.oliveroneill.wilt.EventObserver
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.databinding.ProfileFragmentBinding
 import com.oliveroneill.wilt.viewmodel.ProfileFragmentViewModel
-import com.oliveroneill.wilt.viewmodel.ProfileLogInState
+import com.oliveroneill.wilt.viewmodel.ProfileState
 import kotlinx.android.synthetic.main.history_fragment.view.*
 
 class ProfileFragment: Fragment() {
@@ -33,21 +33,24 @@ class ProfileFragment: Fragment() {
             false
         )
         val model = ViewModelProviders.of(this, viewModelFactory).get(ProfileFragmentViewModel::class.java)
-        model.loginState.observe(this, EventObserver {
+        model.state.observe(this, EventObserver {
             when (it) {
-                is ProfileLogInState.LoggedIn -> {
-                    binding.profileName = it.profileName
+                is ProfileState.LoggedIn -> {
+                    val context = context ?: return@EventObserver
+                    val viewData = it.networkState.toViewData(context)
+                    binding.loading = viewData.loading
+                    binding.profileName = viewData.profileName
+                    binding.lastListened = viewData.lastListenedText
+                    binding.favouriteArtist = viewData.artistName
+                    binding.plays = viewData.playText
                 }
-                is ProfileLogInState.LoggedOut -> {
+                is ProfileState.LoggedOut -> {
                     NavHostFragment.findNavController(this).navigate(
                         ProfileFragmentDirections.logout()
                     )
                 }
             }
         })
-        binding.favouriteArtist = "Death Grips"
-        binding.lastListened = "3 days ago"
-        binding.plays = 666
         return binding.root
     }
 
