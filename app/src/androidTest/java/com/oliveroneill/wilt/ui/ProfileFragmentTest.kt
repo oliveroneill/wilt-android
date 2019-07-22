@@ -70,7 +70,7 @@ class ProfileFragmentTest {
         stateData.postValue(Event(ProfileState.LoggedIn(ProfileNetworkState.Loading(currentUser))))
         // Then
         onView(withText(currentUser)).check(matches(isDisplayed()))
-        onView(withId(R.id.loading_spinner)).check(matches(isDisplayed()))
+        onView(withId(R.id.shimmer)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -93,7 +93,7 @@ class ProfileFragmentTest {
         onView(withText("Death Grips")).check(matches(isDisplayed()))
         onView(withText("666 plays since joining Wilt")).check(matches(isDisplayed()))
         onView(withText("Last listened to 2 months ago")).check(matches(isDisplayed()))
-        onView(withId(R.id.loading_spinner)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.shimmer)).check(matches(not(isDisplayed())))
     }
 
     @Test
@@ -117,6 +117,6 @@ class ProfileFragmentTest {
         // Make sure that the plays and last listened to are not displayed
         onView(withId(R.id.playsText)).check(matches(withText("")))
         onView(withId(R.id.lastListenText)).check(matches(withText("")))
-        onView(withId(R.id.loading_spinner)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.shimmer)).check(matches(not(isDisplayed())))
     }
 }
