@@ -31,6 +31,9 @@ class ProfileFragmentViewModelTest {
     fun setup() {
         firebase = mock()
         whenever(firebase.currentUser).thenReturn(currentUser)
+        whenever(
+            application.getString(eq(R.string.favourite_artist_title))
+        ).thenReturn("Your favourite artist")
     }
 
     /**
@@ -89,7 +92,10 @@ class ProfileFragmentViewModelTest {
     @Test
     fun `should convert view data correctly when loading`() {
         val state = ProfileCardState.Loading
-        val expected = ProfileCardViewData(loading = true)
+        val expected = ProfileCardViewData(
+            loading = true,
+            tagTitle = "Your favourite artist"
+        )
         assertEquals(expected, state.toViewData(application))
     }
 
@@ -100,7 +106,8 @@ class ProfileFragmentViewModelTest {
         val expected = ProfileCardViewData(
             artistName = "Death Grips",
             playText = "666 plays",
-            lastListenedText = "Last listened to 10 days ago"
+            lastListenedText = "Last listened to 10 days ago",
+            tagTitle = "Your favourite artist"
         )
         whenever(
             application.getString(eq(R.string.plays_format), eq(666))
@@ -118,7 +125,8 @@ class ProfileFragmentViewModelTest {
         val expected = ProfileCardViewData(
             artistName = "Death Grips",
             playText = "",
-            lastListenedText = ""
+            lastListenedText = "",
+            tagTitle = "Your favourite artist"
         )
         assertEquals(expected, state.toViewData(application))
     }

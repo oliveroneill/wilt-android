@@ -19,7 +19,8 @@ class ProfileFragmentViewModelAndroidTest {
         val expected = ProfileCardViewData(
             artistName = "Death Grips",
             playText = "666 plays since joining Wilt",
-            lastListenedText = "Last listened to 8 days ago"
+            lastListenedText = "Last listened to 8 days ago",
+            tagTitle = "Your favourite artist"
         )
         TestCase.assertEquals(expected, state.toViewData(ApplicationProvider.getApplicationContext<Context>()))
     }

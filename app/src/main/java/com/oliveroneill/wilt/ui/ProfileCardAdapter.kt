@@ -1,6 +1,7 @@
 package com.oliveroneill.wilt.ui
 
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.oliveroneill.wilt.viewmodel.ProfileCardViewData
 
@@ -28,8 +29,29 @@ class ProfileCardAdapter : RecyclerView.Adapter<ProfileCardViewHolder>() {
      * Call this when there is a new state for a specific item
      */
     fun updateCards(viewData: List<ProfileCardViewData>) {
+        val diffResult = DiffUtil.calculateDiff(ProfileCardDiffCallback(itemStates, viewData))
         itemStates = viewData
-        // TODO: DiffUtil
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    /**
+     * DiffUtil to avoid calling [notifyDataSetChanged] whenever we receive a new set of items.
+     * We match on [ProfileCardViewData.tagTitle] as items, so this should be unique between cards even when
+     * loading
+     */
+    class ProfileCardDiffCallback(
+        private val newList: List<ProfileCardViewData>,
+        private val oldList: List<ProfileCardViewData>
+    ): DiffUtil.Callback() {
+        override fun getOldListSize() = oldList.size
+        override fun getNewListSize() = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].tagTitle == newList[newItemPosition].tagTitle
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition] == newList[newItemPosition]
+        }
     }
 }

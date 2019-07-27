@@ -75,6 +75,7 @@ class ProfileFragmentTest {
         onView(withText(currentUser)).check(matches(isDisplayed()))
         // The check is redundant here but this is the best way to check the view exists
         onView(allOf(withId(R.id.shimmer), isDisplayed())).check(matches(isDisplayed()))
+        onView(allOf(withText("Your favourite artist"), isDisplayed())).check(matches(isDisplayed()))
     }
 
     @Test
@@ -97,6 +98,8 @@ class ProfileFragmentTest {
         onView(withText("Death Grips")).check(matches(isDisplayed()))
         onView(withText("666 plays since joining Wilt")).check(matches(isDisplayed()))
         onView(withText("Last listened to 2 months ago")).check(matches(isDisplayed()))
+        // The check is redundant here but this is the best way to check the view exists
+        onView(allOf(withText("Your favourite artist"), isDisplayed())).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.shimmer), isDisplayed())).check(doesNotExist())
     }
 
@@ -118,6 +121,8 @@ class ProfileFragmentTest {
         // Then
         onView(withText(currentUser)).check(matches(isDisplayed()))
         onView(withText("Death Grips")).check(matches(isDisplayed()))
+        // The check is redundant here but this is the best way to check the view exists
+        onView(allOf(withText("Your favourite artist"), isDisplayed())).check(matches(isDisplayed()))
         // Make sure that the plays and last listened to are not displayed
         onView(allOf(withId(R.id.playsText), not(withText("")))).check(doesNotExist())
         onView(allOf(withId(R.id.lastListenText), not(withText("")))).check(doesNotExist())

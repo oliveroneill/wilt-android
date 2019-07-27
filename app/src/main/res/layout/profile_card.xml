@@ -7,6 +7,7 @@
         <variable name="favourite_artist" type="String"/>
         <variable name="last_listened" type="String"/>
         <variable name="plays" type="String"/>
+        <variable name="chip_title" type="String"/>
     </data>
 
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,7 +49,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:enabled="false"
-                    android:text="@string/favourite_artist_title"
+                    android:text="@{chip_title}"
                     android:textColor="@color/darkGray"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

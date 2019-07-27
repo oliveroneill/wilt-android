@@ -17,6 +17,7 @@ class ProfileCardViewHolder(private val binding: ProfileCardBinding): RecyclerVi
      */
     fun bind(viewData: ProfileCardViewData) {
         binding.loading = viewData.loading
+        binding.chipTitle = viewData.tagTitle
         binding.lastListened = viewData.lastListenedText
         binding.favouriteArtist = viewData.artistName
         binding.plays = viewData.playText

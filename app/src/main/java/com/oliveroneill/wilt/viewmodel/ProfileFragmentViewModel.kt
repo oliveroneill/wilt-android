@@ -96,7 +96,8 @@ sealed class ProfileCardState {
         when (this) {
             is Loading -> {
                 return ProfileCardViewData(
-                    loading = true
+                    loading = true,
+                    tagTitle = context.getString(R.string.favourite_artist_title)
                 )
             }
             is LoadedTopArtist -> {
@@ -104,6 +105,7 @@ sealed class ProfileCardState {
                 // when it was played
                 if (artist.lastPlayed == null) {
                     return ProfileCardViewData(
+                        tagTitle = context.getString(R.string.favourite_artist_title),
                         artistName = artist.name,
                         // We'll leave the strings empty if the date is null. The date will be null
                         // if this artist hasn't been played since joining Wilt
@@ -113,6 +115,7 @@ sealed class ProfileCardState {
                 }
                 val lastPlayedRelative = artist.lastPlayed.toRelative()
                 return ProfileCardViewData(
+                    tagTitle = context.getString(R.string.favourite_artist_title),
                     artistName = artist.name,
                     lastListenedText = context.getString(R.string.last_listened_format, lastPlayedRelative),
                     playText = context.getString(R.string.plays_format, artist.totalPlays)
@@ -133,6 +136,7 @@ private fun LocalDateTime.toRelative() = TimeAgo.using(toEpochSecond(ZoneOffset.
  */
 data class ProfileCardViewData(
     val loading: Boolean = false,
+    val tagTitle: String? = null,
     val artistName: String? = null,
     val lastListenedText: String? = null,
     val playText: String? = null
