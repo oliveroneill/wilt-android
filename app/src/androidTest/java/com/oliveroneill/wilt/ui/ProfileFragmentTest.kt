@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -17,6 +18,7 @@ import com.oliveroneill.wilt.viewmodel.ProfileFragmentViewModel
 import com.oliveroneill.wilt.viewmodel.ProfileNetworkState
 import com.oliveroneill.wilt.viewmodel.ProfileState
 import com.oliveroneill.wilt.viewmodel.TopArtist
+import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
@@ -70,7 +72,8 @@ class ProfileFragmentTest {
         stateData.postValue(Event(ProfileState.LoggedIn(ProfileNetworkState.Loading(currentUser))))
         // Then
         onView(withText(currentUser)).check(matches(isDisplayed()))
-        onView(withId(R.id.shimmer)).check(matches(isDisplayed()))
+        // The check is redundant here but this is the best way to check the view exists
+        onView(allOf(withId(R.id.shimmer), isDisplayed())).check(matches(isDisplayed()))
     }
 
     @Test
@@ -93,7 +96,7 @@ class ProfileFragmentTest {
         onView(withText("Death Grips")).check(matches(isDisplayed()))
         onView(withText("666 plays since joining Wilt")).check(matches(isDisplayed()))
         onView(withText("Last listened to 2 months ago")).check(matches(isDisplayed()))
-        onView(withId(R.id.shimmer)).check(matches(not(isDisplayed())))
+        onView(allOf(withId(R.id.shimmer), isDisplayed())).check(doesNotExist())
     }
 
     @Test
@@ -115,8 +118,8 @@ class ProfileFragmentTest {
         onView(withText(currentUser)).check(matches(isDisplayed()))
         onView(withText("Death Grips")).check(matches(isDisplayed()))
         // Make sure that the plays and last listened to are not displayed
-        onView(withId(R.id.playsText)).check(matches(withText("")))
-        onView(withId(R.id.lastListenText)).check(matches(withText("")))
-        onView(withId(R.id.shimmer)).check(matches(not(isDisplayed())))
+        onView(allOf(withId(R.id.playsText), not(withText("")))).check(doesNotExist())
+        onView(allOf(withId(R.id.lastListenText), not(withText("")))).check(doesNotExist())
+        onView(allOf(withId(R.id.shimmer), isDisplayed())).check(doesNotExist())
     }
 }

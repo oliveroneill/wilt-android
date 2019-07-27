@@ -32,17 +32,18 @@ class ProfileFragment: Fragment() {
             container,
             false
         )
+        val adapter = ProfileCardAdapter()
         val model = ViewModelProviders.of(this, viewModelFactory).get(ProfileFragmentViewModel::class.java)
+        binding.profileInfoList.adapter = adapter
         model.state.observe(this, EventObserver {
             when (it) {
                 is ProfileState.LoggedIn -> {
                     val context = context ?: return@EventObserver
                     val viewData = it.networkState.toViewData(context)
-                    binding.loading = viewData.loading
+                    // Update the profile name. This is independent of a card
                     binding.profileName = viewData.profileName
-                    binding.lastListened = viewData.lastListenedText
-                    binding.favouriteArtist = viewData.artistName
-                    binding.plays = viewData.playText
+                    // TODO: send the view data properly so that we can differentiate items
+                    adapter.updateItem(0, viewData)
                 }
                 is ProfileState.LoggedOut -> {
                     NavHostFragment.findNavController(this).navigate(
