@@ -34,22 +34,30 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
         _state.postValue(
             // Signal loading state
             Event(
-                ProfileState.LoggedIn(ProfileNetworkState.Loading(profileName))
+                ProfileState.LoggedIn(
+                    ProfileLoggedInState(
+                        profileName,
+                        listOf(ProfileCardState.Loading)
+                    )
+                )
             )
         )
         firebase.topArtist {
-            it.onSuccess {
+            it.onSuccess { topArtist ->
                 // Post successful response
                 _state.postValue(
                     Event(
                         ProfileState.LoggedIn(
-                            ProfileNetworkState.LoadedTopArtist(profileName, it)
+                            ProfileLoggedInState(
+                                profileName,
+                                listOf(ProfileCardState.LoadedTopArtist(topArtist))
+                            )
                         )
                     )
                 )
-            }.onFailure {
+            }.onFailure { error ->
                 // TODO: handle failure
-                it.printStackTrace()
+                error.printStackTrace()
             }
         }
     }
@@ -60,7 +68,7 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
  * extra fields for the logged in state to communicate the response
  */
 sealed class ProfileState {
-    data class LoggedIn(val networkState: ProfileNetworkState) : ProfileState()
+    data class LoggedIn(val state: ProfileLoggedInState) : ProfileState()
     object LoggedOut : ProfileState()
 }
 
@@ -70,29 +78,32 @@ sealed class ProfileState {
 data class TopArtist(val name: String, val totalPlays: Int, val lastPlayed: LocalDateTime?)
 
 /**
+ * The viewmodel state when logged in
+ */
+data class ProfileLoggedInState(val profileName: String, val cards: List<ProfileCardState>)
+
+/**
  * The states available when the profile screen is logged in
  */
-sealed class ProfileNetworkState {
-    data class Loading(val profileName: String): ProfileNetworkState()
-    data class LoadedTopArtist(val profileName: String, val artist: TopArtist): ProfileNetworkState()
+sealed class ProfileCardState {
+    object Loading: ProfileCardState()
+    data class LoadedTopArtist(val artist: TopArtist): ProfileCardState()
 
     /**
      * Convert state into a set of necessary data for displaying the view
      */
-    fun toViewData(context: Context): ProfileStateViewData {
+    fun toViewData(context: Context): ProfileCardViewData {
         when (this) {
             is Loading -> {
-                return ProfileStateViewData(
-                    loading = true,
-                    profileName = profileName
+                return ProfileCardViewData(
+                    loading = true
                 )
             }
             is LoadedTopArtist -> {
                 // If lastPlayed is null then we don't have data about how often it was played and
                 // when it was played
                 if (artist.lastPlayed == null) {
-                    return ProfileStateViewData(
-                        profileName = profileName,
+                    return ProfileCardViewData(
                         artistName = artist.name,
                         // We'll leave the strings empty if the date is null. The date will be null
                         // if this artist hasn't been played since joining Wilt
@@ -101,8 +112,7 @@ sealed class ProfileNetworkState {
                     )
                 }
                 val lastPlayedRelative = artist.lastPlayed.toRelative()
-                return ProfileStateViewData(
-                    profileName = profileName,
+                return ProfileCardViewData(
                     artistName = artist.name,
                     lastListenedText = context.getString(R.string.last_listened_format, lastPlayedRelative),
                     playText = context.getString(R.string.plays_format, artist.totalPlays)
@@ -121,9 +131,8 @@ private fun LocalDateTime.toRelative() = TimeAgo.using(toEpochSecond(ZoneOffset.
  * The data necessary to display the network state for this view model.
  * By default nothing is displayed
  */
-data class ProfileStateViewData(
+data class ProfileCardViewData(
     val loading: Boolean = false,
-    val profileName: String? = null,
     val artistName: String? = null,
     val lastListenedText: String? = null,
     val playText: String? = null

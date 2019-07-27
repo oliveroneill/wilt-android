@@ -14,10 +14,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nhaarman.mockitokotlin2.*
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
-import com.oliveroneill.wilt.viewmodel.ProfileFragmentViewModel
-import com.oliveroneill.wilt.viewmodel.ProfileNetworkState
-import com.oliveroneill.wilt.viewmodel.ProfileState
-import com.oliveroneill.wilt.viewmodel.TopArtist
+import com.oliveroneill.wilt.viewmodel.*
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.Before
@@ -69,7 +66,11 @@ class ProfileFragmentTest {
     @Test
     fun shouldShowLoadingSpinner() {
         // When
-        stateData.postValue(Event(ProfileState.LoggedIn(ProfileNetworkState.Loading(currentUser))))
+        stateData.postValue(
+            Event(
+                ProfileState.LoggedIn(ProfileLoggedInState(currentUser, listOf(ProfileCardState.Loading)))
+            )
+        )
         // Then
         onView(withText(currentUser)).check(matches(isDisplayed()))
         // The check is redundant here but this is the best way to check the view exists
@@ -87,7 +88,7 @@ class ProfileFragmentTest {
         stateData.postValue(
             Event(
                 ProfileState.LoggedIn(
-                    ProfileNetworkState.LoadedTopArtist(currentUser, topArtist)
+                    ProfileLoggedInState(currentUser, listOf(ProfileCardState.LoadedTopArtist(topArtist)))
                 )
             )
         )
@@ -110,7 +111,7 @@ class ProfileFragmentTest {
         stateData.postValue(
             Event(
                 ProfileState.LoggedIn(
-                    ProfileNetworkState.LoadedTopArtist(currentUser, topArtist)
+                    ProfileLoggedInState(currentUser, listOf(ProfileCardState.LoadedTopArtist(topArtist)))
                 )
             )
         )

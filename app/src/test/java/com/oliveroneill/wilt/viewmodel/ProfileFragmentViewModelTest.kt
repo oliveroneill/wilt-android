@@ -37,9 +37,9 @@ class ProfileFragmentViewModelTest {
      * Helper function to unwrap the event and the state. This will return null if there's no value or
      * you're not logged in
      */
-    fun Event<ProfileState>.unwrapState(): ProfileNetworkState? {
+    private fun Event<ProfileState>.unwrapState(): ProfileLoggedInState? {
         val state = getContentIfNotHandled()
-        if (state is ProfileState.LoggedIn) return state.networkState
+        if (state is ProfileState.LoggedIn) return state.state
         TestCase.fail()
         return null
     }
@@ -53,7 +53,8 @@ class ProfileFragmentViewModelTest {
             .assertHasValue()
             .assertValue {
                 val state = it.unwrapState()
-                state is ProfileNetworkState.Loading && state.profileName == currentUser
+                state is ProfileLoggedInState && state.profileName == currentUser
+                        && state.cards == listOf(ProfileCardState.Loading)
             }
     }
 
@@ -79,25 +80,24 @@ class ProfileFragmentViewModelTest {
             .assertHasValue()
             .assertValue {
                 val state = it.unwrapState()
-                state is ProfileNetworkState.LoadedTopArtist &&
+                state is ProfileLoggedInState &&
                         state.profileName == currentUser &&
-                        state.artist == expected
+                        state.cards == listOf(ProfileCardState.LoadedTopArtist(expected))
             }
     }
 
     @Test
     fun `should convert view data correctly when loading`() {
-        val state = ProfileNetworkState.Loading(currentUser)
-        val expected = ProfileStateViewData(loading = true, profileName = currentUser)
+        val state = ProfileCardState.Loading
+        val expected = ProfileCardViewData(loading = true)
         assertEquals(expected, state.toViewData(application))
     }
 
     @Test
     fun `should convert view data correctly when loaded`() {
         val topArtist = TopArtist("Death Grips", 666, LocalDateTime.now())
-        val state = ProfileNetworkState.LoadedTopArtist(currentUser, topArtist)
-        val expected = ProfileStateViewData(
-            profileName = currentUser,
+        val state = ProfileCardState.LoadedTopArtist(topArtist)
+        val expected = ProfileCardViewData(
             artistName = "Death Grips",
             playText = "666 plays",
             lastListenedText = "Last listened to 10 days ago"
@@ -114,9 +114,8 @@ class ProfileFragmentViewModelTest {
     @Test
     fun `should convert view data correctly when loaded with null date`() {
         val topArtist = TopArtist("Death Grips", 666, null)
-        val state = ProfileNetworkState.LoadedTopArtist(currentUser, topArtist)
-        val expected = ProfileStateViewData(
-            profileName = currentUser,
+        val state = ProfileCardState.LoadedTopArtist(topArtist)
+        val expected = ProfileCardViewData(
             artistName = "Death Grips",
             playText = "",
             lastListenedText = ""

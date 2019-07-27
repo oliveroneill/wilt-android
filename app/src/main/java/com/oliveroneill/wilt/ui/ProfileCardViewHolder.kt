@@ -6,16 +6,16 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.databinding.ProfileCardBinding
-import com.oliveroneill.wilt.viewmodel.ProfileStateViewData
+import com.oliveroneill.wilt.viewmodel.ProfileCardViewData
 
 /**
- * Converts [ProfileStateViewData] to a profile card view
+ * Converts [ProfileCardViewData] to a profile card view
  */
 class ProfileCardViewHolder(private val binding: ProfileCardBinding): RecyclerView.ViewHolder(binding.root) {
     /**
      * Update the view to match the view data
      */
-    fun bind(viewData: ProfileStateViewData) {
+    fun bind(viewData: ProfileCardViewData) {
         binding.loading = viewData.loading
         binding.lastListened = viewData.lastListenedText
         binding.favouriteArtist = viewData.artistName

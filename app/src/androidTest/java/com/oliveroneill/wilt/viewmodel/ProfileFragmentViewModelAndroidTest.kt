@@ -11,15 +11,12 @@ import java.time.ZoneId
 
 @RunWith(AndroidJUnit4::class)
 class ProfileFragmentViewModelAndroidTest {
-    private val currentUser = "username123"
-
     @Test
     fun shouldConvertToViewDataWithStringFormatting() {
         val date = LocalDateTime.now(ZoneId.of("UTC")).minusDays(8)
         val topArtist = TopArtist("Death Grips", 666, date)
-        val state = ProfileNetworkState.LoadedTopArtist(currentUser, topArtist)
-        val expected = ProfileStateViewData(
-            profileName = currentUser,
+        val state = ProfileCardState.LoadedTopArtist(topArtist)
+        val expected = ProfileCardViewData(
             artistName = "Death Grips",
             playText = "666 plays since joining Wilt",
             lastListenedText = "Last listened to 8 days ago"

@@ -39,11 +39,13 @@ class ProfileFragment: Fragment() {
             when (it) {
                 is ProfileState.LoggedIn -> {
                     val context = context ?: return@EventObserver
-                    val viewData = it.networkState.toViewData(context)
+                    val state = it.state
                     // Update the profile name. This is independent of a card
-                    binding.profileName = viewData.profileName
-                    // TODO: send the view data properly so that we can differentiate items
-                    adapter.updateItem(0, viewData)
+                    binding.profileName = state.profileName
+                    val viewData = it.state.cards.map { card ->
+                        card.toViewData(context)
+                    }
+                    adapter.updateCards(viewData)
                 }
                 is ProfileState.LoggedOut -> {
                     NavHostFragment.findNavController(this).navigate(
