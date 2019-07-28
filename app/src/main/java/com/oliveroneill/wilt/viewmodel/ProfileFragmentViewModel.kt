@@ -67,11 +67,27 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
      * Update the state of card positioned at [index] to [newState].
      * This will return the new set of card states
      */
-    private fun updateCardState(index: Int, newState: ProfileCardState): List<ProfileCardState> {
+    private fun updatedCardStates(index: Int, newState: ProfileCardState): List<ProfileCardState> {
         synchronized(this) {
             cardStates[index] = newState
             return cardStates
         }
+    }
+
+    /**
+     * Post the new state value for a specific card at [cardIndex] and new state [newState]
+     */
+    private fun postNewStateForCard(profileName: String, cardIndex: Int, newState: ProfileCardState) {
+        _state.postValue(
+            Event(
+                ProfileState.LoggedIn(
+                    ProfileLoggedInState(
+                        profileName,
+                        updatedCardStates(cardIndex, newState)
+                    )
+                )
+            )
+        )
     }
 
     /**
@@ -80,32 +96,19 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
      * [profileName] is used to update the UI
      */
     private fun loadTopArtist(profileName: String, timeRange: TimeRange, artistIndex: Int, cardIndex: Int) {
-        _state.postValue(
-            // Signal loading state
-            Event(
-                ProfileState.LoggedIn(
-                    ProfileLoggedInState(
-                        profileName,
-                        updateCardState(cardIndex, ProfileCardState.Loading(timeRange))
-                    )
-                )
-            )
+        // Signal loading state
+        postNewStateForCard(
+            profileName,
+            cardIndex,
+            ProfileCardState.Loading(timeRange)
         )
         firebase.topArtist(timeRange, artistIndex) {
             it.onSuccess { topArtist ->
                 // Post successful response
-                _state.postValue(
-                    Event(
-                        ProfileState.LoggedIn(
-                            ProfileLoggedInState(
-                                profileName,
-                                updateCardState(
-                                    cardIndex,
-                                    ProfileCardState.LoadedTopArtist(timeRange, topArtist)
-                                )
-                            )
-                        )
-                    )
+                postNewStateForCard(
+                    profileName,
+                    cardIndex,
+                    ProfileCardState.LoadedTopArtist(timeRange, topArtist)
                 )
             }.onFailure { error ->
                 if (error is FirebaseFunctionsException &&
@@ -115,21 +118,14 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
                     // Short circuit
                     return@onFailure
                 }
-                _state.postValue(
-                    Event(
-                        ProfileState.LoggedIn(
-                            ProfileLoggedInState(
-                                profileName,
-                                updateCardState(
-                                    cardIndex,
-                                    ProfileCardState.Failure(
-                                        error.message ?: "Something went wrong"
-                                    )
-                                    { loadTopArtist(profileName, timeRange, artistIndex, cardIndex) }
-                                )
-                            )
-                        )
+                postNewStateForCard(
+                    profileName,
+                    cardIndex,
+                    ProfileCardState.Failure(
+                        error.message ?: "Something went wrong"
                     )
+                    { loadTopArtist(profileName, timeRange, artistIndex, cardIndex) }
+
                 )
             }
         }
