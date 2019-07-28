@@ -184,4 +184,46 @@ class ProfileFragmentTest {
         // Then
         verify(retry).invoke()
     }
+
+    @Test
+    fun shouldShowMultipleArtists() {
+        val topArtist = TopArtist(
+            "Death Grips",
+            666,
+            LocalDateTime.now().minusMonths(2)
+        )
+        val topArtistRecently = TopArtist(
+            "(Sandy) Alex G",
+            22,
+            LocalDateTime.now().minusMonths(4)
+        )
+        // When
+        stateData.postValue(
+            Event(
+                ProfileState.LoggedIn(
+                    ProfileLoggedInState(
+                        currentUser,
+                        listOf(
+                            ProfileCardState.LoadedTopArtist(TimeRange.LongTerm, topArtist),
+                            ProfileCardState.LoadedTopArtist(TimeRange.ShortTerm, topArtistRecently)
+                        )
+                    )
+                )
+            )
+        )
+        // Then
+        onView(withText(currentUser)).check(matches(isDisplayed()))
+        // First artist
+        onView(withText("Death Grips")).check(matches(isDisplayed()))
+        onView(withText("666 plays since joining Wilt")).check(matches(isDisplayed()))
+        onView(withText("Last listened to 2 months ago")).check(matches(isDisplayed()))
+        // The check is redundant here but this is the best way to check the view exists
+        onView(allOf(withText("Your favourite artist ever"), isDisplayed())).check(matches(isDisplayed()))
+        // Second artist
+        onView(withText("(Sandy) Alex G")).check(matches(isDisplayed()))
+        onView(withText("22 plays since joining Wilt")).check(matches(isDisplayed()))
+        onView(withText("Last listened to 4 months ago")).check(matches(isDisplayed()))
+        onView(allOf(withText("Your favourite artist recently"), isDisplayed())).check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.shimmer), isDisplayed())).check(doesNotExist())
+    }
 }
