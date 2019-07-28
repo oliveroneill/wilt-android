@@ -18,6 +18,13 @@ import java.time.ZoneOffset
 class ProfileFragmentViewModel @JvmOverloads constructor(
     application: Application, private val firebase: FirebaseAPI = FirebaseAPI()
 ): AndroidViewModel(application) {
+    /**
+     * This will be the list of cards to load and display
+     */
+    private val cards = listOf<Card>(
+        Card.TopArtistCard(0, Timeframe.LongTerm)
+    )
+
     private val _state = MutableLiveData<Event<ProfileState>>()
     val state : LiveData<Event<ProfileState>>
         get() = _state
@@ -27,7 +34,13 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
         if (profileName == null) {
             _state.postValue(Event(ProfileState.LoggedOut))
         } else {
-            loadTopArtist(profileName)
+            cards.forEach {
+                when (it) {
+                    is Card.TopArtistCard -> {
+                        loadTopArtist(profileName)
+                    }
+                }
+            }
         }
     }
 
@@ -81,6 +94,24 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
             }
         }
     }
+}
+
+/**
+ * Specification for data to request
+ */
+sealed class Card {
+    data class TopArtistCard(val index: Int, val timeframe: Timeframe): Card()
+    data class TopTrackCard(val index: Int, val timeframe: Timeframe): Card()
+}
+
+/**
+ * Timeframe for requests based on Spotify API. See time_range from here:
+ * https://developer.spotify.com/documentation/web-api/reference/personalization/get-users-top-artists-and-tracks/
+ */
+sealed class Timeframe {
+    object LongTerm: Timeframe()
+    object MediumTerm: Timeframe()
+    object ShortTerm: Timeframe()
 }
 
 /**
