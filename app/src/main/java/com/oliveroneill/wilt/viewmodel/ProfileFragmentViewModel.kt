@@ -23,8 +23,13 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
     /**
      * This will be the list of cards to load and display
      */
-    cards: List<Card> = listOf<Card>(
-        Card.TopArtistCard(0, TimeRange.LongTerm)
+    cards: List<Card> = listOf(
+        Card.TopArtistCard(0, TimeRange.LongTerm),
+        Card.TopTrackCard(0, TimeRange.LongTerm),
+        Card.TopArtistCard(0, TimeRange.ShortTerm),
+        Card.TopTrackCard(0, TimeRange.ShortTerm),
+        Card.TopArtistCard(0, TimeRange.MediumTerm),
+        Card.TopTrackCard(0, TimeRange.MediumTerm)
     )
 ): AndroidViewModel(application) {
     /**
