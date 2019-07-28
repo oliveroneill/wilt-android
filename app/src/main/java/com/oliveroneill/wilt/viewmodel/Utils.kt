@@ -5,7 +5,7 @@ import androidx.annotation.VisibleForTesting
 /**
  * Convert milliseconds into a duration as a human readable string
  */
-@VisibleForTesting
+@VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
 fun Long.toDurationFromMilliseconds(): String {
     if (this < 0) return ""
     if (this == 0L) return "0 seconds"
@@ -29,25 +29,31 @@ fun Long.toDurationFromMilliseconds(): String {
     val seconds = remainder % divisor
     // Create string
     var result =
-        if (weeks > 1) "$weeks weeks "
-        else if (weeks > 0) "$weeks week "
-        else "" +
-                if (days > 1) "$days days "
-                else if (days > 0) "$days day "
-                else "" +
-                        if (hours > 1) "$hours hours "
-                        else if (hours > 0) "$hours hour "
-                        else "" +
-                                if (minutes > 1) "$minutes minutes "
-                                else if (minutes > 0) "$minutes minute "
-                                else ""
-    if (seconds > 1)
-        result += "$seconds seconds"
-    else if (seconds > 0)
-        result += "$seconds second"
-    else {
-        // Delete the last space if there are no seconds
-        result = result.substring(0, result.length - 1)
+        when {
+            weeks > 1 -> "$weeks weeks "
+            weeks > 0 -> "$weeks week "
+            else -> ""
+        } +
+        when {
+            days > 1 -> "$days days "
+            days > 0 -> "$days day "
+            else -> ""
+        } +
+        when {
+            hours > 1 -> "$hours hours "
+            hours > 0 -> "$hours hour "
+            else -> ""
+        } +
+        when {
+            minutes > 1 -> "$minutes minutes "
+            minutes > 0 -> "$minutes minute "
+            else -> ""
+        }
+    when {
+        seconds > 1 -> result += "$seconds seconds"
+        seconds > 0 -> result += "$seconds second"
+        else -> // Delete the last space if there are no seconds
+            result = result.substring(0, result.length - 1)
     }
     return result
 }
