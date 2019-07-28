@@ -18,10 +18,10 @@ class ProfileCardViewHolder(private val binding: ProfileCardBinding): RecyclerVi
      */
     fun bind(viewData: ProfileCardViewData) {
         binding.loading = viewData.loading
-        binding.chipTitle = viewData.tagTitle
-        binding.lastListened = viewData.lastListenedText
-        binding.favouriteArtist = viewData.artistName
-        binding.plays = viewData.playText
+        binding.tagTitle = viewData.tagTitle
+        binding.subtitle1 = viewData.subtitleFirstLine
+        binding.title = viewData.title
+        binding.subtitle2 = viewData.subtitleSecondLine
         binding.displayingError = viewData.errorMessage != null
         binding.errorMessage = viewData.errorMessage
         binding.root.retry_button.setOnClickListener {

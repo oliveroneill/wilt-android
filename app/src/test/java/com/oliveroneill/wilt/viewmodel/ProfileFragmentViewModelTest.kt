@@ -66,7 +66,7 @@ class ProfileFragmentViewModelTest {
             .assertValue {
                 val state = it.unwrapState()
                 state is ProfileLoggedInState && state.profileName == currentUser
-                        && state.cards == listOf(ProfileCardState.Loading(timeRange))
+                        && state.cards == listOf(ProfileCardState.Loading(CardType.TOP_ARTIST, timeRange))
             }
     }
 
@@ -166,7 +166,7 @@ class ProfileFragmentViewModelTest {
 
     @Test
     fun `should convert view data correctly when loading`() {
-        val state = ProfileCardState.Loading(timeRange)
+        val state = ProfileCardState.Loading(CardType.TOP_ARTIST, timeRange)
         val expected = ProfileCardViewData(
             loading = true,
             tagTitle = "Your favourite artist ever"
@@ -179,9 +179,9 @@ class ProfileFragmentViewModelTest {
         val topArtist = TopArtist("Death Grips", 666, LocalDateTime.now())
         val state = ProfileCardState.LoadedTopArtist(timeRange, topArtist)
         val expected = ProfileCardViewData(
-            artistName = "Death Grips",
-            playText = "666 plays",
-            lastListenedText = "Last listened to 10 days ago",
+            title = "Death Grips",
+            subtitleFirstLine = "666 plays",
+            subtitleSecondLine = "Last listened to 10 days ago",
             tagTitle = "Your favourite artist ever"
         )
         whenever(
@@ -198,9 +198,9 @@ class ProfileFragmentViewModelTest {
         val topArtist = TopArtist("Death Grips", 666, null)
         val state = ProfileCardState.LoadedTopArtist(timeRange, topArtist)
         val expected = ProfileCardViewData(
-            artistName = "Death Grips",
-            playText = "",
-            lastListenedText = "",
+            title = "Death Grips",
+            subtitleFirstLine = "",
+            subtitleSecondLine = "",
             tagTitle = "Your favourite artist ever"
         )
         assertEquals(expected, state.toViewData(application))
@@ -217,5 +217,59 @@ class ProfileFragmentViewModelTest {
             retry = retryMock
         )
         assertEquals(expected, state.toViewData(application))
+    }
+
+    @Test
+    fun `should send top track data`() {
+        val expected = TopTrack("On GP by Death Grips", 10_000, LocalDateTime.now())
+        whenever(firebase.topTrack(eq(timeRange), eq(index), any())).then {
+            (it.getArgument(2) as (Result<TopTrack>) -> Unit).invoke(Result.success(expected))
+        }
+        // Top track card
+        val cards = listOf<Card>(
+            Card.TopTrackCard(index, timeRange)
+        )
+        val model = ProfileFragmentViewModel(application, firebase, cards)
+        model.state
+            .test()
+            .assertHasValue()
+            .assertValue {
+                val state = it.unwrapState()
+                state is ProfileLoggedInState &&
+                        state.profileName == currentUser &&
+                        state.cards == listOf(ProfileCardState.LoadedTopTrack(timeRange, expected))
+            }
+    }
+
+    @Test
+    fun `should convert track data correctly when loaded`() {
+        val topArtist = TopTrack("On GP by Death Grips", 10_000, LocalDateTime.now())
+        val state = ProfileCardState.LoadedTopTrack(timeRange, topArtist)
+        val expected = ProfileCardViewData(
+            title = "On GP by Death Grips",
+            subtitleFirstLine = "10 seconds played",
+            subtitleSecondLine = "Last listened to 10 days ago",
+            tagTitle = "Your favourite song ever"
+        )
+        whenever(
+            application.getString(eq(R.string.play_duration_format), eq("10 seconds"))
+        ).thenReturn("10 seconds played")
+        whenever(
+            application.getString(eq(R.string.last_listened_format), anyString())
+        ).thenReturn("Last listened to 10 days ago")
+        whenever(
+            application.getString(eq(R.string.favourite_track_title_long_term))
+        ).thenReturn("Your favourite song ever")
+        assertEquals(expected, state.toViewData(application))
+    }
+
+    @Test
+    fun `should convert milliseconds to duration`() {
+        assertEquals("10 seconds", 10_000L.toDurationFromMilliseconds())
+        assertEquals("1 minute", 60_000L.toDurationFromMilliseconds())
+        assertEquals("10 minutes", 600_000L.toDurationFromMilliseconds())
+        assertEquals("3 hours", (3 * 60 * 60 * 1000L).toDurationFromMilliseconds())
+        assertEquals("1 day", (24 * 60 * 60 * 1000L).toDurationFromMilliseconds())
+        assertEquals("2 weeks", (16 * 24 * 60 * 60 * 1000L).toDurationFromMilliseconds())
     }
 }

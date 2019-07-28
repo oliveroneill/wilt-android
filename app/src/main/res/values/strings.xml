@@ -19,6 +19,10 @@
     <string name="favourite_artist_title_long_term">Your favourite artist ever</string>
     <string name="favourite_artist_title_medium_term">Your favourite artist in recent months</string>
     <string name="favourite_artist_title_short_term">Your favourite artist recently</string>
+    <string name="favourite_track_title_long_term">Your favourite song ever</string>
+    <string name="favourite_track_title_medium_term">Your favourite song in recent months</string>
+    <string name="favourite_track_title_short_term">Your favourite song recently</string>
     <string name="last_listened_format">Last listened to %1$s</string>
     <string name="plays_format">%1$d plays since joining Wilt</string>
+    <string name="play_duration_format">%1$s spent listening since joining Wilt</string>
 </resources>

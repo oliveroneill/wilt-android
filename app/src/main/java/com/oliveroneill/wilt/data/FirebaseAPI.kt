@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken
 import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.testing.OpenForTesting
 import com.oliveroneill.wilt.viewmodel.TopArtist
+import com.oliveroneill.wilt.viewmodel.TopTrack
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -102,6 +103,20 @@ class FirebaseAPI {
         }
     }
 
+    /**
+     * Internal format returned from firebase response
+     */
+    data class FirebaseTopTrack(val name: String, val totalPlayTimeMs: Long, val lastPlay: FirebaseDate?) {
+        fun toTopTrack(): TopTrack {
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            return TopTrack(
+                name,
+                totalPlayTimeMs,
+                if (lastPlay == null) null else LocalDateTime.parse(lastPlay.value, formatter)
+            )
+        }
+    }
+
     fun topArtist(timeRange: TimeRange, index: Int, callback: (Result<TopArtist>) -> Unit) {
         functions
             .getHttpsCallable("topArtist")
@@ -120,6 +135,27 @@ class FirebaseAPI {
                 val dataType = object : TypeToken<FirebaseTopArtist>() {}.type
                 val data = gson.fromJson<FirebaseTopArtist>(jsonElement, dataType)
                 callback(Result.success(data.toTopArtist()))
+            }
+    }
+
+    fun topTrack(timeRange: TimeRange, index: Int, callback: (Result<TopTrack>) -> Unit) {
+        functions
+            .getHttpsCallable("topTrack")
+            .call(
+                hashMapOf(
+                    "timeRange" to timeRange.toString(),
+                    "index" to index
+                )
+            )
+            .addOnFailureListener {
+                callback(Result.failure(it))
+            }
+            .addOnSuccessListener {
+                val gson = Gson()
+                val jsonElement = gson.toJsonTree(it.data)
+                val dataType = object : TypeToken<FirebaseTopTrack>() {}.type
+                val data = gson.fromJson<FirebaseTopTrack>(jsonElement, dataType)
+                callback(Result.success(data.toTopTrack()))
             }
     }
 }

@@ -4,10 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable name="loading" type="boolean"/>
-        <variable name="favourite_artist" type="String"/>
-        <variable name="last_listened" type="String"/>
-        <variable name="plays" type="String"/>
-        <variable name="chip_title" type="String"/>
+        <variable name="title" type="String"/>
+        <variable name="subtitle1" type="String"/>
+        <variable name="subtitle2" type="String"/>
+        <variable name="tag_title" type="String"/>
         <variable name="error_message" type="String"/>
         <variable name="displaying_error" type="boolean"/>
     </data>
@@ -44,19 +44,19 @@
                 android:minHeight="200dp">
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/placeHolderfavouriteArtistTitleText"
+                    android:id="@+id/placeHolderTagText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:enabled="false"
-                    android:text="@{chip_title}"
+                    android:text="@{tag_title}"
                     android:textColor="@color/darkGray"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/placeHolderfavouriteArtistText"
+                    android:id="@+id/placeHolderTitleText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -65,11 +65,11 @@
                     android:textSize="30sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/placeHolderfavouriteArtistTitleText"
+                    app:layout_constraintTop_toBottomOf="@+id/placeHolderTagText"
                     android:background="@color/lightGray" />
 
                 <TextView
-                    android:id="@+id/placeHolderlastListenText"
+                    android:id="@+id/placeHolderSubtitle1Text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -77,11 +77,11 @@
                     android:layout_marginEnd="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/placeHolderfavouriteArtistText"
+                    app:layout_constraintTop_toBottomOf="@+id/placeHolderTitleText"
                     android:background="@color/lightGray" />
 
                 <TextView
-                    android:id="@+id/placeHolderplaysText"
+                    android:id="@+id/placeHolderSubtitle2Text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -89,7 +89,7 @@
                     android:layout_marginEnd="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/placeHolderlastListenText"
+                    app:layout_constraintTop_toBottomOf="@+id/placeHolderSubtitle1Text"
                     android:background="@color/lightGray" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -112,58 +112,58 @@
             android:minHeight="200dp">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/favouriteArtistTitleText"
+                android:id="@+id/tagTitleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:enabled="false"
-                android:text="@{chip_title}"
+                android:text="@{tag_title}"
                 android:textColor="@color/darkGray"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:visibleGone="@{!displaying_error}" />
 
             <TextView
-                android:id="@+id/favouriteArtistText"
+                android:id="@+id/titleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="@{favourite_artist}"
+                android:text="@{title}"
                 android:textSize="30sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/favouriteArtistTitleText"
+                app:layout_constraintTop_toBottomOf="@+id/tagTitleText"
                 app:visibleGone="@{!displaying_error}" />
 
             <TextView
-                android:id="@+id/lastListenText"
+                android:id="@+id/subtitle1Text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="@{last_listened}"
+                android:text="@{subtitle1}"
                 android:textAlignment="textStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/favouriteArtistText"
+                app:layout_constraintTop_toBottomOf="@+id/titleText"
                 app:visibleGone="@{!displaying_error}" />
 
             <TextView
-                android:id="@+id/playsText"
+                android:id="@+id/subtitle2Text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="@{plays}"
+                android:text="@{subtitle2}"
                 android:textAlignment="textStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lastListenText"
+                app:layout_constraintTop_toBottomOf="@+id/subtitle1Text"
                 app:visibleGone="@{!displaying_error}" />
 
             <TextView
@@ -177,7 +177,7 @@
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/favouriteArtistText"
+                app:layout_constraintTop_toBottomOf="@+id/titleText"
                 app:visibleGone="@{displaying_error}"/>
 
             <Button

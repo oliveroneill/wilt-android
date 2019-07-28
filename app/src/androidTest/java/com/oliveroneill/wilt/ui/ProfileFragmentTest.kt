@@ -73,7 +73,7 @@ class ProfileFragmentTest {
                 ProfileState.LoggedIn(
                     ProfileLoggedInState(
                         currentUser,
-                        listOf(ProfileCardState.Loading(TimeRange.LongTerm))
+                        listOf(ProfileCardState.Loading(CardType.TOP_ARTIST, TimeRange.LongTerm))
                     )
                 )
             )
@@ -83,7 +83,24 @@ class ProfileFragmentTest {
         // The check is redundant here but this is the best way to check the view exists
         onView(allOf(withId(R.id.shimmer), isDisplayed())).check(matches(isDisplayed()))
         onView(allOf(withText("Your favourite artist ever"), isDisplayed())).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.favouriteArtistText), isDisplayed())).check(doesNotExist())
+        onView(allOf(withId(R.id.titleText), isDisplayed())).check(doesNotExist())
+    }
+
+    @Test
+    fun shouldShowLoadingSpinnerForTopTrack() {
+        // When
+        stateData.postValue(
+            Event(
+                ProfileState.LoggedIn(
+                    ProfileLoggedInState(
+                        currentUser,
+                        listOf(ProfileCardState.Loading(CardType.TOP_TRACK, TimeRange.LongTerm))
+                    )
+                )
+            )
+        )
+        // Then
+        onView(allOf(withText("Your favourite song ever"), isDisplayed())).check(matches(isDisplayed()))
     }
 
     @Test
@@ -138,8 +155,8 @@ class ProfileFragmentTest {
         // The check is redundant here but this is the best way to check the view exists
         onView(allOf(withText("Your favourite artist ever"), isDisplayed())).check(matches(isDisplayed()))
         // Make sure that the plays and last listened to are not displayed
-        onView(allOf(withId(R.id.playsText), not(withText("")))).check(doesNotExist())
-        onView(allOf(withId(R.id.lastListenText), not(withText("")))).check(doesNotExist())
+        onView(allOf(withId(R.id.subtitle1Text), not(withText("")))).check(doesNotExist())
+        onView(allOf(withId(R.id.subtitle2Text), not(withText("")))).check(doesNotExist())
         onView(allOf(withId(R.id.shimmer), isDisplayed())).check(doesNotExist())
     }
 
@@ -161,7 +178,7 @@ class ProfileFragmentTest {
         onView(withText(currentUser)).check(matches(isDisplayed()))
         onView(withText(errorMessage)).check(matches(isDisplayed()))
         onView(withId(R.id.retry_button)).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.favouriteArtistText), isDisplayed())).check(doesNotExist())
+        onView(allOf(withId(R.id.titleText), isDisplayed())).check(doesNotExist())
         onView(allOf(withId(R.id.shimmer), isDisplayed())).check(doesNotExist())
     }
 
@@ -224,6 +241,34 @@ class ProfileFragmentTest {
         onView(withText("22 plays since joining Wilt")).check(matches(isDisplayed()))
         onView(withText("Last listened to 4 months ago")).check(matches(isDisplayed()))
         onView(allOf(withText("Your favourite artist recently"), isDisplayed())).check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.shimmer), isDisplayed())).check(doesNotExist())
+    }
+
+    @Test
+    fun shouldShowTopTrack() {
+        val topArtist = TopTrack(
+            "On GP by Death Grips",
+            10_000,
+            LocalDateTime.now().minusMonths(2)
+        )
+        // When
+        stateData.postValue(
+            Event(
+                ProfileState.LoggedIn(
+                    ProfileLoggedInState(
+                        currentUser,
+                        listOf(ProfileCardState.LoadedTopTrack(TimeRange.LongTerm, topArtist))
+                    )
+                )
+            )
+        )
+        // Then
+        onView(withText(currentUser)).check(matches(isDisplayed()))
+        onView(withText("On GP by Death Grips")).check(matches(isDisplayed()))
+        onView(withText("10 seconds spent listening since joining Wilt")).check(matches(isDisplayed()))
+        onView(withText("Last listened to 2 months ago")).check(matches(isDisplayed()))
+        // The check is redundant here but this is the best way to check the view exists
+        onView(allOf(withText("Your favourite song ever"), isDisplayed())).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.shimmer), isDisplayed())).check(doesNotExist())
     }
 }
