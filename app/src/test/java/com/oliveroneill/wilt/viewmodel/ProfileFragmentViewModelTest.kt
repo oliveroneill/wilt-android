@@ -262,14 +262,4 @@ class ProfileFragmentViewModelTest {
         ).thenReturn("Your favourite song ever")
         assertEquals(expected, state.toViewData(application))
     }
-
-    @Test
-    fun `should convert milliseconds to duration`() {
-        assertEquals("10 seconds", 10_000L.toDurationFromMilliseconds())
-        assertEquals("1 minute", 60_000L.toDurationFromMilliseconds())
-        assertEquals("10 minutes", 600_000L.toDurationFromMilliseconds())
-        assertEquals("3 hours", (3 * 60 * 60 * 1000L).toDurationFromMilliseconds())
-        assertEquals("1 day", (24 * 60 * 60 * 1000L).toDurationFromMilliseconds())
-        assertEquals("2 weeks", (16 * 24 * 60 * 60 * 1000L).toDurationFromMilliseconds())
-    }
 }
