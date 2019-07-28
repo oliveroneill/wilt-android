@@ -3,6 +3,7 @@ package com.oliveroneill.wilt.viewmodel
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.oliveroneill.wilt.data.TimeRange
 import junit.framework.TestCase
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,12 +16,12 @@ class ProfileFragmentViewModelAndroidTest {
     fun shouldConvertToViewDataWithStringFormatting() {
         val date = LocalDateTime.now(ZoneId.of("UTC")).minusDays(8)
         val topArtist = TopArtist("Death Grips", 666, date)
-        val state = ProfileCardState.LoadedTopArtist(topArtist)
+        val state = ProfileCardState.LoadedTopArtist(TimeRange.LongTerm, topArtist)
         val expected = ProfileCardViewData(
             artistName = "Death Grips",
             playText = "666 plays since joining Wilt",
             lastListenedText = "Last listened to 8 days ago",
-            tagTitle = "Your favourite artist"
+            tagTitle = "Your favourite artist ever"
         )
         TestCase.assertEquals(expected, state.toViewData(ApplicationProvider.getApplicationContext<Context>()))
     }

@@ -15,6 +15,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nhaarman.mockitokotlin2.*
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
+import com.oliveroneill.wilt.data.TimeRange
 import com.oliveroneill.wilt.viewmodel.*
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
@@ -69,14 +70,19 @@ class ProfileFragmentTest {
         // When
         stateData.postValue(
             Event(
-                ProfileState.LoggedIn(ProfileLoggedInState(currentUser, listOf(ProfileCardState.Loading)))
+                ProfileState.LoggedIn(
+                    ProfileLoggedInState(
+                        currentUser,
+                        listOf(ProfileCardState.Loading(TimeRange.LongTerm))
+                    )
+                )
             )
         )
         // Then
         onView(withText(currentUser)).check(matches(isDisplayed()))
         // The check is redundant here but this is the best way to check the view exists
         onView(allOf(withId(R.id.shimmer), isDisplayed())).check(matches(isDisplayed()))
-        onView(allOf(withText("Your favourite artist"), isDisplayed())).check(matches(isDisplayed()))
+        onView(allOf(withText("Your favourite artist ever"), isDisplayed())).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.favouriteArtistText), isDisplayed())).check(doesNotExist())
     }
 
@@ -91,7 +97,10 @@ class ProfileFragmentTest {
         stateData.postValue(
             Event(
                 ProfileState.LoggedIn(
-                    ProfileLoggedInState(currentUser, listOf(ProfileCardState.LoadedTopArtist(topArtist)))
+                    ProfileLoggedInState(
+                        currentUser,
+                        listOf(ProfileCardState.LoadedTopArtist(TimeRange.LongTerm, topArtist))
+                    )
                 )
             )
         )
@@ -101,7 +110,7 @@ class ProfileFragmentTest {
         onView(withText("666 plays since joining Wilt")).check(matches(isDisplayed()))
         onView(withText("Last listened to 2 months ago")).check(matches(isDisplayed()))
         // The check is redundant here but this is the best way to check the view exists
-        onView(allOf(withText("Your favourite artist"), isDisplayed())).check(matches(isDisplayed()))
+        onView(allOf(withText("Your favourite artist ever"), isDisplayed())).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.shimmer), isDisplayed())).check(doesNotExist())
     }
 
@@ -116,7 +125,10 @@ class ProfileFragmentTest {
         stateData.postValue(
             Event(
                 ProfileState.LoggedIn(
-                    ProfileLoggedInState(currentUser, listOf(ProfileCardState.LoadedTopArtist(topArtist)))
+                    ProfileLoggedInState(
+                        currentUser,
+                        listOf(ProfileCardState.LoadedTopArtist(TimeRange.LongTerm, topArtist))
+                    )
                 )
             )
         )
@@ -124,7 +136,7 @@ class ProfileFragmentTest {
         onView(withText(currentUser)).check(matches(isDisplayed()))
         onView(withText("Death Grips")).check(matches(isDisplayed()))
         // The check is redundant here but this is the best way to check the view exists
-        onView(allOf(withText("Your favourite artist"), isDisplayed())).check(matches(isDisplayed()))
+        onView(allOf(withText("Your favourite artist ever"), isDisplayed())).check(matches(isDisplayed()))
         // Make sure that the plays and last listened to are not displayed
         onView(allOf(withId(R.id.playsText), not(withText("")))).check(doesNotExist())
         onView(allOf(withId(R.id.lastListenText), not(withText("")))).check(doesNotExist())

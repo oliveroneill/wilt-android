@@ -16,7 +16,9 @@
     <string name="title_profile">Profile</string>
     <string name="title_feed">Feed</string>
 
-    <string name="favourite_artist_title">Your favourite artist</string>
+    <string name="favourite_artist_title_long_term">Your favourite artist ever</string>
+    <string name="favourite_artist_title_medium_term">Your favourite artist in recent months</string>
+    <string name="favourite_artist_title_short_term">Your favourite artist recently</string>
     <string name="last_listened_format">Last listened to %1$s</string>
     <string name="plays_format">%1$d plays since joining Wilt</string>
 </resources>

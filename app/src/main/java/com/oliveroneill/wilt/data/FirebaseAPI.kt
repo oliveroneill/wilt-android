@@ -12,6 +12,24 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 /**
+ * TimeRange for requests based on Spotify API. See time_range from here:
+ * https://developer.spotify.com/documentation/web-api/reference/personalization/get-users-top-artists-and-tracks/
+ */
+sealed class TimeRange {
+    object LongTerm: TimeRange()
+    object MediumTerm: TimeRange()
+    object ShortTerm: TimeRange()
+
+    override fun toString(): String {
+        return when (this) {
+            is LongTerm -> "long_term"
+            is MediumTerm -> "medium_term"
+            is ShortTerm -> "short_term"
+        }
+    }
+}
+
+/**
  * API for making requests to Firebase.
  */
 @OpenForTesting
@@ -64,7 +82,7 @@ class FirebaseAPI {
                 val jsonElement = gson.toJsonTree(it.data)
                 val ranksType = object : TypeToken<List<FirebaseArtistRank>>() {}.type
                 val rankHistory = gson.fromJson<List<FirebaseArtistRank>>(jsonElement, ranksType)
-                callback(Result.success(rankHistory.map { it.toArtistRank() }))
+                callback(Result.success(rankHistory.map { r -> r.toArtistRank() }))
             }
     }
 
@@ -84,10 +102,15 @@ class FirebaseAPI {
         }
     }
 
-    fun topArtist(callback: (Result<TopArtist>) -> Unit) {
+    fun topArtist(timeRange: TimeRange, index: Int, callback: (Result<TopArtist>) -> Unit) {
         functions
             .getHttpsCallable("topArtist")
-            .call()
+            .call(
+                hashMapOf(
+                    "timeRange" to timeRange.toString(),
+                    "index" to index
+                )
+            )
             .addOnFailureListener {
                 callback(Result.failure(it))
             }

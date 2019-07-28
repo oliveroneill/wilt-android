@@ -8,6 +8,7 @@ import com.nhaarman.mockitokotlin2.*
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.FirebaseAPI
+import com.oliveroneill.wilt.data.TimeRange
 import junit.framework.TestCase
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.fail
@@ -24,6 +25,11 @@ class ProfileFragmentViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val currentUser = "username123"
+    private val timeRange = TimeRange.LongTerm
+    private val index = 0
+    private val cards = listOf<Card>(
+        Card.TopArtistCard(index, timeRange)
+    )
     private val application = mock<Application> {
         // Mock value so that getString doesn't throw
         on { getString(ArgumentMatchers.anyInt()) } doReturn ""
@@ -35,8 +41,8 @@ class ProfileFragmentViewModelTest {
         firebase = mock()
         whenever(firebase.currentUser).thenReturn(currentUser)
         whenever(
-            application.getString(eq(R.string.favourite_artist_title))
-        ).thenReturn("Your favourite artist")
+            application.getString(eq(R.string.favourite_artist_title_long_term))
+        ).thenReturn("Your favourite artist ever")
     }
 
     /**
@@ -52,7 +58,7 @@ class ProfileFragmentViewModelTest {
 
     @Test
     fun `should set initial state to loading`() {
-        val model = ProfileFragmentViewModel(application, firebase)
+        val model = ProfileFragmentViewModel(application, firebase, cards)
         // Assert that state gets set correctly
         model.state
             .test()
@@ -60,14 +66,14 @@ class ProfileFragmentViewModelTest {
             .assertValue {
                 val state = it.unwrapState()
                 state is ProfileLoggedInState && state.profileName == currentUser
-                        && state.cards == listOf(ProfileCardState.Loading)
+                        && state.cards == listOf(ProfileCardState.Loading(timeRange))
             }
     }
 
     @Test
     fun `should set state to logged out when not logged in`() {
         whenever(firebase.currentUser).thenReturn(null)
-        val model = ProfileFragmentViewModel(application, firebase)
+        val model = ProfileFragmentViewModel(application, firebase, cards)
         model.state
             .test()
             .assertHasValue()
@@ -77,10 +83,10 @@ class ProfileFragmentViewModelTest {
     @Test
     fun `should send top artist data`() {
         val expected = TopArtist("Death Grips", 666, LocalDateTime.now())
-        whenever(firebase.topArtist(any())).then {
-            (it.getArgument(0) as (Result<TopArtist>) -> Unit).invoke(Result.success(expected))
+        whenever(firebase.topArtist(eq(timeRange), eq(index), any())).then {
+            (it.getArgument(2) as (Result<TopArtist>) -> Unit).invoke(Result.success(expected))
         }
-        val model = ProfileFragmentViewModel(application, firebase)
+        val model = ProfileFragmentViewModel(application, firebase, cards)
         model.state
             .test()
             .assertHasValue()
@@ -88,7 +94,7 @@ class ProfileFragmentViewModelTest {
                 val state = it.unwrapState()
                 state is ProfileLoggedInState &&
                         state.profileName == currentUser &&
-                        state.cards == listOf(ProfileCardState.LoadedTopArtist(expected))
+                        state.cards == listOf(ProfileCardState.LoadedTopArtist(timeRange, expected))
             }
     }
 
@@ -96,10 +102,10 @@ class ProfileFragmentViewModelTest {
     fun `should log out on unauthenticated error`() {
         val error = mock<FirebaseFunctionsException>()
         whenever(error.code).thenReturn(FirebaseFunctionsException.Code.UNAUTHENTICATED)
-        whenever(firebase.topArtist(any())).then {
-            (it.getArgument(0) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
+        whenever(firebase.topArtist(eq(timeRange), eq(index), any())).then {
+            (it.getArgument(2) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
         }
-        val model = ProfileFragmentViewModel(application, firebase)
+        val model = ProfileFragmentViewModel(application, firebase, cards)
         model.state
             .test()
             .assertHasValue()
@@ -112,10 +118,10 @@ class ProfileFragmentViewModelTest {
     fun `should send error message on error`() {
         val expected = "A test error for unit tests"
         val error = IOException(expected)
-        whenever(firebase.topArtist(any())).then {
-            (it.getArgument(0) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
+        whenever(firebase.topArtist(eq(timeRange), eq(index), any())).then {
+            (it.getArgument(2) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
         }
-        val model = ProfileFragmentViewModel(application, firebase)
+        val model = ProfileFragmentViewModel(application, firebase, cards)
         model.state
             .test()
             .assertHasValue()
@@ -132,10 +138,10 @@ class ProfileFragmentViewModelTest {
     fun `should set retry correctly`() {
         val expected = "A test error for unit tests"
         val error = IOException(expected)
-        whenever(firebase.topArtist(any())).then {
-            (it.getArgument(0) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
+        whenever(firebase.topArtist(eq(timeRange), eq(index), any())).then {
+            (it.getArgument(2) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
         }
-        val model = ProfileFragmentViewModel(application, firebase)
+        val model = ProfileFragmentViewModel(application, firebase, cards)
         val state = model.state.value?.unwrapState()
         when (state) {
             is ProfileLoggedInState -> {
@@ -145,7 +151,7 @@ class ProfileFragmentViewModelTest {
                     is ProfileCardState.Failure -> {
                         card.retry()
                         // Ensure that it makes the correct call. This will be the second call
-                        verify(firebase, times(2)).topArtist(any())
+                        verify(firebase, times(2)).topArtist(eq(timeRange), eq(index), any())
                     }
                     else -> {
                         fail()
@@ -160,10 +166,10 @@ class ProfileFragmentViewModelTest {
 
     @Test
     fun `should convert view data correctly when loading`() {
-        val state = ProfileCardState.Loading
+        val state = ProfileCardState.Loading(timeRange)
         val expected = ProfileCardViewData(
             loading = true,
-            tagTitle = "Your favourite artist"
+            tagTitle = "Your favourite artist ever"
         )
         assertEquals(expected, state.toViewData(application))
     }
@@ -171,12 +177,12 @@ class ProfileFragmentViewModelTest {
     @Test
     fun `should convert view data correctly when loaded`() {
         val topArtist = TopArtist("Death Grips", 666, LocalDateTime.now())
-        val state = ProfileCardState.LoadedTopArtist(topArtist)
+        val state = ProfileCardState.LoadedTopArtist(timeRange, topArtist)
         val expected = ProfileCardViewData(
             artistName = "Death Grips",
             playText = "666 plays",
             lastListenedText = "Last listened to 10 days ago",
-            tagTitle = "Your favourite artist"
+            tagTitle = "Your favourite artist ever"
         )
         whenever(
             application.getString(eq(R.string.plays_format), eq(666))
@@ -190,12 +196,12 @@ class ProfileFragmentViewModelTest {
     @Test
     fun `should convert view data correctly when loaded with null date`() {
         val topArtist = TopArtist("Death Grips", 666, null)
-        val state = ProfileCardState.LoadedTopArtist(topArtist)
+        val state = ProfileCardState.LoadedTopArtist(timeRange, topArtist)
         val expected = ProfileCardViewData(
             artistName = "Death Grips",
             playText = "",
             lastListenedText = "",
-            tagTitle = "Your favourite artist"
+            tagTitle = "Your favourite artist ever"
         )
         assertEquals(expected, state.toViewData(application))
     }

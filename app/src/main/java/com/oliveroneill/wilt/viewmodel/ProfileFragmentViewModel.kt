@@ -10,20 +10,26 @@ import com.google.firebase.functions.FirebaseFunctionsException
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.FirebaseAPI
+import com.oliveroneill.wilt.data.TimeRange
 import com.oliveroneill.wilt.testing.OpenForTesting
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 @OpenForTesting
 class ProfileFragmentViewModel @JvmOverloads constructor(
-    application: Application, private val firebase: FirebaseAPI = FirebaseAPI()
-): AndroidViewModel(application) {
+    application: Application,
+    private val firebase: FirebaseAPI = FirebaseAPI(),
     /**
      * This will be the list of cards to load and display
      */
-    private val cards = listOf<Card>(
-        Card.TopArtistCard(0, Timeframe.LongTerm)
+    cards: List<Card> = listOf<Card>(
+        Card.TopArtistCard(0, TimeRange.LongTerm)
     )
+): AndroidViewModel(application) {
+    /**
+     * Keep track of each cards state
+     */
+    private var cardStates: MutableList<ProfileCardState> = mutableListOf()
 
     private val _state = MutableLiveData<Event<ProfileState>>()
     val state : LiveData<Event<ProfileState>>
@@ -34,29 +40,58 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
         if (profileName == null) {
             _state.postValue(Event(ProfileState.LoggedOut))
         } else {
-            cards.forEach {
+            // Set the initial state of each card to loading
+            cardStates = (cards.map {
                 when (it) {
                     is Card.TopArtistCard -> {
-                        loadTopArtist(profileName)
+                        ProfileCardState.Loading(it.timeRange)
                     }
+                    is Card.TopTrackCard -> {
+                        ProfileCardState.Loading(it.timeRange)
+                    }
+                }
+            }).toMutableList()
+            // Load each card
+            cards.forEachIndexed { index, card ->
+                when (card) {
+                    is Card.TopArtistCard -> {
+                        loadTopArtist(profileName, card.timeRange, card.index, index)
+                    }
+                    // TODO: top track load
                 }
             }
         }
     }
 
-    private fun loadTopArtist(profileName: String) {
+    /**
+     * Update the state of card positioned at [index] to [newState].
+     * This will return the new set of card states
+     */
+    private fun updateCardState(index: Int, newState: ProfileCardState): List<ProfileCardState> {
+        synchronized(this) {
+            cardStates[index] = newState
+            return cardStates
+        }
+    }
+
+    /**
+     * Get top artist for the specified [timeRange] ranked at [artistIndex] for card
+     * positioned at [cardIndex].
+     * [profileName] is used to update the UI
+     */
+    private fun loadTopArtist(profileName: String, timeRange: TimeRange, artistIndex: Int, cardIndex: Int) {
         _state.postValue(
             // Signal loading state
             Event(
                 ProfileState.LoggedIn(
                     ProfileLoggedInState(
                         profileName,
-                        listOf(ProfileCardState.Loading)
+                        updateCardState(cardIndex, ProfileCardState.Loading(timeRange))
                     )
                 )
             )
         )
-        firebase.topArtist {
+        firebase.topArtist(timeRange, artistIndex) {
             it.onSuccess { topArtist ->
                 // Post successful response
                 _state.postValue(
@@ -64,7 +99,10 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
                         ProfileState.LoggedIn(
                             ProfileLoggedInState(
                                 profileName,
-                                listOf(ProfileCardState.LoadedTopArtist(topArtist))
+                                updateCardState(
+                                    cardIndex,
+                                    ProfileCardState.LoadedTopArtist(timeRange, topArtist)
+                                )
                             )
                         )
                     )
@@ -82,10 +120,12 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
                         ProfileState.LoggedIn(
                             ProfileLoggedInState(
                                 profileName,
-                                listOf(
+                                updateCardState(
+                                    cardIndex,
                                     ProfileCardState.Failure(
                                         error.message ?: "Something went wrong"
-                                    ) { loadTopArtist(profileName) }
+                                    )
+                                    { loadTopArtist(profileName, timeRange, artistIndex, cardIndex) }
                                 )
                             )
                         )
@@ -100,18 +140,14 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
  * Specification for data to request
  */
 sealed class Card {
-    data class TopArtistCard(val index: Int, val timeframe: Timeframe): Card()
-    data class TopTrackCard(val index: Int, val timeframe: Timeframe): Card()
-}
-
-/**
- * Timeframe for requests based on Spotify API. See time_range from here:
- * https://developer.spotify.com/documentation/web-api/reference/personalization/get-users-top-artists-and-tracks/
- */
-sealed class Timeframe {
-    object LongTerm: Timeframe()
-    object MediumTerm: Timeframe()
-    object ShortTerm: Timeframe()
+    /**
+     * The top artist card request, where [index] is the position in the ranking of the artist
+     */
+    data class TopArtistCard(val index: Int, val timeRange: TimeRange): Card()
+    /**
+     * The top track card request, where [index] is the position in the ranking of the track
+     */
+    data class TopTrackCard(val index: Int, val timeRange: TimeRange): Card()
 }
 
 /**
@@ -137,8 +173,8 @@ data class ProfileLoggedInState(val profileName: String, val cards: List<Profile
  * The states available when the profile screen is logged in
  */
 sealed class ProfileCardState {
-    object Loading: ProfileCardState()
-    data class LoadedTopArtist(val artist: TopArtist): ProfileCardState()
+    data class Loading(val timeRange: TimeRange): ProfileCardState()
+    data class LoadedTopArtist(val timeRange: TimeRange, val artist: TopArtist): ProfileCardState()
     data class Failure(val error: String, val retry: () -> Unit): ProfileCardState()
 
     /**
@@ -149,7 +185,7 @@ sealed class ProfileCardState {
             is Loading -> {
                 return ProfileCardViewData(
                     loading = true,
-                    tagTitle = context.getString(R.string.favourite_artist_title)
+                    tagTitle = timeRange.toReadableString(context)
                 )
             }
             is LoadedTopArtist -> {
@@ -157,7 +193,7 @@ sealed class ProfileCardState {
                 // when it was played
                 if (artist.lastPlayed == null) {
                     return ProfileCardViewData(
-                        tagTitle = context.getString(R.string.favourite_artist_title),
+                        tagTitle = timeRange.toReadableString(context),
                         artistName = artist.name,
                         // We'll leave the strings empty if the date is null. The date will be null
                         // if this artist hasn't been played since joining Wilt
@@ -167,7 +203,7 @@ sealed class ProfileCardState {
                 }
                 val lastPlayedRelative = artist.lastPlayed.toRelative()
                 return ProfileCardViewData(
-                    tagTitle = context.getString(R.string.favourite_artist_title),
+                    tagTitle = timeRange.toReadableString(context),
                     artistName = artist.name,
                     lastListenedText = context.getString(R.string.last_listened_format, lastPlayedRelative),
                     playText = context.getString(R.string.plays_format, artist.totalPlays)
@@ -180,6 +216,17 @@ sealed class ProfileCardState {
                 )
             }
         }
+    }
+}
+
+/**
+ * Convert the timeRange to a string to be presented to the UI
+ */
+private fun TimeRange.toReadableString(context: Context): String? {
+    return when (this) {
+        is TimeRange.LongTerm -> context.getString(R.string.favourite_artist_title_long_term)
+        is TimeRange.MediumTerm -> context.getString(R.string.favourite_artist_title_medium_term)
+        is TimeRange.ShortTerm -> context.getString(R.string.favourite_artist_title_short_term)
     }
 }
 
