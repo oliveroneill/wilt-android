@@ -2,6 +2,7 @@ package com.oliveroneill.wilt.viewmodel
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.firebase.functions.FirebaseFunctionsException
 import com.jraska.livedata.test
 import com.nhaarman.mockitokotlin2.*
 import com.oliveroneill.wilt.Event
@@ -9,11 +10,13 @@ import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.FirebaseAPI
 import junit.framework.TestCase
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.anyString
+import java.io.IOException
 import java.time.LocalDateTime
 
 class ProfileFragmentViewModelTest {
@@ -90,6 +93,72 @@ class ProfileFragmentViewModelTest {
     }
 
     @Test
+    fun `should log out on unauthenticated error`() {
+        val error = mock<FirebaseFunctionsException>()
+        whenever(error.code).thenReturn(FirebaseFunctionsException.Code.UNAUTHENTICATED)
+        whenever(firebase.topArtist(any())).then {
+            (it.getArgument(0) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
+        }
+        val model = ProfileFragmentViewModel(application, firebase)
+        model.state
+            .test()
+            .assertHasValue()
+            .assertValue {
+                it.getContentIfNotHandled() is ProfileState.LoggedOut
+            }
+    }
+
+    @Test
+    fun `should send error message on error`() {
+        val expected = "A test error for unit tests"
+        val error = IOException(expected)
+        whenever(firebase.topArtist(any())).then {
+            (it.getArgument(0) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
+        }
+        val model = ProfileFragmentViewModel(application, firebase)
+        model.state
+            .test()
+            .assertHasValue()
+            .assertValue {
+                val state = it.unwrapState()
+                state is ProfileLoggedInState &&
+                        state.profileName == currentUser &&
+                        state.cards.size == 1 && state.cards[0] is ProfileCardState.Failure &&
+                        (state.cards[0] as ProfileCardState.Failure).error == expected
+            }
+    }
+
+    @Test
+    fun `should set retry correctly`() {
+        val expected = "A test error for unit tests"
+        val error = IOException(expected)
+        whenever(firebase.topArtist(any())).then {
+            (it.getArgument(0) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
+        }
+        val model = ProfileFragmentViewModel(application, firebase)
+        val state = model.state.value?.unwrapState()
+        when (state) {
+            is ProfileLoggedInState -> {
+                assertEquals(1, state.cards.size)
+                val card = state.cards[0]
+                when (card) {
+                    is ProfileCardState.Failure -> {
+                        card.retry()
+                        // Ensure that it makes the correct call. This will be the second call
+                        verify(firebase, times(2)).topArtist(any())
+                    }
+                    else -> {
+                        fail()
+                    }
+                }
+            }
+            else -> {
+                fail()
+            }
+        }
+    }
+
+    @Test
     fun `should convert view data correctly when loading`() {
         val state = ProfileCardState.Loading
         val expected = ProfileCardViewData(
@@ -127,6 +196,19 @@ class ProfileFragmentViewModelTest {
             playText = "",
             lastListenedText = "",
             tagTitle = "Your favourite artist"
+        )
+        assertEquals(expected, state.toViewData(application))
+    }
+
+    @Test
+    fun `should convert error correctly`() {
+        val retryMock = mock<() -> Unit>()
+        val state = ProfileCardState.Failure(
+            "A test error for unit tests", retryMock
+        )
+        val expected = ProfileCardViewData(
+            errorMessage = "A test error for unit tests",
+            retry = retryMock
         )
         assertEquals(expected, state.toViewData(application))
     }

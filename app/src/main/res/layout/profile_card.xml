@@ -8,6 +8,8 @@
         <variable name="last_listened" type="String"/>
         <variable name="plays" type="String"/>
         <variable name="chip_title" type="String"/>
+        <variable name="error_message" type="String"/>
+        <variable name="displaying_error" type="boolean"/>
     </data>
 
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -118,10 +120,11 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:enabled="false"
-                android:text="@string/favourite_artist_title"
+                android:text="@{chip_title}"
                 android:textColor="@color/darkGray"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:visibleGone="@{!displaying_error}" />
 
             <TextView
                 android:id="@+id/favouriteArtistText"
@@ -134,7 +137,8 @@
                 android:textSize="30sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/favouriteArtistTitleText" />
+                app:layout_constraintTop_toBottomOf="@+id/favouriteArtistTitleText"
+                app:visibleGone="@{!displaying_error}" />
 
             <TextView
                 android:id="@+id/lastListenText"
@@ -147,7 +151,8 @@
                 android:textAlignment="textStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/favouriteArtistText" />
+                app:layout_constraintTop_toBottomOf="@+id/favouriteArtistText"
+                app:visibleGone="@{!displaying_error}" />
 
             <TextView
                 android:id="@+id/playsText"
@@ -160,7 +165,33 @@
                 android:textAlignment="textStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lastListenText" />
+                app:layout_constraintTop_toBottomOf="@+id/lastListenText"
+                app:visibleGone="@{!displaying_error}" />
+
+            <TextView
+                android:id="@+id/errorText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@{error_message}"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/favouriteArtistText"
+                app:visibleGone="@{displaying_error}"/>
+
+            <Button
+                android:id="@+id/retry_button"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/errorText"
+                android:text="@string/retry"
+                app:visibleGone="@{displaying_error}" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

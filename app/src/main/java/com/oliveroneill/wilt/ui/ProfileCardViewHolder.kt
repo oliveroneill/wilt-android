@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.databinding.ProfileCardBinding
 import com.oliveroneill.wilt.viewmodel.ProfileCardViewData
+import kotlinx.android.synthetic.main.profile_card.view.*
 
 /**
  * Converts [ProfileCardViewData] to a profile card view
@@ -21,6 +22,11 @@ class ProfileCardViewHolder(private val binding: ProfileCardBinding): RecyclerVi
         binding.lastListened = viewData.lastListenedText
         binding.favouriteArtist = viewData.artistName
         binding.plays = viewData.playText
+        binding.displayingError = viewData.errorMessage != null
+        binding.errorMessage = viewData.errorMessage
+        binding.root.retry_button.setOnClickListener {
+            viewData.retry?.invoke()
+        }
     }
 
     companion object {

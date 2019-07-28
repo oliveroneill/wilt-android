@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.marlonlom.utilities.timeago.TimeAgo
+import com.google.firebase.functions.FirebaseFunctionsException
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.FirebaseAPI
@@ -56,8 +57,27 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
                     )
                 )
             }.onFailure { error ->
-                // TODO: handle failure
-                error.printStackTrace()
+                if (error is FirebaseFunctionsException &&
+                    error.code == FirebaseFunctionsException.Code.UNAUTHENTICATED) {
+                    // Send back a logged out error
+                    _state.postValue(Event(ProfileState.LoggedOut))
+                    // Short circuit
+                    return@onFailure
+                }
+                _state.postValue(
+                    Event(
+                        ProfileState.LoggedIn(
+                            ProfileLoggedInState(
+                                profileName,
+                                listOf(
+                                    ProfileCardState.Failure(
+                                        error.message ?: "Something went wrong"
+                                    ) { loadTopArtist(profileName) }
+                                )
+                            )
+                        )
+                    )
+                )
             }
         }
     }
@@ -88,6 +108,7 @@ data class ProfileLoggedInState(val profileName: String, val cards: List<Profile
 sealed class ProfileCardState {
     object Loading: ProfileCardState()
     data class LoadedTopArtist(val artist: TopArtist): ProfileCardState()
+    data class Failure(val error: String, val retry: () -> Unit): ProfileCardState()
 
     /**
      * Convert state into a set of necessary data for displaying the view
@@ -121,6 +142,12 @@ sealed class ProfileCardState {
                     playText = context.getString(R.string.plays_format, artist.totalPlays)
                 )
             }
+            is Failure -> {
+                return ProfileCardViewData(
+                    errorMessage = error,
+                    retry = retry
+                )
+            }
         }
     }
 }
@@ -139,5 +166,7 @@ data class ProfileCardViewData(
     val tagTitle: String? = null,
     val artistName: String? = null,
     val lastListenedText: String? = null,
-    val playText: String? = null
+    val playText: String? = null,
+    val errorMessage: String? = null,
+    val retry: (() -> Unit)? = null
 )

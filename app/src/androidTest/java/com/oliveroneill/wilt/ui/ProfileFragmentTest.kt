@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -76,6 +77,7 @@ class ProfileFragmentTest {
         // The check is redundant here but this is the best way to check the view exists
         onView(allOf(withId(R.id.shimmer), isDisplayed())).check(matches(isDisplayed()))
         onView(allOf(withText("Your favourite artist"), isDisplayed())).check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.favouriteArtistText), isDisplayed())).check(doesNotExist())
     }
 
     @Test
@@ -127,5 +129,47 @@ class ProfileFragmentTest {
         onView(allOf(withId(R.id.playsText), not(withText("")))).check(doesNotExist())
         onView(allOf(withId(R.id.lastListenText), not(withText("")))).check(doesNotExist())
         onView(allOf(withId(R.id.shimmer), isDisplayed())).check(doesNotExist())
+    }
+
+    @Test
+    fun shouldShowError() {
+        val errorMessage = "Hi this is an error message for tests"
+        // When
+        stateData.postValue(
+            Event(
+                ProfileState.LoggedIn(
+                    ProfileLoggedInState(
+                        currentUser,
+                        listOf(ProfileCardState.Failure(errorMessage, mock()))
+                    )
+                )
+            )
+        )
+        // Then
+        onView(withText(currentUser)).check(matches(isDisplayed()))
+        onView(withText(errorMessage)).check(matches(isDisplayed()))
+        onView(withId(R.id.retry_button)).check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.favouriteArtistText), isDisplayed())).check(doesNotExist())
+        onView(allOf(withId(R.id.shimmer), isDisplayed())).check(doesNotExist())
+    }
+
+    @Test
+    fun shouldRetryOnClick() {
+        val errorMessage = "Hi this is an error message for tests"
+        val retry = mock<() -> Unit>()
+        // When
+        stateData.postValue(
+            Event(
+                ProfileState.LoggedIn(
+                    ProfileLoggedInState(
+                        currentUser,
+                        listOf(ProfileCardState.Failure(errorMessage, retry))
+                    )
+                )
+            )
+        )
+        onView(withId(R.id.retry_button)).perform(click())
+        // Then
+        verify(retry).invoke()
     }
 }
