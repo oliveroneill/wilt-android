@@ -55,6 +55,18 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <View
+                    android:id="@+id/placeHolderImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/placeHolderTagText"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@color/lightGray" />
+
                 <TextView
                     android:id="@+id/placeHolderTitleText"
                     android:layout_width="match_parent"
@@ -63,10 +75,10 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:textSize="30sp"
+                    android:background="@color/lightGray"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/placeHolderTagText"
-                    android:background="@color/lightGray" />
+                    app:layout_constraintTop_toBottomOf="@+id/placeHolderImageView" />
 
                 <TextView
                     android:id="@+id/placeHolderSubtitle1Text"
