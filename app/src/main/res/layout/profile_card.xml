@@ -128,7 +128,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:visibleGone="@{!displaying_error}" >
                 <ImageView
                     android:id="@+id/imageView"
                     android:contentDescription="@string/profile_card_image_description"
@@ -143,9 +144,7 @@
                     android:layout_marginTop="8dp"
                     android:enabled="false"
                     android:text="@{tag_title}"
-                    android:textColor="@color/darkGray"
-                    app:visibleGone="@{!displaying_error}" />
-
+                    android:textColor="@color/darkGray" />
             </RelativeLayout>
 
             <TextView
