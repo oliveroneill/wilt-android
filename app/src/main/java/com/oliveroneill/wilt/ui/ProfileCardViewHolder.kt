@@ -23,6 +23,8 @@ class ProfileCardViewHolder(private val binding: ProfileCardBinding): RecyclerVi
         binding.subtitle1 = viewData.subtitleFirstLine
         binding.title = viewData.title
         binding.subtitle2 = viewData.subtitleSecondLine
+        // TODO: this is definitely something the viewmodel should control but it seems ugly
+        // to have an "isVisible" flag for every view...
         binding.displayingError = viewData.errorMessage != null
         binding.errorMessage = viewData.errorMessage
         binding.root.retry_button.setOnClickListener {
