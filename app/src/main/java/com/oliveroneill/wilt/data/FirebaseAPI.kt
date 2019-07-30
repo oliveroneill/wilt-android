@@ -34,14 +34,14 @@ sealed class TimeRange {
  * API for making requests to Firebase.
  */
 @OpenForTesting
-class FirebaseAPI {
+class FirebaseAPI: ProfileRepository {
     private val functions = FirebaseFunctions.getInstance("asia-northeast1")
     private val auth = FirebaseAuth.getInstance()
 
     /**
      * Get the current logged in user, or null if there's no user logged in
      */
-    val currentUser: String? by lazy {
+    override val currentUser: String? by lazy {
         auth.currentUser?.uid
     }
 
@@ -117,7 +117,7 @@ class FirebaseAPI {
         }
     }
 
-    fun topArtist(timeRange: TimeRange, index: Int, callback: (Result<TopArtist>) -> Unit) {
+    override fun topArtist(timeRange: TimeRange, index: Int, callback: (Result<TopArtist>) -> Unit) {
         functions
             .getHttpsCallable("topArtist")
             .call(
@@ -138,7 +138,7 @@ class FirebaseAPI {
             }
     }
 
-    fun topTrack(timeRange: TimeRange, index: Int, callback: (Result<TopTrack>) -> Unit) {
+    override fun topTrack(timeRange: TimeRange, index: Int, callback: (Result<TopTrack>) -> Unit) {
         functions
             .getHttpsCallable("topTrack")
             .call(

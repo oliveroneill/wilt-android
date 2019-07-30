@@ -9,8 +9,7 @@ import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.FirebaseAuthentication
 import com.oliveroneill.wilt.data.SpotifyAuthenticationRequest
 import com.oliveroneill.wilt.data.SpotifyAuthenticationResponse
-import com.oliveroneill.wilt.data.dao.PlayHistoryDao
-import com.oliveroneill.wilt.data.dao.PlayHistoryDatabase
+import com.oliveroneill.wilt.data.dao.*
 import com.oliveroneill.wilt.testing.OpenForTesting
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -48,7 +47,10 @@ class WalkthroughFragmentViewModel
 @JvmOverloads
 constructor(application: Application,
             private val firebase: FirebaseAuthentication = FirebaseAuthentication(application),
-            private val dao: PlayHistoryDao = PlayHistoryDatabase.getDatabase(application).historyDao(),
+            // Database objects are passed in so we can clear them between each user
+            private val feedDao: PlayHistoryDao = PlayHistoryDatabase.getDatabase(application).historyDao(),
+            private val artistCache: TopArtistDao = TopArtistDatabase.getDatabase(application).topArtistCache(),
+            private val trackCache: TopTrackDao = TopTrackDatabase.getDatabase(application).topTrackCache(),
             // Used to complete the login task in the background
             private val executor: Executor = Executors.newSingleThreadExecutor()
 ): AndroidViewModel(application) {
@@ -118,7 +120,9 @@ constructor(application: Application,
      * and check whether it's different...
      */
     private fun clearCache() {
-        dao.deleteAll()
+        feedDao.deleteAll()
+        trackCache.deleteAll()
+        artistCache.deleteAll()
     }
 
     private fun wiltLogin(spotifyAuthCode: String) {

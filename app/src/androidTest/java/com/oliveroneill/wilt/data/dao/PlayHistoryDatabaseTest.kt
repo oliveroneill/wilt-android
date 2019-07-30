@@ -30,6 +30,7 @@ class PlayHistoryDatabaseTest {
     @After
     @Throws(IOException::class)
     fun closeDb() {
+        dao.deleteAll()
         db.close()
     }
 

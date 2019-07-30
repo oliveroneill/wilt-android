@@ -7,7 +7,7 @@ import com.jraska.livedata.test
 import com.nhaarman.mockitokotlin2.*
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
-import com.oliveroneill.wilt.data.FirebaseAPI
+import com.oliveroneill.wilt.data.ProfileRepository
 import com.oliveroneill.wilt.data.TimeRange
 import junit.framework.TestCase
 import junit.framework.TestCase.assertEquals
@@ -34,12 +34,12 @@ class ProfileFragmentViewModelTest {
         // Mock value so that getString doesn't throw
         on { getString(ArgumentMatchers.anyInt()) } doReturn ""
     }
-    private lateinit var firebase: FirebaseAPI
+    private lateinit var repository: ProfileRepository
 
     @Before
     fun setup() {
-        firebase = mock()
-        whenever(firebase.currentUser).thenReturn(currentUser)
+        repository = mock()
+        whenever(repository.currentUser).thenReturn(currentUser)
         whenever(
             application.getString(eq(R.string.favourite_artist_title_long_term))
         ).thenReturn("Your favourite artist ever")
@@ -58,7 +58,7 @@ class ProfileFragmentViewModelTest {
 
     @Test
     fun `should set initial state to loading`() {
-        val model = ProfileFragmentViewModel(application, firebase, cards)
+        val model = ProfileFragmentViewModel(application, repository, cards)
         // Assert that state gets set correctly
         model.state
             .test()
@@ -72,8 +72,8 @@ class ProfileFragmentViewModelTest {
 
     @Test
     fun `should set state to logged out when not logged in`() {
-        whenever(firebase.currentUser).thenReturn(null)
-        val model = ProfileFragmentViewModel(application, firebase, cards)
+        whenever(repository.currentUser).thenReturn(null)
+        val model = ProfileFragmentViewModel(application, repository, cards)
         model.state
             .test()
             .assertHasValue()
@@ -83,10 +83,10 @@ class ProfileFragmentViewModelTest {
     @Test
     fun `should send top artist data`() {
         val expected = TopArtist("Death Grips", 666, LocalDateTime.now())
-        whenever(firebase.topArtist(eq(timeRange), eq(index), any())).then {
+        whenever(repository.topArtist(eq(timeRange), eq(index), any())).then {
             (it.getArgument(2) as (Result<TopArtist>) -> Unit).invoke(Result.success(expected))
         }
-        val model = ProfileFragmentViewModel(application, firebase, cards)
+        val model = ProfileFragmentViewModel(application, repository, cards)
         model.state
             .test()
             .assertHasValue()
@@ -102,10 +102,10 @@ class ProfileFragmentViewModelTest {
     fun `should log out on unauthenticated error`() {
         val error = mock<FirebaseFunctionsException>()
         whenever(error.code).thenReturn(FirebaseFunctionsException.Code.UNAUTHENTICATED)
-        whenever(firebase.topArtist(eq(timeRange), eq(index), any())).then {
+        whenever(repository.topArtist(eq(timeRange), eq(index), any())).then {
             (it.getArgument(2) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
         }
-        val model = ProfileFragmentViewModel(application, firebase, cards)
+        val model = ProfileFragmentViewModel(application, repository, cards)
         model.state
             .test()
             .assertHasValue()
@@ -118,10 +118,10 @@ class ProfileFragmentViewModelTest {
     fun `should send error message on error`() {
         val expected = "A test error for unit tests"
         val error = IOException(expected)
-        whenever(firebase.topArtist(eq(timeRange), eq(index), any())).then {
+        whenever(repository.topArtist(eq(timeRange), eq(index), any())).then {
             (it.getArgument(2) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
         }
-        val model = ProfileFragmentViewModel(application, firebase, cards)
+        val model = ProfileFragmentViewModel(application, repository, cards)
         model.state
             .test()
             .assertHasValue()
@@ -138,10 +138,10 @@ class ProfileFragmentViewModelTest {
     fun `should set retry correctly`() {
         val expected = "A test error for unit tests"
         val error = IOException(expected)
-        whenever(firebase.topArtist(eq(timeRange), eq(index), any())).then {
+        whenever(repository.topArtist(eq(timeRange), eq(index), any())).then {
             (it.getArgument(2) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
         }
-        val model = ProfileFragmentViewModel(application, firebase, cards)
+        val model = ProfileFragmentViewModel(application, repository, cards)
         val state = model.state.value?.unwrapState()
         when (state) {
             is ProfileLoggedInState -> {
@@ -151,7 +151,7 @@ class ProfileFragmentViewModelTest {
                     is ProfileCardState.Failure -> {
                         card.retry()
                         // Ensure that it makes the correct call. This will be the second call
-                        verify(firebase, times(2)).topArtist(eq(timeRange), eq(index), any())
+                        verify(repository, times(2)).topArtist(eq(timeRange), eq(index), any())
                     }
                     else -> {
                         fail()
@@ -222,14 +222,14 @@ class ProfileFragmentViewModelTest {
     @Test
     fun `should send top track data`() {
         val expected = TopTrack("On GP by Death Grips", 10_000, LocalDateTime.now())
-        whenever(firebase.topTrack(eq(timeRange), eq(index), any())).then {
+        whenever(repository.topTrack(eq(timeRange), eq(index), any())).then {
             (it.getArgument(2) as (Result<TopTrack>) -> Unit).invoke(Result.success(expected))
         }
         // Top track card
         val cards = listOf<Card>(
             Card.TopTrackCard(index, timeRange)
         )
-        val model = ProfileFragmentViewModel(application, firebase, cards)
+        val model = ProfileFragmentViewModel(application, repository, cards)
         model.state
             .test()
             .assertHasValue()

@@ -8,6 +8,8 @@ import com.oliveroneill.wilt.data.ArtistRankBoundaryCallbackTest
 import com.oliveroneill.wilt.data.FirebaseAuthentication
 import com.oliveroneill.wilt.data.SpotifyAuthenticationResponse
 import com.oliveroneill.wilt.data.dao.PlayHistoryDao
+import com.oliveroneill.wilt.data.dao.TopArtistDao
+import com.oliveroneill.wilt.data.dao.TopTrackDao
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,14 +25,19 @@ class WalkthroughFragmentViewModelTest {
     }
     private lateinit var model: WalkthroughFragmentViewModel
     private lateinit var firebase: FirebaseAuthentication
-    private lateinit var dao: PlayHistoryDao
+    private lateinit var feedDao: PlayHistoryDao
+    private lateinit var trackCache: TopTrackDao
+    private lateinit var artistCache: TopArtistDao
 
     @Before
     fun setup() {
         firebase = mock()
-        dao = mock()
+        feedDao = mock()
+        trackCache = mock()
+        artistCache = mock()
         model = WalkthroughFragmentViewModel(
-            application, firebase, dao,
+            application, firebase,
+            feedDao = feedDao, artistCache = artistCache, trackCache = trackCache,
             // Run login tasks on current thread
             executor = ArtistRankBoundaryCallbackTest.CurrentThreadExecutor()
         )
@@ -49,7 +56,7 @@ class WalkthroughFragmentViewModelTest {
     fun `should set initial state to logged in if the user is logged in`() {
         val expected = "username123"
         whenever(firebase.currentUser).thenReturn(expected)
-        model = WalkthroughFragmentViewModel(application, firebase, dao)
+        model = WalkthroughFragmentViewModel(application, firebase, feedDao, artistCache, trackCache)
         // Assert that state gets set correctly
         model.state
             .test()
@@ -104,7 +111,9 @@ class WalkthroughFragmentViewModelTest {
     fun `should clear cache when signing in`() {
         val spotifyAuthCode = "542781"
         model.onSpotifyLoginResponse(SpotifyAuthenticationResponse.Success(spotifyAuthCode))
-        verify(dao).deleteAll()
+        verify(feedDao).deleteAll()
+        verify(trackCache).deleteAll()
+        verify(artistCache).deleteAll()
     }
 
     @Test

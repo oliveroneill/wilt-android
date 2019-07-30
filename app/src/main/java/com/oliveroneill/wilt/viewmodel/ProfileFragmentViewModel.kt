@@ -10,7 +10,11 @@ import com.google.firebase.functions.FirebaseFunctionsException
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.FirebaseAPI
+import com.oliveroneill.wilt.data.ProfileCachedRepository
+import com.oliveroneill.wilt.data.ProfileRepository
 import com.oliveroneill.wilt.data.TimeRange
+import com.oliveroneill.wilt.data.dao.TopArtistDatabase
+import com.oliveroneill.wilt.data.dao.TopTrackDatabase
 import com.oliveroneill.wilt.testing.OpenForTesting
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -18,7 +22,11 @@ import java.time.ZoneOffset
 @OpenForTesting
 class ProfileFragmentViewModel @JvmOverloads constructor(
     application: Application,
-    private val firebase: FirebaseAPI = FirebaseAPI(),
+    private val repository: ProfileRepository = ProfileCachedRepository(
+        FirebaseAPI(),
+        TopArtistDatabase.getDatabase(application).topArtistCache(),
+        TopTrackDatabase.getDatabase(application).topTrackCache()
+    ),
     /**
      * This will be the list of cards to load and display
      */
@@ -41,7 +49,7 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
         get() = _state
 
     init {
-        val profileName = firebase.currentUser
+        val profileName = repository.currentUser
         if (profileName == null) {
             _state.postValue(Event(ProfileState.LoggedOut))
         } else {
@@ -109,7 +117,7 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
             cardIndex,
             ProfileCardState.Loading(CardType.TOP_ARTIST, timeRange)
         )
-        firebase.topArtist(timeRange, artistIndex) {
+        repository.topArtist(timeRange, artistIndex) {
             it.onSuccess { topArtist ->
                 // Post successful response
                 postNewStateForCard(
@@ -150,7 +158,7 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
             cardIndex,
             ProfileCardState.Loading(CardType.TOP_TRACK, timeRange)
         )
-        firebase.topTrack(timeRange, trackIndex) {
+        repository.topTrack(timeRange, trackIndex) {
             it.onSuccess { topTrack ->
                 // Post successful response
                 postNewStateForCard(
