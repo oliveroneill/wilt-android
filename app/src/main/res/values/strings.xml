@@ -25,4 +25,5 @@
     <string name="last_listened_format">Last listened to %1$s</string>
     <string name="plays_format">%1$d plays since joining Wilt</string>
     <string name="play_duration_format">%1$s spent listening since joining Wilt</string>
+    <string name="profile_card_image_description">An image of the artist or track</string>
 </resources>

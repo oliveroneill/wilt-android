@@ -65,6 +65,7 @@ dependencies {
     implementation "com.google.android.material:material:1.1.0-alpha06"
     implementation 'com.github.marlonlom:timeago:4.0.1'
     implementation 'com.facebook.shimmer:shimmer:0.4.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
     testImplementation "androidx.room:room-testing:2.1.0"
     testImplementation 'junit:junit:4.12'
     testImplementation 'com.jraska.livedata:testing-ktx:1.1.0'

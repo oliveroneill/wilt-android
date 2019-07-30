@@ -43,7 +43,8 @@
             android:clipToPadding="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/profileText"
-            tools:listitem="@layout/profile_card" />
+            tools:listitem="@layout/profile_card"
+            android:paddingBottom="?attr/actionBarSize" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
         <com.google.android.material.bottomnavigation.BottomNavigationView

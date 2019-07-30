@@ -214,9 +214,9 @@ sealed class ProfileState {
 /**
  * A user's favourite artist. [lastPlayed] will be null if it has never been played since joining Wilt
  */
-data class TopArtist(val name: String, val totalPlays: Int, val lastPlayed: LocalDateTime?)
+data class TopArtist(val name: String, val totalPlays: Int, val lastPlayed: LocalDateTime?, val imageUrl: String)
 
-data class TopTrack(val name: String, val totalPlayTimeMs: Long, val lastPlayed: LocalDateTime?)
+data class TopTrack(val name: String, val totalPlayTimeMs: Long, val lastPlayed: LocalDateTime?, val imageUrl: String)
 
 /**
  * The viewmodel state when logged in
@@ -253,7 +253,8 @@ sealed class ProfileCardState {
                         // We'll leave the strings empty if the date is null. The date will be null
                         // if this artist hasn't been played since joining Wilt
                         subtitleFirstLine = "",
-                        subtitleSecondLine = ""
+                        subtitleSecondLine = "",
+                        imageUrl = artist.imageUrl
                     )
                 }
                 val lastPlayedRelative = artist.lastPlayed.toRelative()
@@ -261,7 +262,8 @@ sealed class ProfileCardState {
                     tagTitle = timeRange.toReadableString(CardType.TOP_ARTIST, context),
                     title = artist.name,
                     subtitleFirstLine = context.getString(R.string.plays_format, artist.totalPlays),
-                    subtitleSecondLine = context.getString(R.string.last_listened_format, lastPlayedRelative)
+                    subtitleSecondLine = context.getString(R.string.last_listened_format, lastPlayedRelative),
+                    imageUrl = artist.imageUrl
                 )
             }
             is LoadedTopTrack -> {
@@ -274,7 +276,8 @@ sealed class ProfileCardState {
                         // We'll leave the strings empty if the date is null. The date will be null
                         // if this track hasn't been played since joining Wilt
                         subtitleFirstLine = "",
-                        subtitleSecondLine = ""
+                        subtitleSecondLine = "",
+                        imageUrl = track.imageUrl
                     )
                 }
                 val lastPlayedRelative = track.lastPlayed.toRelative()
@@ -285,7 +288,8 @@ sealed class ProfileCardState {
                         R.string.play_duration_format,
                         track.totalPlayTimeMs.toDurationFromMilliseconds()
                     ),
-                    subtitleSecondLine = context.getString(R.string.last_listened_format, lastPlayedRelative)
+                    subtitleSecondLine = context.getString(R.string.last_listened_format, lastPlayedRelative),
+                    imageUrl = track.imageUrl
                 )
             }
             is Failure -> {
@@ -339,6 +343,7 @@ data class ProfileCardViewData(
     val title: String? = null,
     val subtitleFirstLine: String? = null,
     val subtitleSecondLine: String? = null,
+    val imageUrl: String? = null,
     val errorMessage: String? = null,
     val retry: (() -> Unit)? = null
 )

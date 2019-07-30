@@ -92,13 +92,17 @@ class FirebaseAPI: ProfileRepository {
     /**
      * Internal format returned from firebase response
      */
-    data class FirebaseTopArtist(val name: String, val count: Int, val lastPlay: FirebaseDate?) {
+    data class FirebaseTopArtist(val name: String,
+                                 val count: Int,
+                                 val lastPlay: FirebaseDate?,
+                                 val imageUrl: String) {
         fun toTopArtist(): TopArtist {
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             return TopArtist(
                 name,
                 count,
-                if (lastPlay == null) null else LocalDateTime.parse(lastPlay.value, formatter)
+                if (lastPlay == null) null else LocalDateTime.parse(lastPlay.value, formatter),
+                imageUrl
             )
         }
     }
@@ -106,13 +110,17 @@ class FirebaseAPI: ProfileRepository {
     /**
      * Internal format returned from firebase response
      */
-    data class FirebaseTopTrack(val name: String, val totalPlayTimeMs: Long, val lastPlay: FirebaseDate?) {
+    data class FirebaseTopTrack(val name: String,
+                                val totalPlayTimeMs: Long,
+                                val lastPlay: FirebaseDate?,
+                                val imageUrl: String) {
         fun toTopTrack(): TopTrack {
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             return TopTrack(
                 name,
                 totalPlayTimeMs,
-                if (lastPlay == null) null else LocalDateTime.parse(lastPlay.value, formatter)
+                if (lastPlay == null) null else LocalDateTime.parse(lastPlay.value, formatter),
+                imageUrl
             )
         }
     }

@@ -53,6 +53,7 @@ class ProfileDatabaseTest {
             "Hope by (Sandy) Alex G",
             10_000,
             LocalDateTime.now().plusDays(2),
+            "http://notarealurl.com/album_img.png",
             LocalDateTime.now().minusWeeks(11)
         )
         val element2 = TopTrackCacheElement(
@@ -61,6 +62,7 @@ class ProfileDatabaseTest {
             "Hacker by Death Grips",
             22_000,
             LocalDateTime.now().minusDays(10),
+            "http://adifferenturl.com/album_img.png",
             LocalDateTime.now().minusHours(4)
         )
         trackDao.insert(element1)
@@ -80,6 +82,7 @@ class ProfileDatabaseTest {
             "Hope by (Sandy) Alex G",
             10_000,
             LocalDateTime.now().plusDays(2),
+            "http://notarealurl.com/album_img.png",
             LocalDateTime.now().minusWeeks(11)
         )
         val element2 = TopTrackCacheElement(
@@ -88,6 +91,7 @@ class ProfileDatabaseTest {
             "Hacker by Death Grips",
             22_000,
             LocalDateTime.now().minusDays(10),
+            "http://anotherurl.com/album_img.png",
             LocalDateTime.now().minusHours(4)
         )
         trackDao.insert(element1)
@@ -107,6 +111,7 @@ class ProfileDatabaseTest {
             "(Sandy) Alex G",
             124,
             LocalDateTime.now().plusDays(2),
+            "http://notarealurl.com/album_img.png",
             LocalDateTime.now().minusWeeks(11)
         )
         val element2 = TopArtistCacheElement(
@@ -115,6 +120,7 @@ class ProfileDatabaseTest {
             "Death Grips",
             666,
             LocalDateTime.now().minusDays(10),
+            "http://someotherurl.com/album_img.png",
             LocalDateTime.now().minusHours(4)
         )
         artistDao.insert(element1)
@@ -134,6 +140,7 @@ class ProfileDatabaseTest {
             "(Sandy) Alex G",
             124,
             LocalDateTime.now().plusDays(2),
+            "http://notarealurl.com/album_img.png",
             LocalDateTime.now().minusWeeks(11)
         )
         val element2 = TopArtistCacheElement(
@@ -142,6 +149,7 @@ class ProfileDatabaseTest {
             "Death Grips",
             666,
             LocalDateTime.now().minusDays(10),
+            "http://urlfornumber2.com/album_img.png",
             LocalDateTime.now().minusHours(4)
         )
         artistDao.insert(element1)
@@ -161,6 +169,7 @@ class ProfileDatabaseTest {
             "Hope by (Sandy) Alex G",
             10_000,
             LocalDateTime.now().plusDays(2),
+            "http://notarealurl.com/album_img.png",
             LocalDateTime.now().minusWeeks(11)
         )
         trackDao.insert(element)

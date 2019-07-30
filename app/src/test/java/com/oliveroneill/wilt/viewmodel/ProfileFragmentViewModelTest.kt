@@ -82,7 +82,12 @@ class ProfileFragmentViewModelTest {
 
     @Test
     fun `should send top artist data`() {
-        val expected = TopArtist("Death Grips", 666, LocalDateTime.now())
+        val expected = TopArtist(
+            "Death Grips",
+            666,
+            LocalDateTime.now(),
+            "http://notarealurl.com/album_img.png"
+        )
         whenever(repository.topArtist(eq(timeRange), eq(index), any())).then {
             (it.getArgument(2) as (Result<TopArtist>) -> Unit).invoke(Result.success(expected))
         }
@@ -176,13 +181,19 @@ class ProfileFragmentViewModelTest {
 
     @Test
     fun `should convert view data correctly when loaded`() {
-        val topArtist = TopArtist("Death Grips", 666, LocalDateTime.now())
+        val topArtist = TopArtist(
+            "Death Grips",
+            666,
+            LocalDateTime.now(),
+            "http://notarealurl.com/album_img.png"
+        )
         val state = ProfileCardState.LoadedTopArtist(timeRange, topArtist)
         val expected = ProfileCardViewData(
             title = "Death Grips",
             subtitleFirstLine = "666 plays",
             subtitleSecondLine = "Last listened to 10 days ago",
-            tagTitle = "Your favourite artist ever"
+            tagTitle = "Your favourite artist ever",
+            imageUrl = "http://notarealurl.com/album_img.png"
         )
         whenever(
             application.getString(eq(R.string.plays_format), eq(666))
@@ -195,13 +206,19 @@ class ProfileFragmentViewModelTest {
 
     @Test
     fun `should convert view data correctly when loaded with null date`() {
-        val topArtist = TopArtist("Death Grips", 666, null)
+        val topArtist = TopArtist(
+            "Death Grips",
+            666,
+            null,
+            "http://notarealurl.com/album_img.png"
+        )
         val state = ProfileCardState.LoadedTopArtist(timeRange, topArtist)
         val expected = ProfileCardViewData(
             title = "Death Grips",
             subtitleFirstLine = "",
             subtitleSecondLine = "",
-            tagTitle = "Your favourite artist ever"
+            tagTitle = "Your favourite artist ever",
+            imageUrl = "http://notarealurl.com/album_img.png"
         )
         assertEquals(expected, state.toViewData(application))
     }
@@ -221,7 +238,12 @@ class ProfileFragmentViewModelTest {
 
     @Test
     fun `should send top track data`() {
-        val expected = TopTrack("On GP by Death Grips", 10_000, LocalDateTime.now())
+        val expected = TopTrack(
+            "On GP by Death Grips",
+            10_000,
+            LocalDateTime.now(),
+            "http://notarealurl.com/album_img.png"
+        )
         whenever(repository.topTrack(eq(timeRange), eq(index), any())).then {
             (it.getArgument(2) as (Result<TopTrack>) -> Unit).invoke(Result.success(expected))
         }
@@ -243,13 +265,19 @@ class ProfileFragmentViewModelTest {
 
     @Test
     fun `should convert track data correctly when loaded`() {
-        val topArtist = TopTrack("On GP by Death Grips", 10_000, LocalDateTime.now())
+        val topArtist = TopTrack(
+            "On GP by Death Grips",
+            10_000,
+            LocalDateTime.now(),
+            "http://notarealurl.com/album_img.png"
+        )
         val state = ProfileCardState.LoadedTopTrack(timeRange, topArtist)
         val expected = ProfileCardViewData(
             title = "On GP by Death Grips",
             subtitleFirstLine = "10 seconds played",
             subtitleSecondLine = "Last listened to 10 days ago",
-            tagTitle = "Your favourite song ever"
+            tagTitle = "Your favourite song ever",
+            imageUrl = "http://notarealurl.com/album_img.png"
         )
         whenever(
             application.getString(eq(R.string.play_duration_format), eq("10 seconds"))

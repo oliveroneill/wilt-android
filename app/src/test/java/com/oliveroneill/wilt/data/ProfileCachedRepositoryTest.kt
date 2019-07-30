@@ -39,7 +39,8 @@ class ProfileCachedRepositoryTest {
         val expected = TopArtist(
             "(Sandy) Alex G",
             124,
-            date
+            date,
+            "http://notarealurl.com/album_img.png"
         )
         val cachedElement = TopArtistCacheElement(
             index,
@@ -47,6 +48,7 @@ class ProfileCachedRepositoryTest {
             "(Sandy) Alex G",
             124,
             date,
+            "http://notarealurl.com/album_img.png",
             LocalDateTime.now()
         )
         whenever(artistCache.getCachedResult(eq(index), eq(timeRange.toString()))).thenReturn(
@@ -70,7 +72,8 @@ class ProfileCachedRepositoryTest {
         val expected = TopArtist(
             "Death Grips",
             112,
-            date.minusWeeks(2)
+            date.minusWeeks(2),
+            "http://notarealurl.com/album_img.png"
         )
         whenever(artistCache.getCachedResult(eq(index), eq(timeRange.toString()))).thenReturn(
             listOf(
@@ -80,6 +83,7 @@ class ProfileCachedRepositoryTest {
                     "(Sandy) Alex G",
                     124,
                     date,
+                    "http://notarealurl.com/album_img.png",
                     LocalDateTime.now().minusWeeks(1)
                 )
             )
@@ -105,7 +109,8 @@ class ProfileCachedRepositoryTest {
         val expected = TopArtist(
             "Death Grips",
             112,
-            date.minusWeeks(2)
+            date.minusWeeks(2),
+            "http://notarealurl.com/album_img.png"
         )
         whenever(artistCache.getCachedResult(eq(index), eq(timeRange.toString()))).thenReturn(listOf())
         whenever(networkAPI.topArtist(eq(timeRange), eq(index), any())).then {
@@ -132,7 +137,8 @@ class ProfileCachedRepositoryTest {
                     TopArtist(
                         "Death Grips",
                         112,
-                        date.minusWeeks(2)
+                        date.minusWeeks(2),
+                        "http://notarealurl.com/album_img.png"
                     )
                 )
             )
@@ -144,6 +150,7 @@ class ProfileCachedRepositoryTest {
             "Death Grips",
             112,
             date.minusWeeks(2),
+            "http://notarealurl.com/album_img.png",
             LocalDateTime.now()
         )
         verify(artistCache).insert(argThat {
@@ -164,7 +171,8 @@ class ProfileCachedRepositoryTest {
         val expected = TopTrack(
             "Hope by (Sandy) Alex G",
             10_000,
-            date
+            date,
+            "http://notarealurl.com/album_img.png"
         )
         val cachedElement = TopTrackCacheElement(
             index,
@@ -172,6 +180,7 @@ class ProfileCachedRepositoryTest {
             "Hope by (Sandy) Alex G",
             10_000,
             date,
+            "http://notarealurl.com/album_img.png",
             LocalDateTime.now()
         )
         whenever(trackCache.getCachedResult(eq(index), eq(timeRange.toString()))).thenReturn(
@@ -195,7 +204,8 @@ class ProfileCachedRepositoryTest {
         val expected = TopTrack(
             "Hacker by Death Grips",
             22_000,
-            date.minusWeeks(2)
+            date.minusWeeks(2),
+            "http://notarealurl.com/album_img.png"
         )
         whenever(trackCache.getCachedResult(eq(index), eq(timeRange.toString()))).thenReturn(
             listOf(
@@ -205,6 +215,7 @@ class ProfileCachedRepositoryTest {
                     "Hope by (Sandy) Alex G",
                     10_000,
                     date,
+                    "http://notarealurl.com/album_img.png",
                     LocalDateTime.now().minusWeeks(1)
                 )
             )
@@ -229,7 +240,8 @@ class ProfileCachedRepositoryTest {
         val expected = TopTrack(
             "Hacker by Death Grips",
             22_000,
-            date.minusWeeks(2)
+            date.minusWeeks(2),
+            "http://notarealurl.com/album_img.png"
         )
         whenever(trackCache.getCachedResult(eq(index), eq(timeRange.toString()))).thenReturn(listOf())
         whenever(networkAPI.topTrack(eq(timeRange), eq(index), any())).then {
@@ -256,7 +268,8 @@ class ProfileCachedRepositoryTest {
                     TopTrack(
                         "Hacker by Death Grips",
                         22_000,
-                        date.minusWeeks(2)
+                        date.minusWeeks(2),
+                        "http://notarealurl.com/album_img.png"
                     )
                 )
             )
@@ -268,6 +281,7 @@ class ProfileCachedRepositoryTest {
             "Hacker by Death Grips",
             22_000,
             date.minusWeeks(2),
+            "http://notarealurl.com/album_img.png",
             LocalDateTime.now()
         )
         verify(trackCache).insert(argThat {

@@ -111,18 +111,30 @@
             android:layout_height="match_parent"
             android:minHeight="200dp">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/tagTitleText"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/banner"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:enabled="false"
-                android:text="@{tag_title}"
-                android:textColor="@color/darkGray"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:visibleGone="@{!displaying_error}" />
+                app:layout_constraintTop_toTopOf="parent">
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:contentDescription="@string/profile_card_image_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/tagTitleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:enabled="false"
+                    android:text="@{tag_title}"
+                    android:textColor="@color/darkGray"
+                    app:visibleGone="@{!displaying_error}" />
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/titleText"
@@ -135,7 +147,7 @@
                 android:textSize="30sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tagTitleText"
+                app:layout_constraintTop_toBottomOf="@+id/banner"
                 app:visibleGone="@{!displaying_error}" />
 
             <TextView

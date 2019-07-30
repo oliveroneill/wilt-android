@@ -65,6 +65,7 @@ data class TopArtistCacheElement(
     val name: String,
     val totalPlays: Int,
     val lastPlayed: LocalDateTime?,
+    val imageUrl: String,
     /**
      * This will be the date that this element was placed into the cache to determine the expiry
      */
@@ -79,6 +80,7 @@ data class TopTrackCacheElement(
     val name: String,
     val totalPlayDurationMs: Long,
     val lastPlayed: LocalDateTime?,
+    val imageUrl: String,
     /**
      * This will be the date that this element was placed into the cache to determine the expiry
      */

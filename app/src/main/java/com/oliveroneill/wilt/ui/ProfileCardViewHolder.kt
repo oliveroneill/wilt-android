@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.databinding.ProfileCardBinding
 import com.oliveroneill.wilt.viewmodel.ProfileCardViewData
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.profile_card.view.*
 
 /**
@@ -26,6 +27,13 @@ class ProfileCardViewHolder(private val binding: ProfileCardBinding): RecyclerVi
         binding.errorMessage = viewData.errorMessage
         binding.root.retry_button.setOnClickListener {
             viewData.retry?.invoke()
+        }
+        viewData.imageUrl?.let {
+            Picasso.get()
+                .load(it)
+                .fit()
+                .centerCrop()
+                .into(binding.root.imageView)
         }
     }
 

@@ -108,7 +108,8 @@ class ProfileFragmentTest {
         val topArtist = TopArtist(
             "Death Grips",
             666,
-            LocalDateTime.now().minusMonths(2)
+            LocalDateTime.now().minusMonths(2),
+            "notarealimageurl"
         )
         // When
         stateData.postValue(
@@ -136,7 +137,8 @@ class ProfileFragmentTest {
         val topArtist = TopArtist(
             "Death Grips",
             666,
-            null
+            null,
+            "notarealimageurl"
         )
         // When
         stateData.postValue(
@@ -207,12 +209,14 @@ class ProfileFragmentTest {
         val topArtist = TopArtist(
             "Death Grips",
             666,
-            LocalDateTime.now().minusMonths(2)
+            LocalDateTime.now().minusMonths(2),
+            "notarealimageurl"
         )
         val topArtistRecently = TopArtist(
             "(Sandy) Alex G",
             22,
-            LocalDateTime.now().minusMonths(4)
+            LocalDateTime.now().minusMonths(4),
+            "notarealimageurl"
         )
         // When
         stateData.postValue(
@@ -249,7 +253,8 @@ class ProfileFragmentTest {
         val topArtist = TopTrack(
             "On GP by Death Grips",
             10_000,
-            LocalDateTime.now().minusMonths(2)
+            LocalDateTime.now().minusMonths(2),
+            "notarealimageurl"
         )
         // When
         stateData.postValue(
