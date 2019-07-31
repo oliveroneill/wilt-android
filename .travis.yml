@@ -1,14 +1,43 @@
-language: android
+language: minimal
+os: linux
+dist: xenial
+group: edge
+sudo: required
+
+env:
+  global:
+  # for updates check developer.android.com/studio#downloads (current 26.1.1)
+  - ANDROID_SDK_TOOLS=sdk-tools-linux-4333796.zip
+
+before_install:
+  # set JAVA_HOME path
+  - export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+  # download and unzip Android SDK command line tools
+  - wget -nv https://dl.google.com/android/repository/$ANDROID_SDK_TOOLS
+  - unzip -q $ANDROID_SDK_TOOLS -d $HOME/sdk
+  # set SDK tools path variable and ANDROID_HOME
+  - export PATH=$PATH:$HOME/sdk/tools/bin
+  - export ANDROID_HOME=$HOME/sdk
+  # create empty cfg file to prevent sdkmanager warning message
+  - mkdir -p $HOME/.android && touch $HOME/.android/repositories.cfg
+  # Secret files
+  - openssl aes-256-cbc -K $encrypted_f20c58e0d760_key -iv $encrypted_f20c58e0d760_iv
+    -in secrets.xml.enc -out app/src/main/res/values/secrets.xml -d
+  - openssl aes-256-cbc -K $encrypted_dfb6cccb808e_key -iv $encrypted_dfb6cccb808e_iv
+    -in app/google-services.json.enc -out app/google-services.json -d
+install:
+  # accept licenses for all available packages that have not already been accepted
+  - yes | sdkmanager --licenses >/dev/null
 before_script:
+  # set executable flag for gradle wrapper
+  - chmod +x gradlew
+  # create dir for gradle settings
+  - mkdir -p $HOME/.gradle
+  # disable gradle daemon for current user
+  - echo "org.gradle.daemon=false" >> $HOME/.gradle/gradle.properties
+  # set gradle log format to plain
+  - echo "org.gradle.console=plain" >> $HOME/.gradle/gradle.properties
+  # Avoid timezone issues
   - export TZ=Australia/Sydney
-android:
-  components:
-  - android-28
-  - build-tools-28.0.3
 script:
 - "./gradlew testDebug"
-before_install:
-- openssl aes-256-cbc -K $encrypted_f20c58e0d760_key -iv $encrypted_f20c58e0d760_iv
-  -in secrets.xml.enc -out app/src/main/res/values/secrets.xml -d
-- openssl aes-256-cbc -K $encrypted_dfb6cccb808e_key -iv $encrypted_dfb6cccb808e_iv
-  -in app/google-services.json.enc -out app/google-services.json -d
