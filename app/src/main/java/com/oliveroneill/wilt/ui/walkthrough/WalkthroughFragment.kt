@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.ui
+package com.oliveroneill.wilt.ui.walkthrough
 
 import android.content.Intent
 import android.os.Bundle

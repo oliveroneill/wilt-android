@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.ui
+package com.oliveroneill.wilt.ui.walkthrough
 
 import android.os.Bundle
 import androidx.navigation.NavDirections
@@ -23,7 +23,9 @@ class WalkthroughFragmentDirections {
     }
 
     companion object {
-        fun showLoginError(): NavDirections = LoginError()
-        fun showPlayHistory(): NavDirections = LogIn()
+        fun showLoginError(): NavDirections =
+            LoginError()
+        fun showPlayHistory(): NavDirections =
+            LogIn()
     }
 }

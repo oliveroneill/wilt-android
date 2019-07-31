@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/walkthroughFragment"
-        android:name="com.oliveroneill.wilt.ui.WalkthroughFragment"
+        android:name="com.oliveroneill.wilt.ui.walkthrough.WalkthroughFragment"
         android:label="Welcome To Wilt"
         tools:layout="@layout/walkthrough_fragment">
         <action
@@ -21,12 +21,12 @@
 
     <fragment
         android:id="@+id/loginErrorFragment"
-        android:name="com.oliveroneill.wilt.ui.LoginErrorFragment"
+        android:name="com.oliveroneill.wilt.ui.walkthrough.LoginErrorFragment"
         android:label="Login Error"
         tools:layout="@layout/login_error" />
     <fragment
         android:id="@+id/navigation_feed"
-        android:name="com.oliveroneill.wilt.ui.PlayHistoryFragment"
+        android:name="com.oliveroneill.wilt.ui.feed.PlayHistoryFragment"
         android:label="Your Top Artists Per Week"
         tools:layout="@layout/history_fragment" >
         <action
@@ -35,7 +35,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.oliveroneill.wilt.ui.ProfileFragment"
+        android:name="com.oliveroneill.wilt.ui.profile.ProfileFragment"
         android:label="About You"
         tools:layout="@layout/profile_fragment">
         <action

@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.ui
+package com.oliveroneill.wilt.ui.walkthrough
 
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer

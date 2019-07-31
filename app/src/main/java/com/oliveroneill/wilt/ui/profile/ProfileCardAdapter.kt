@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.ui
+package com.oliveroneill.wilt.ui.profile
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -29,7 +29,12 @@ class ProfileCardAdapter : RecyclerView.Adapter<ProfileCardViewHolder>() {
      * Call this when there is a new state for a specific item
      */
     fun updateCards(viewData: List<ProfileCardViewData>) {
-        val diffResult = DiffUtil.calculateDiff(ProfileCardDiffCallback(itemStates, viewData))
+        val diffResult = DiffUtil.calculateDiff(
+            ProfileCardDiffCallback(
+                itemStates,
+                viewData
+            )
+        )
         itemStates = viewData
         diffResult.dispatchUpdatesTo(this)
     }

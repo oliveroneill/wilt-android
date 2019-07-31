@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.ui
+package com.oliveroneill.wilt.ui.feed
 
 import android.graphics.*
 import com.squareup.picasso.Transformation

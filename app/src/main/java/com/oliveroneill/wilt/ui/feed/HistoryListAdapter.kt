@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.ui
+package com.oliveroneill.wilt.ui.feed
 
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
@@ -60,7 +60,9 @@ class HistoryListAdapter : PagedListAdapter<ArtistRank, RecyclerView.ViewHolder>
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             R.layout.artist_rank -> ArtistRankViewHolder.create(parent)
-            R.layout.network_state_item -> NetworkStateItemViewHolder.create(parent)
+            R.layout.network_state_item -> NetworkStateItemViewHolder.create(
+                parent
+            )
             else -> throw IllegalArgumentException("unknown view type $viewType")
         }
     }

@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.ui
+package com.oliveroneill.wilt.ui.profile
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

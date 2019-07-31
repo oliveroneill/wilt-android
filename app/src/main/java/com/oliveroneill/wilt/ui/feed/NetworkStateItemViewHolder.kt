@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.ui
+package com.oliveroneill.wilt.ui.feed
 
 import android.view.LayoutInflater
 import android.view.View
