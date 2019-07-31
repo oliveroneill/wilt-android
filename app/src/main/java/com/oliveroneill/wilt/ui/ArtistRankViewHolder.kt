@@ -28,6 +28,7 @@ class ArtistRankViewHolder(private val view: View): RecyclerView.ViewHolder(view
                 .load(it.imageUrl)
                 .fit()
                 .centerCrop()
+                .transform(PicassoCircleTransform())
                 .into(imageView)
         }
     }
