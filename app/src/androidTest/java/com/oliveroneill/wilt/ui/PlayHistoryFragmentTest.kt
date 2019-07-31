@@ -70,8 +70,20 @@ class PlayHistoryFragmentTest {
     fun shouldDisplayRows() {
         // Given
         val list = listOf(
-            ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99),
-            ArtistRank("52-2018", LocalDate.parse("2018-12-25"), "Bon Iver", 12)
+            ArtistRank(
+                "09-2019",
+                LocalDate.parse("2019-02-25"),
+                "Pinegrove",
+                99,
+                "notarealimageurl"
+            ),
+            ArtistRank(
+                "52-2018",
+                LocalDate.parse("2018-12-25"),
+                "Bon Iver",
+                12,
+                "notarealimageurl"
+            )
         )
         val pagedList = mock<PagedList<ArtistRank>>()
         `when`(pagedList[ArgumentMatchers.anyInt()]).then { invocation ->
@@ -158,8 +170,20 @@ class PlayHistoryFragmentTest {
     fun shouldShowRowsWhileLoadingFromBottom() {
         // Given
         val list = listOf(
-            ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99),
-            ArtistRank("52-2018", LocalDate.parse("2018-12-25"), "Bon Iver", 12)
+            ArtistRank(
+                "09-2019",
+                LocalDate.parse("2019-02-25"),
+                "Pinegrove",
+                99,
+                "notarealimageurl"
+            ),
+            ArtistRank(
+                "52-2018",
+                LocalDate.parse("2018-12-25"),
+                "Bon Iver",
+                12,
+                "notarealimageurl"
+            )
         )
         val pagedList = mock<PagedList<ArtistRank>>()
         `when`(pagedList[ArgumentMatchers.anyInt()]).then { invocation ->
@@ -191,8 +215,20 @@ class PlayHistoryFragmentTest {
     fun shouldShowRowsWhileLoadingFromTop() {
         // Given
         val list = listOf(
-            ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99),
-            ArtistRank("52-2018", LocalDate.parse("2018-12-25"), "Bon Iver", 12)
+            ArtistRank(
+                "09-2019",
+                LocalDate.parse("2019-02-25"),
+                "Pinegrove",
+                99,
+                "notarealimageurl"
+            ),
+            ArtistRank(
+                "52-2018",
+                LocalDate.parse("2018-12-25"),
+                "Bon Iver",
+                12,
+                "notarealimageurl"
+            )
         )
         val pagedList = mock<PagedList<ArtistRank>>()
         `when`(pagedList[ArgumentMatchers.anyInt()]).then { invocation ->
@@ -224,8 +260,20 @@ class PlayHistoryFragmentTest {
     fun shouldShowRowsWithErrorAtBottom() {
         // Given
         val list = listOf(
-            ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99),
-            ArtistRank("52-2018", LocalDate.parse("2018-12-25"), "Bon Iver", 12)
+            ArtistRank(
+                "09-2019",
+                LocalDate.parse("2019-02-25"),
+                "Pinegrove",
+                99,
+                "notarealimageurl"
+                ),
+            ArtistRank(
+                "52-2018",
+                LocalDate.parse("2018-12-25"),
+                "Bon Iver",
+                12,
+                "notarealimageurl"
+            )
         )
         val pagedList = mock<PagedList<ArtistRank>>()
         `when`(pagedList[ArgumentMatchers.anyInt()]).then { invocation ->
@@ -259,8 +307,20 @@ class PlayHistoryFragmentTest {
     fun shouldShowRowsWithErrorAtTop() {
         // Given
         val list = listOf(
-            ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99),
-            ArtistRank("52-2018", LocalDate.parse("2018-12-25"), "Bon Iver", 12)
+            ArtistRank(
+                "09-2019",
+                LocalDate.parse("2019-02-25"),
+                "Pinegrove",
+                99,
+                "notarealimageurl"
+            ),
+            ArtistRank(
+                "52-2018",
+                LocalDate.parse("2018-12-25"),
+                "Bon Iver",
+                12,
+                "notarealimageurl"
+            )
         )
         val pagedList = mock<PagedList<ArtistRank>>()
         `when`(pagedList[ArgumentMatchers.anyInt()]).then { invocation ->

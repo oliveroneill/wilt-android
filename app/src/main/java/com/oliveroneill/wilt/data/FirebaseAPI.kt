@@ -52,13 +52,14 @@ class FirebaseAPI: ProfileRepository {
         val week: String,
         val date: String,
         val top_artist: String,
-        val count: Int
+        val count: Int,
+        val imageUrl: String
     ) {
         /**
          * Convert this instance into the Room database entity
          */
         fun toArtistRank(): ArtistRank {
-            return ArtistRank(week, LocalDate.parse(date), top_artist, count)
+            return ArtistRank(week, LocalDate.parse(date), top_artist, count, imageUrl)
         }
     }
 

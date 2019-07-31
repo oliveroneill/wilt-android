@@ -31,7 +31,11 @@ data class ArtistRank(
     /**
      * The number of plays within the given [week]
      */
-    val count: Int
+    val count: Int,
+    /**
+     * A URL for an image of the artist
+     */
+    val imageUrl: String
 )
 
 /**
