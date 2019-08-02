@@ -11,6 +11,11 @@
     <string name="retry">Retry</string>
 
     <string name="info">
+        Wilt help you keep track of your favourite artists. Ever wonder what your favourite band was last autumn?
+        &lt;br/&gt;&lt;br/&gt;
+        Unfortunately we can only start tracking from when you login but just wait a while and we\'ll have heaps
+        of things to show you!&lt;br/&gt;&lt;br/&gt;
+        This is still an alpha project and may cease to work at any point.&lt;br/&gt;&lt;br/&gt;
         Spotify play history and user info will be stored and periodically updated. To opt-out or delete stored data,
         please &lt;a href="mailto:contact.wiltapp@gmail.com"&gt;contact us&lt;/a&gt;
     </string>
