@@ -10,6 +10,14 @@
 
     <string name="retry">Retry</string>
 
+    <string name="info">
+        Spotify play history and user info will be stored and periodically updated. To opt-out or delete stored data,
+        please &lt;a href="mailto:contact.wiltapp@gmail.com"&gt;contact us&lt;/a&gt;
+    </string>
+
+    <string name="action_info">About Wilt</string>
+    <string name="action_logout">Sign out</string>
+
     <string name="playstext_format">%1$d plays</string>
     <string name="datetext_format">%1$tb %1$tY</string>
     <string name="play_history_loading_message">Loading your favourite artists…</string>

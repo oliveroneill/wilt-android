@@ -167,5 +167,9 @@ class FirebaseAPI: ProfileRepository {
                 callback(Result.success(data.toTopTrack()))
             }
     }
+
+    fun logout() {
+        auth.signOut()
+    }
 }
 

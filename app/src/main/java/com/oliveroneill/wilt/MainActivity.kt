@@ -2,6 +2,7 @@ package com.oliveroneill.wilt
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 
@@ -19,6 +20,19 @@ class MainActivity : AppCompatActivity() {
             it.childFragmentManager.fragments.forEach { fragment ->
                 fragment.onActivityResult(requestCode, resultCode, data)
             }
+        }
+    }
+
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        // We need to handle the back button in the action bar ourselves
+        android.R.id.home -> {
+            onBackPressed()
+            true
+        }
+        else -> {
+            super.onOptionsItemSelected(item)
         }
     }
 }

@@ -1,9 +1,7 @@
 package com.oliveroneill.wilt.ui.profile
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.annotation.VisibleForTesting
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -24,8 +22,10 @@ class ProfileFragment: Fragment() {
     var viewModelFactory: ViewModelProvider.AndroidViewModelFactory? = activity?.let {
         ViewModelProvider.AndroidViewModelFactory(it.application)
     }
+    private lateinit var model: ProfileFragmentViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         val binding = DataBindingUtil.inflate<ProfileFragmentBinding>(
             inflater,
             R.layout.profile_fragment,
@@ -33,7 +33,7 @@ class ProfileFragment: Fragment() {
             false
         )
         val adapter = ProfileCardAdapter()
-        val model = ViewModelProviders.of(this, viewModelFactory).get(ProfileFragmentViewModel::class.java)
+        model = ViewModelProviders.of(this, viewModelFactory).get(ProfileFragmentViewModel::class.java)
         binding.profileInfoList.adapter = adapter
         model.state.observe(this, EventObserver {
             when (it) {
@@ -61,5 +61,25 @@ class ProfileFragment: Fragment() {
         view.bottom_navigation.setupWithNavController(
             NavHostFragment.findNavController(this)
         )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.action_logout -> {
+            model.logout()
+            true
+        }
+        R.id.action_info -> {
+            NavHostFragment.findNavController(this).navigate(
+                ProfileFragmentDirections.showInfo()
+            )
+            true
+        }
+        else -> {
+            super.onOptionsItemSelected(item)
+        }
     }
 }

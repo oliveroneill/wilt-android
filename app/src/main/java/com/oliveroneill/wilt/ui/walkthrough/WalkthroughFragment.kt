@@ -2,9 +2,7 @@ package com.oliveroneill.wilt.ui.walkthrough
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -37,6 +35,7 @@ class WalkthroughFragment: Fragment() {
     var viewModelFactory: AndroidViewModelFactory? = activity?.let { AndroidViewModelFactory(it.application) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         val binding = DataBindingUtil.inflate<WalkthroughFragmentBinding>(
             inflater,
             R.layout.walkthrough_fragment,
@@ -115,5 +114,21 @@ class WalkthroughFragment: Fragment() {
                 response
             )
         )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.logged_out_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.action_info -> {
+            findNavController(this).navigate(
+                WalkthroughFragmentDirections.showInfo()
+            )
+            true
+        }
+        else -> {
+            super.onOptionsItemSelected(item)
+        }
     }
 }

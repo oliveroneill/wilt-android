@@ -1,5 +1,6 @@
 package com.oliveroneill.wilt.ui.walkthrough
 
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.testing.FragmentScenario
@@ -134,6 +135,17 @@ class WalkthroughFragmentTest {
     fun shouldOpenSpotifyLoginOnClick() {
         onView(withId(R.id.signInButton)).perform(click())
         verify(viewModel).spotifySignup()
+    }
+
+    @Test
+    fun shouldNavigateToInfoScreen() {
+        val item = mock<MenuItem> {
+            on { itemId } doReturn R.id.action_info
+        }
+        scenario.onFragment { fragment ->
+            fragment.onOptionsItemSelected(item)
+        }
+        verify(navController, timeout(1000)).navigate(eq(WalkthroughFragmentDirections.showInfo()))
     }
 
     // TODO: test that loading spinner is displayed - this isn't easy to do since the Spotify login page opens on top

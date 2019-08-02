@@ -22,10 +22,16 @@ class WalkthroughFragmentDirections {
         override fun hashCode() = javaClass.hashCode()
     }
 
+    private class InfoNav : NavDirections {
+        override fun getActionId() = R.id.action_info
+        override fun getArguments() = Bundle()
+        override fun equals(other: Any?) = (other is InfoNav)
+        override fun hashCode() = javaClass.hashCode()
+    }
+
     companion object {
-        fun showLoginError(): NavDirections =
-            LoginError()
-        fun showPlayHistory(): NavDirections =
-            LogIn()
+        fun showLoginError(): NavDirections = LoginError()
+        fun showPlayHistory(): NavDirections = LogIn()
+        fun showInfo(): NavDirections = InfoNav()
     }
 }

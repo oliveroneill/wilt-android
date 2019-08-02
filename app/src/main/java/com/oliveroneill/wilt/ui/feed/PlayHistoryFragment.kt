@@ -1,9 +1,7 @@
 package com.oliveroneill.wilt.ui.feed
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.annotation.VisibleForTesting
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -30,13 +28,15 @@ class PlayHistoryFragment: Fragment() {
     var viewModelFactory: AndroidViewModelFactory? = activity?.let {
         AndroidViewModelFactory(it.application)
     }
+    private lateinit var model: PlayHistoryFragmentViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         val binding = DataBindingUtil.inflate<HistoryFragmentBinding>(
             inflater, R.layout.history_fragment, container, false
         )
         val rootView = binding.root
-        val model = ViewModelProviders.of(this, viewModelFactory).get(PlayHistoryFragmentViewModel::class.java)
+        model = ViewModelProviders.of(this, viewModelFactory).get(PlayHistoryFragmentViewModel::class.java)
         val adapter = HistoryListAdapter()
         rootView.swipe_refresh.setOnRefreshListener {
             model.itemDataSource.value?.dataSource?.invalidate()
@@ -66,5 +66,25 @@ class PlayHistoryFragment: Fragment() {
         view.bottom_navigation.setupWithNavController(
             NavHostFragment.findNavController(this)
         )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.action_logout -> {
+            model.logout()
+            true
+        }
+        R.id.action_info -> {
+            NavHostFragment.findNavController(this).navigate(
+                PlayHistoryFragmentDirections.showInfo()
+            )
+            true
+        }
+        else -> {
+            super.onOptionsItemSelected(item)
+        }
     }
 }

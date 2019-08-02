@@ -1,5 +1,6 @@
 package com.oliveroneill.wilt.ui.walkthrough
 
+import android.view.MenuItem
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
@@ -10,6 +11,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.timeout
 import com.oliveroneill.wilt.R
 import org.junit.Before
 import org.junit.Test
@@ -40,5 +44,16 @@ class LoginErrorFragmentTest {
     fun shouldGoBackOnTryAgainClick() {
         onView(withId(R.id.tryAgainButton)).perform(ViewActions.click())
         verify(navController).popBackStack()
+    }
+
+    @Test
+    fun shouldNavigateToInfoScreen() {
+        val item = com.nhaarman.mockitokotlin2.mock<MenuItem> {
+            on { itemId } doReturn R.id.action_info
+        }
+        scenario.onFragment { fragment ->
+            fragment.onOptionsItemSelected(item)
+        }
+        verify(navController, timeout(1000)).navigate(eq(WalkthroughFragmentDirections.showInfo()))
     }
 }

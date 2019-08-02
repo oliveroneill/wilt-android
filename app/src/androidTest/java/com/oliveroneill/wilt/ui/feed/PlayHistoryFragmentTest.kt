@@ -1,5 +1,6 @@
 package com.oliveroneill.wilt.ui.feed
 
+import android.view.MenuItem
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.MutableLiveData
@@ -408,5 +409,27 @@ class PlayHistoryFragmentTest {
         // Set state
         loadingStateData.postValue(Event(PlayHistoryState.LoggedOut))
         verify(navController, timeout(1000)).navigate(eq(PlayHistoryFragmentDirections.logout()))
+    }
+
+    @Test
+    fun shouldLogoutOnMenuClick() {
+        val item = mock<MenuItem> {
+            on { itemId } doReturn R.id.action_logout
+        }
+        scenario.onFragment { fragment ->
+            fragment.onOptionsItemSelected(item)
+        }
+        verify(viewModel).logout()
+    }
+
+    @Test
+    fun shouldNavigateToInfoScreen() {
+        val item = mock<MenuItem> {
+            on { itemId } doReturn R.id.action_info
+        }
+        scenario.onFragment { fragment ->
+            fragment.onOptionsItemSelected(item)
+        }
+        verify(navController, timeout(1000)).navigate(eq(PlayHistoryFragmentDirections.showInfo()))
     }
 }

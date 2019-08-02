@@ -17,13 +17,20 @@
             android:id="@+id/action_login"
             app:destination="@+id/navigation_profile"
             app:popUpTo="@+id/nav_graph" />
+        <action
+            android:id="@+id/action_info"
+            app:destination="@id/infoFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/loginErrorFragment"
         android:name="com.oliveroneill.wilt.ui.walkthrough.LoginErrorFragment"
         android:label="Login Error"
-        tools:layout="@layout/login_error" />
+        tools:layout="@layout/login_error" >
+        <action
+            android:id="@+id/action_info"
+            app:destination="@id/infoFragment" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_feed"
         android:name="com.oliveroneill.wilt.ui.feed.PlayHistoryFragment"
@@ -32,6 +39,9 @@
         <action
             android:id="@+id/action_logout"
             app:destination="@id/walkthroughFragment" />
+        <action
+            android:id="@+id/action_info"
+            app:destination="@id/infoFragment" />
     </fragment>
     <fragment
         android:id="@+id/navigation_profile"
@@ -41,5 +51,12 @@
         <action
             android:id="@+id/action_logout"
             app:destination="@id/walkthroughFragment" />
+        <action
+            android:id="@+id/action_info"
+            app:destination="@id/infoFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="com.oliveroneill.wilt.ui.info.InfoFragment"
+        android:label="About Wilt" />
 </navigation>

@@ -100,7 +100,7 @@ sealed class PlayHistoryNetworkState {
  */
 @OpenForTesting
 class PlayHistoryFragmentViewModel @JvmOverloads constructor(
-    application: Application, firebase: FirebaseAPI = FirebaseAPI()
+    application: Application, private val firebase: FirebaseAPI = FirebaseAPI()
 ): AndroidViewModel(application) {
     private val _loadingState = MutableLiveData<Event<PlayHistoryState>>()
     /**
@@ -125,5 +125,10 @@ class PlayHistoryFragmentViewModel @JvmOverloads constructor(
                 boundaryCallback = ArtistRankBoundaryCallback(it, firebase, _loadingState, pageSize.toLong())
             )
         }
+    }
+
+    fun logout() {
+        firebase.logout()
+        _loadingState.postValue(Event(PlayHistoryState.LoggedOut))
     }
 }

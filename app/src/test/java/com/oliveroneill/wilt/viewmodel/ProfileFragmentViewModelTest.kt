@@ -7,6 +7,7 @@ import com.jraska.livedata.test
 import com.nhaarman.mockitokotlin2.*
 import com.oliveroneill.wilt.Event
 import com.oliveroneill.wilt.R
+import com.oliveroneill.wilt.data.FirebaseAPI
 import com.oliveroneill.wilt.data.ProfileRepository
 import com.oliveroneill.wilt.data.TimeRange
 import junit.framework.TestCase
@@ -35,10 +36,12 @@ class ProfileFragmentViewModelTest {
         on { getString(ArgumentMatchers.anyInt()) } doReturn ""
     }
     private lateinit var repository: ProfileRepository
+    private lateinit var firebase: FirebaseAPI
 
     @Before
     fun setup() {
         repository = mock()
+        firebase = mock()
         whenever(repository.currentUser).thenReturn(currentUser)
         whenever(
             application.getString(eq(R.string.favourite_artist_title_long_term))
@@ -58,7 +61,7 @@ class ProfileFragmentViewModelTest {
 
     @Test
     fun `should set initial state to loading`() {
-        val model = ProfileFragmentViewModel(application, repository, cards)
+        val model = ProfileFragmentViewModel(application, firebase, repository, cards)
         // Assert that state gets set correctly
         model.state
             .test()
@@ -73,7 +76,7 @@ class ProfileFragmentViewModelTest {
     @Test
     fun `should set state to logged out when not logged in`() {
         whenever(repository.currentUser).thenReturn(null)
-        val model = ProfileFragmentViewModel(application, repository, cards)
+        val model = ProfileFragmentViewModel(application, firebase, repository, cards)
         model.state
             .test()
             .assertHasValue()
@@ -91,7 +94,7 @@ class ProfileFragmentViewModelTest {
         whenever(repository.topArtist(eq(timeRange), eq(index), any())).then {
             (it.getArgument(2) as (Result<TopArtist>) -> Unit).invoke(Result.success(expected))
         }
-        val model = ProfileFragmentViewModel(application, repository, cards)
+        val model = ProfileFragmentViewModel(application, firebase, repository, cards)
         model.state
             .test()
             .assertHasValue()
@@ -110,7 +113,7 @@ class ProfileFragmentViewModelTest {
         whenever(repository.topArtist(eq(timeRange), eq(index), any())).then {
             (it.getArgument(2) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
         }
-        val model = ProfileFragmentViewModel(application, repository, cards)
+        val model = ProfileFragmentViewModel(application, firebase, repository, cards)
         model.state
             .test()
             .assertHasValue()
@@ -126,7 +129,7 @@ class ProfileFragmentViewModelTest {
         whenever(repository.topArtist(eq(timeRange), eq(index), any())).then {
             (it.getArgument(2) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
         }
-        val model = ProfileFragmentViewModel(application, repository, cards)
+        val model = ProfileFragmentViewModel(application, firebase, repository, cards)
         model.state
             .test()
             .assertHasValue()
@@ -146,7 +149,7 @@ class ProfileFragmentViewModelTest {
         whenever(repository.topArtist(eq(timeRange), eq(index), any())).then {
             (it.getArgument(2) as (Result<TopArtist>) -> Unit).invoke(Result.failure(error))
         }
-        val model = ProfileFragmentViewModel(application, repository, cards)
+        val model = ProfileFragmentViewModel(application, firebase, repository, cards)
         val state = model.state.value?.unwrapState()
         when (state) {
             is ProfileLoggedInState -> {
@@ -251,7 +254,7 @@ class ProfileFragmentViewModelTest {
         val cards = listOf<Card>(
             Card.TopTrackCard(index, timeRange)
         )
-        val model = ProfileFragmentViewModel(application, repository, cards)
+        val model = ProfileFragmentViewModel(application, firebase, repository, cards)
         model.state
             .test()
             .assertHasValue()
@@ -289,5 +292,17 @@ class ProfileFragmentViewModelTest {
             application.getString(eq(R.string.favourite_track_title_long_term))
         ).thenReturn("Your favourite song ever")
         assertEquals(expected, state.toViewData(application))
+    }
+
+
+    @Test
+    fun `should logout`() {
+        val model = ProfileFragmentViewModel(application, firebase, repository, cards)
+        model.logout()
+        verify(firebase).logout()
+        model.state
+            .test()
+            .assertHasValue()
+            .assertValue { it.getContentIfNotHandled() is ProfileState.LoggedOut }
     }
 }

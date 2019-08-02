@@ -1,5 +1,6 @@
 package com.oliveroneill.wilt.ui.profile
 
+import android.view.MenuItem
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.MutableLiveData
@@ -275,5 +276,27 @@ class ProfileFragmentTest {
         // The check is redundant here but this is the best way to check the view exists
         onView(allOf(withText("Your favourite song ever"), isDisplayed())).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.shimmer), isDisplayed())).check(doesNotExist())
+    }
+
+    @Test
+    fun shouldLogoutOnMenuClick() {
+        val item = mock<MenuItem> {
+            on { itemId } doReturn R.id.action_logout
+        }
+        scenario.onFragment { fragment ->
+            fragment.onOptionsItemSelected(item)
+        }
+        verify(viewModel).logout()
+    }
+
+    @Test
+    fun shouldNavigateToInfoScreen() {
+        val item = mock<MenuItem> {
+            on { itemId } doReturn R.id.action_info
+        }
+        scenario.onFragment { fragment ->
+            fragment.onOptionsItemSelected(item)
+        }
+        verify(navController, timeout(1000)).navigate(eq(ProfileFragmentDirections.showInfo()))
     }
 }

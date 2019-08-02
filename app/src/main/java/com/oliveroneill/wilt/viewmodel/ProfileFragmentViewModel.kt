@@ -22,8 +22,9 @@ import java.time.ZoneOffset
 @OpenForTesting
 class ProfileFragmentViewModel @JvmOverloads constructor(
     application: Application,
+    private val firebaseAPI: FirebaseAPI = FirebaseAPI(),
     private val repository: ProfileRepository = ProfileCachedRepository(
-        FirebaseAPI(),
+        firebaseAPI,
         TopArtistDatabase.getDatabase(application).topArtistCache(),
         TopTrackDatabase.getDatabase(application).topTrackCache()
     ),
@@ -185,6 +186,11 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
                 )
             }
         }
+    }
+
+    fun logout() {
+        firebaseAPI.logout()
+        _state.postValue(Event(ProfileState.LoggedOut))
     }
 }
 
