@@ -14,7 +14,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nhaarman.mockitokotlin2.*
+import com.oliveroneill.wilt.Data
 import com.oliveroneill.wilt.Event
+import com.oliveroneill.wilt.Message
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.TimeRange
 import com.oliveroneill.wilt.viewmodel.*
@@ -31,7 +33,7 @@ class ProfileFragmentTest {
     private lateinit var scenario: FragmentScenario<ProfileFragment>
     // Create fake view model for sending events to the UI
     private val viewModel = mock<ProfileFragmentViewModel>()
-    private val stateData = MutableLiveData<Event<ProfileState>>()
+    private val stateData = MutableLiveData<Message<ProfileState>>()
     // Create factory that returns the fake view model
     private val factory = mock<ViewModelProvider.AndroidViewModelFactory>()
     private val navController = mock<NavController>()
@@ -70,7 +72,7 @@ class ProfileFragmentTest {
     fun shouldShowLoadingSpinner() {
         // When
         stateData.postValue(
-            Event(
+            Data(
                 ProfileState.LoggedIn(
                     ProfileLoggedInState(
                         currentUser,
@@ -91,7 +93,7 @@ class ProfileFragmentTest {
     fun shouldShowLoadingSpinnerForTopTrack() {
         // When
         stateData.postValue(
-            Event(
+            Data(
                 ProfileState.LoggedIn(
                     ProfileLoggedInState(
                         currentUser,
@@ -114,7 +116,7 @@ class ProfileFragmentTest {
         )
         // When
         stateData.postValue(
-            Event(
+            Data(
                 ProfileState.LoggedIn(
                     ProfileLoggedInState(
                         currentUser,
@@ -143,7 +145,7 @@ class ProfileFragmentTest {
         )
         // When
         stateData.postValue(
-            Event(
+            Data(
                 ProfileState.LoggedIn(
                     ProfileLoggedInState(
                         currentUser,
@@ -168,7 +170,7 @@ class ProfileFragmentTest {
         val errorMessage = "Hi this is an error message for tests"
         // When
         stateData.postValue(
-            Event(
+            Data(
                 ProfileState.LoggedIn(
                     ProfileLoggedInState(
                         currentUser,
@@ -191,7 +193,7 @@ class ProfileFragmentTest {
         val retry = mock<() -> Unit>()
         // When
         stateData.postValue(
-            Event(
+            Data(
                 ProfileState.LoggedIn(
                     ProfileLoggedInState(
                         currentUser,
@@ -221,7 +223,7 @@ class ProfileFragmentTest {
         )
         // When
         stateData.postValue(
-            Event(
+            Data(
                 ProfileState.LoggedIn(
                     ProfileLoggedInState(
                         currentUser,
@@ -259,7 +261,7 @@ class ProfileFragmentTest {
         )
         // When
         stateData.postValue(
-            Event(
+            Data(
                 ProfileState.LoggedIn(
                     ProfileLoggedInState(
                         currentUser,

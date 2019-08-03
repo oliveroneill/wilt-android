@@ -3,7 +3,9 @@ package com.oliveroneill.wilt.data
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.google.firebase.functions.FirebaseFunctionsException
+import com.oliveroneill.wilt.Data
 import com.oliveroneill.wilt.Event
+import com.oliveroneill.wilt.Message
 import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.data.dao.PlayHistoryDao
 import com.oliveroneill.wilt.viewmodel.PlayHistoryNetworkState
@@ -16,7 +18,7 @@ import java.util.concurrent.Executors
 class ArtistRankBoundaryCallback(
     private val dao: PlayHistoryDao,
     private val firebase: FirebaseAPI,
-    private val loadingState: MutableLiveData<Event<PlayHistoryState>>,
+    private val loadingState: MutableLiveData<Message<PlayHistoryState>>,
     private val pageSize: Long,
     private val executor: Executor = Executors.newSingleThreadExecutor()
 ): PagedList.BoundaryCallback<ArtistRank>() {
@@ -73,13 +75,13 @@ class ArtistRankBoundaryCallback(
         } else {
             PlayHistoryNetworkState.LoadingFromBottom
         }
-        loadingState.postValue(Event(PlayHistoryState.LoggedIn(state)))
+        loadingState.postValue(Data(PlayHistoryState.LoggedIn(state)))
         firebase.topArtistsPerWeek(start.toInt(), end.toInt()) { result ->
             result.onSuccess {
                 executor.execute {
                     dao.insert(it)
                     loadingState.postValue(
-                        Event(
+                        Data(
                             PlayHistoryState.LoggedIn(PlayHistoryNetworkState.NotLoading)
                         )
                     )
@@ -104,7 +106,7 @@ class ArtistRankBoundaryCallback(
                         // Retry
                     ) { topArtists(start, end) }
                 }
-                loadingState.postValue(Event(PlayHistoryState.LoggedIn(failure)))
+                loadingState.postValue(Data(PlayHistoryState.LoggedIn(failure)))
             }
         }
     }

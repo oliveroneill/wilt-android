@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.oliveroneill.wilt.EventObserver
+import com.oliveroneill.wilt.MessageObserver
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.SpotifyAuthenticationResponse
 import com.oliveroneill.wilt.databinding.WalkthroughFragmentBinding
@@ -52,7 +52,7 @@ class WalkthroughFragment: Fragment() {
         childFragmentManager.let {
             rootView.viewPager.adapter = WalkthroughPagerAdapter(model, it)
         }
-        model.state.observe(this, EventObserver {
+        model.state.observe(this, MessageObserver {
             when (it) {
                 is WalkthroughFragmentState.Walkthrough -> {
                     binding.loading = false

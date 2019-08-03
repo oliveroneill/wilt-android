@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.oliveroneill.wilt.EventObserver
+import com.oliveroneill.wilt.MessageObserver
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.databinding.HistoryFragmentBinding
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentViewModel
@@ -42,7 +42,7 @@ class PlayHistoryFragment: Fragment() {
             model.itemDataSource.value?.dataSource?.invalidate()
         }
         binding.historyList.adapter = adapter
-        model.loadingState.observe(this, EventObserver {
+        model.loadingState.observe(this, MessageObserver {
             when (it) {
                 is PlayHistoryState.LoggedIn -> {
                     adapter.setNetworkState(it.state)

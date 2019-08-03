@@ -19,7 +19,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nhaarman.mockitokotlin2.*
+import com.oliveroneill.wilt.Data
 import com.oliveroneill.wilt.Event
+import com.oliveroneill.wilt.Message
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.viewmodel.PlayHistoryFragmentViewModel
@@ -40,7 +42,7 @@ class PlayHistoryFragmentTest {
     // Create fake view model for sending events to the UI
     private val viewModel = mock<PlayHistoryFragmentViewModel>()
     private val itemStateData = MutableLiveData<PagedList<ArtistRank>>()
-    private val loadingStateData = MutableLiveData<Event<PlayHistoryState>>()
+    private val loadingStateData = MutableLiveData<Message<PlayHistoryState>>()
     // Create factory that returns the fake view model
     private val factory = mock<ViewModelProvider.AndroidViewModelFactory>()
     private val navController = mock<NavController>()
@@ -106,7 +108,7 @@ class PlayHistoryFragmentTest {
     @Test
     fun shouldDisplayLoadingSpinnerAtBottom() {
         loadingStateData.postValue(
-            Event(
+            Data(
                 PlayHistoryState.LoggedIn(PlayHistoryNetworkState.LoadingFromBottom)
             )
         )
@@ -118,7 +120,7 @@ class PlayHistoryFragmentTest {
     @Test
     fun shouldDisplayLoadingSpinnerAtTop() {
         loadingStateData.postValue(
-            Event(
+            Data(
                 PlayHistoryState.LoggedIn(PlayHistoryNetworkState.LoadingFromTop)
             )
         )
@@ -130,7 +132,7 @@ class PlayHistoryFragmentTest {
     @Test
     fun shouldHideLoadingSpinner() {
         loadingStateData.postValue(
-            Event(
+            Data(
                 PlayHistoryState.LoggedIn(PlayHistoryNetworkState.NotLoading)
             )
         )
@@ -143,7 +145,7 @@ class PlayHistoryFragmentTest {
     fun shouldShowErrorAtBottom() {
         val error = "Some random error message string"
         loadingStateData.postValue(
-            Event(
+            Data(
                 PlayHistoryState.LoggedIn(PlayHistoryNetworkState.FailureAtBottom(error) {})
             )
         )
@@ -157,7 +159,7 @@ class PlayHistoryFragmentTest {
     fun shouldShowErrorAtTop() {
         val error = "Some random error message string"
         loadingStateData.postValue(
-            Event(
+            Data(
                 PlayHistoryState.LoggedIn(PlayHistoryNetworkState.FailureAtTop(error) {})
             )
         )
@@ -193,7 +195,7 @@ class PlayHistoryFragmentTest {
         }
         `when`(pagedList.size).thenReturn(list.size)
         loadingStateData.postValue(
-            Event(
+            Data(
                 PlayHistoryState.LoggedIn(PlayHistoryNetworkState.LoadingFromBottom)
             )
         )
@@ -238,7 +240,7 @@ class PlayHistoryFragmentTest {
         }
         `when`(pagedList.size).thenReturn(list.size)
         loadingStateData.postValue(
-            Event(
+            Data(
                 PlayHistoryState.LoggedIn(PlayHistoryNetworkState.LoadingFromTop)
             )
         )
@@ -284,7 +286,7 @@ class PlayHistoryFragmentTest {
         `when`(pagedList.size).thenReturn(list.size)
         val error = "Some random error message string"
         loadingStateData.postValue(
-            Event(
+            Data(
                 PlayHistoryState.LoggedIn(PlayHistoryNetworkState.FailureAtBottom(error) {})
             )
         )
@@ -331,7 +333,7 @@ class PlayHistoryFragmentTest {
         `when`(pagedList.size).thenReturn(list.size)
         val error = "Some random error message string"
         loadingStateData.postValue(
-            Event(
+            Data(
                 PlayHistoryState.LoggedIn(PlayHistoryNetworkState.FailureAtTop(error) {})
             )
         )
@@ -357,7 +359,7 @@ class PlayHistoryFragmentTest {
         var retryCallCount = 0
         // Given
         loadingStateData.postValue(
-            Event(
+            Data(
                 PlayHistoryState.LoggedIn(
                     PlayHistoryNetworkState.FailureAtBottom(error) {
                         retryCallCount += 1
@@ -377,7 +379,7 @@ class PlayHistoryFragmentTest {
         var retryCallCount = 0
         // Given
         loadingStateData.postValue(
-            Event(
+            Data(
                 PlayHistoryState.LoggedIn(
                     PlayHistoryNetworkState.FailureAtTop(error) {
                         retryCallCount += 1

@@ -7,8 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.marlonlom.utilities.timeago.TimeAgo
 import com.google.firebase.functions.FirebaseFunctionsException
-import com.oliveroneill.wilt.Event
-import com.oliveroneill.wilt.R
+import com.oliveroneill.wilt.*
 import com.oliveroneill.wilt.data.FirebaseAPI
 import com.oliveroneill.wilt.data.ProfileCachedRepository
 import com.oliveroneill.wilt.data.ProfileRepository
@@ -45,8 +44,8 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
      */
     private var cardStates: MutableList<ProfileCardState> = mutableListOf()
 
-    private val _state = MutableLiveData<Event<ProfileState>>()
-    val state : LiveData<Event<ProfileState>>
+    private val _state = MutableLiveData<Message<ProfileState>>()
+    val state : LiveData<Message<ProfileState>>
         get() = _state
 
     init {
@@ -95,7 +94,7 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
      */
     private fun postNewStateForCard(profileName: String, cardIndex: Int, newState: ProfileCardState) {
         _state.postValue(
-            Event(
+            Data(
                 ProfileState.LoggedIn(
                     ProfileLoggedInState(
                         profileName,
@@ -130,7 +129,7 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
                 if (error is FirebaseFunctionsException &&
                     error.code == FirebaseFunctionsException.Code.UNAUTHENTICATED) {
                     // Send back a logged out error
-                    _state.postValue(Event(ProfileState.LoggedOut))
+                    logout()
                     // Short circuit
                     return@onFailure
                 }
@@ -171,7 +170,7 @@ class ProfileFragmentViewModel @JvmOverloads constructor(
                 if (error is FirebaseFunctionsException &&
                     error.code == FirebaseFunctionsException.Code.UNAUTHENTICATED) {
                     // Send back a logged out error
-                    _state.postValue(Event(ProfileState.LoggedOut))
+                    logout()
                     // Short circuit
                     return@onFailure
                 }

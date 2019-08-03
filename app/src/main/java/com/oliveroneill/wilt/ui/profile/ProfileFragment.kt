@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.oliveroneill.wilt.EventObserver
+import com.oliveroneill.wilt.MessageObserver
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.databinding.ProfileFragmentBinding
 import com.oliveroneill.wilt.viewmodel.ProfileFragmentViewModel
@@ -35,10 +35,10 @@ class ProfileFragment: Fragment() {
         val adapter = ProfileCardAdapter()
         model = ViewModelProviders.of(this, viewModelFactory).get(ProfileFragmentViewModel::class.java)
         binding.profileInfoList.adapter = adapter
-        model.state.observe(this, EventObserver {
+        model.state.observe(this, MessageObserver {
             when (it) {
                 is ProfileState.LoggedIn -> {
-                    val context = context ?: return@EventObserver
+                    val context = context ?: return@MessageObserver
                     val state = it.state
                     // Update the profile name. This is independent of a card
                     binding.profileName = state.profileName

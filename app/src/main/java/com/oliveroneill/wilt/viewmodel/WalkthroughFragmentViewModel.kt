@@ -4,7 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.oliveroneill.wilt.Data
 import com.oliveroneill.wilt.Event
+import com.oliveroneill.wilt.Message
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.FirebaseAuthentication
 import com.oliveroneill.wilt.data.SpotifyAuthenticationRequest
@@ -67,8 +69,8 @@ constructor(application: Application,
     /**
      * Set this value to receive Spotify sign in events
      */
-    private val _state = MutableLiveData<Event<WalkthroughFragmentState>>()
-    val state : LiveData<Event<WalkthroughFragmentState>>
+    private val _state = MutableLiveData<Message<WalkthroughFragmentState>>()
+    val state : LiveData<Message<WalkthroughFragmentState>>
         get() = _state
 
     init {
@@ -76,7 +78,7 @@ constructor(application: Application,
         _state.value = firebase.currentUser?.let {
             Event(WalkthroughFragmentState.LoggedIn(it))
         } ?: run {
-            Event(WalkthroughFragmentState.Walkthrough)
+            Data(WalkthroughFragmentState.Walkthrough)
         }
     }
 
@@ -84,12 +86,14 @@ constructor(application: Application,
      * Start spotify sign up process
      */
     fun spotifySignup() {
-        _state.value = Event(
-            WalkthroughFragmentState.AuthenticatingSpotify(
-                SpotifyAuthenticationRequest(
-                    clientID,
-                    redirectUri,
-                    arrayOf("user-read-email", "user-read-recently-played", "user-top-read")
+        _state.postValue(
+            Event(
+                WalkthroughFragmentState.AuthenticatingSpotify(
+                    SpotifyAuthenticationRequest(
+                        clientID,
+                        redirectUri,
+                        arrayOf("user-read-email", "user-read-recently-played", "user-top-read")
+                    )
                 )
             )
         )
@@ -108,7 +112,7 @@ constructor(application: Application,
                 }
             }
             is SpotifyAuthenticationResponse.Failure -> {
-                _state.value = Event(WalkthroughFragmentState.LoginError(response.error))
+                _state.postValue(Event(WalkthroughFragmentState.LoginError(response.error)))
             }
         }
     }

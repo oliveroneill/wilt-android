@@ -17,6 +17,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nhaarman.mockitokotlin2.*
 import com.oliveroneill.wilt.Event
+import com.oliveroneill.wilt.Message
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.SpotifyAuthenticationRequest
 import com.oliveroneill.wilt.viewmodel.WalkthroughFragmentState
@@ -32,7 +33,7 @@ class WalkthroughFragmentTest {
     private lateinit var scenario: FragmentScenario<WalkthroughFragment>
     // Create fake view model for sending events to the UI
     private val viewModel = mock<WalkthroughFragmentViewModel>()
-    private val stateData = MutableLiveData<Event<WalkthroughFragmentState>>()
+    private val stateData = MutableLiveData<Message<WalkthroughFragmentState>>()
     // Create factory that returns the fake view model
     private val factory = mock<ViewModelProvider.AndroidViewModelFactory>()
     private val navController = mock<NavController>()
@@ -42,7 +43,7 @@ class WalkthroughFragmentTest {
      * pages. On the other hand, it does mean that our tests ensure the text it shows is exactly
      * what I'd expect from the view as opposed to some other text that means nothing
      */
-    val pages = listOf(
+    private val pages = listOf(
         WalkthroughPage(title = "Welcome to page 1, yeah!", imageResID = R.drawable.walkthrough1),
         WalkthroughPage(title = "Welcome to the second page!!", imageResID = R.drawable.walkthrough2)
     )

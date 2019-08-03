@@ -5,7 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.firebase.functions.FirebaseFunctionsException
 import com.jraska.livedata.test
 import com.nhaarman.mockitokotlin2.*
-import com.oliveroneill.wilt.Event
+import com.oliveroneill.wilt.Message
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.FirebaseAPI
 import com.oliveroneill.wilt.data.ProfileRepository
@@ -49,11 +49,11 @@ class ProfileFragmentViewModelTest {
     }
 
     /**
-     * Helper function to unwrap the event and the state. This will return null if there's no value or
+     * Helper function to unwrap the message and the state. This will return null if there's no value or
      * you're not logged in
      */
-    private fun Event<ProfileState>.unwrapState(): ProfileLoggedInState? {
-        val state = getContentIfNotHandled()
+    private fun Message<ProfileState>.unwrapState(): ProfileLoggedInState? {
+        val state = getContent()
         if (state is ProfileState.LoggedIn) return state.state
         TestCase.fail()
         return null
@@ -80,7 +80,7 @@ class ProfileFragmentViewModelTest {
         model.state
             .test()
             .assertHasValue()
-            .assertValue { it.getContentIfNotHandled() is ProfileState.LoggedOut }
+            .assertValue { it.getContent() is ProfileState.LoggedOut }
     }
 
     @Test
@@ -118,7 +118,7 @@ class ProfileFragmentViewModelTest {
             .test()
             .assertHasValue()
             .assertValue {
-                it.getContentIfNotHandled() is ProfileState.LoggedOut
+                it.getContent() is ProfileState.LoggedOut
             }
     }
 
@@ -303,6 +303,6 @@ class ProfileFragmentViewModelTest {
         model.state
             .test()
             .assertHasValue()
-            .assertValue { it.getContentIfNotHandled() is ProfileState.LoggedOut }
+            .assertValue { it.getContent() is ProfileState.LoggedOut }
     }
 }

@@ -84,6 +84,6 @@ class PlayHistoryFragmentViewModelTest {
         model.loadingState
             .test()
             .assertHasValue()
-            .assertValue { it.getContentIfNotHandled() is PlayHistoryState.LoggedOut }
+            .assertValue { it.getContent() is PlayHistoryState.LoggedOut }
     }
 }

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.functions.FirebaseFunctionsException
 import com.jraska.livedata.test
 import com.nhaarman.mockitokotlin2.*
-import com.oliveroneill.wilt.Event
+import com.oliveroneill.wilt.Message
 import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.data.dao.PlayHistoryDao
 import com.oliveroneill.wilt.viewmodel.PlayHistoryNetworkState
@@ -26,7 +26,7 @@ class ArtistRankBoundaryCallbackTest {
     private val pageSize = 11L
     private lateinit var firebase: FirebaseAPI
     private lateinit var dao: PlayHistoryDao
-    private lateinit var loadingState: MutableLiveData<Event<PlayHistoryState>>
+    private lateinit var loadingState: MutableLiveData<Message<PlayHistoryState>>
     private lateinit var boundaryCallback: ArtistRankBoundaryCallback
 
     /**
@@ -54,11 +54,11 @@ class ArtistRankBoundaryCallbackTest {
     }
 
     /**
-     * Helper function to unwrap the event and the state. This will return null if there's no value or
+     * Helper function to unwrap the message and the state. This will return null if there's no value or
      * you're not logged in
      */
-    fun Event<PlayHistoryState>.unwrapState(): PlayHistoryNetworkState? {
-        val state = getContentIfNotHandled()
+    private fun Message<PlayHistoryState>.unwrapState(): PlayHistoryNetworkState? {
+        val state = getContent()
         if (state is PlayHistoryState.LoggedIn) return state.state
         TestCase.fail()
         return null
@@ -363,7 +363,7 @@ class ArtistRankBoundaryCallbackTest {
             .test()
             .assertHasValue()
             .assertValue {
-                it.getContentIfNotHandled() is PlayHistoryState.LoggedOut
+                it.getContent() is PlayHistoryState.LoggedOut
             }
     }
 }

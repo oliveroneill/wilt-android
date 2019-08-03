@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import com.oliveroneill.wilt.Event
+import com.oliveroneill.wilt.Message
 import com.oliveroneill.wilt.data.ArtistRankBoundaryCallback
 import com.oliveroneill.wilt.data.FirebaseAPI
 import com.oliveroneill.wilt.data.dao.ArtistRank
@@ -102,11 +103,11 @@ sealed class PlayHistoryNetworkState {
 class PlayHistoryFragmentViewModel @JvmOverloads constructor(
     application: Application, private val firebase: FirebaseAPI = FirebaseAPI()
 ): AndroidViewModel(application) {
-    private val _loadingState = MutableLiveData<Event<PlayHistoryState>>()
+    private val _loadingState = MutableLiveData<Message<PlayHistoryState>>()
     /**
      * Used to display a loading spinner or error message while a new page is loaded
      */
-    val loadingState : LiveData<Event<PlayHistoryState>>
+    val loadingState : LiveData<Message<PlayHistoryState>>
         get() = _loadingState
 
     /**
