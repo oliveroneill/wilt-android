@@ -23,6 +23,12 @@ class ArtistRankBoundaryCallback(
     private val executor: Executor = Executors.newSingleThreadExecutor()
 ): PagedList.BoundaryCallback<ArtistRank>() {
     /**
+     * Keep track of whether the current week has been refreshed, so that we can update it once.
+     * We can't always update it because we get stuck in a loop calling [onItemAtFrontLoaded].
+     * This flag should be good enough to just update the current week once every time the app is started
+     */
+    private var refreshedCurrentWeek = false
+    /**
      * Database returned 0 items. We should query the backend for more items.
      */
     override fun onZeroItemsLoaded() {
@@ -42,10 +48,13 @@ class ArtistRankBoundaryCallback(
      * Load items that are more recent than [itemAtFront]
      */
     override fun onItemAtFrontLoaded(itemAtFront: ArtistRank) {
-        val date = itemAtFront.date
         // Convert request to timestamps
-        // Add 1 week so that we don't include the week we've already got
-        val startDate = date.plusWeeks(1)
+        val date = itemAtFront.date
+        // In most cases date will be the current week and we should refresh this since it will change before
+        // the week ends. We'll only refresh this once to avoid constantly refreshing and after that
+        // we'll skip this week
+        val startDate = if (refreshedCurrentWeek) date.plusWeeks(1) else date
+        refreshedCurrentWeek = true
         val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
         // Each page is a week, so we subtract weeks to decide what to request
         val endDate = startDate.plusWeeks(pageSize)

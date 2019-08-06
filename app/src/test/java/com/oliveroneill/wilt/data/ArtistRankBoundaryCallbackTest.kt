@@ -240,7 +240,7 @@ class ArtistRankBoundaryCallbackTest {
                 state.retry()
                 // Ensure that it makes the correct call. This will be the second call
                 verify(firebase, times(2)).topArtistsPerWeek(
-                    eq(1520082000), eq(1526738400), any()
+                    eq(1519477200), eq(1526133600), any()
                 )
             }
             else -> {
@@ -326,6 +326,23 @@ class ArtistRankBoundaryCallbackTest {
             99,
             "http://arandomurl.net/img.png"
         )
+        boundaryCallback.onItemAtFrontLoaded(item)
+        verify(firebase).topArtistsPerWeek(eq(1519477200), eq(1526133600), any())
+    }
+
+    @Test
+    fun `should not refresh current week twice`() {
+        val item = ArtistRank(
+            "09-2018",
+            LocalDate.parse("2018-02-25"),
+            "Pinegrove",
+            99,
+            "http://arandomurl.net/img.png"
+        )
+        // First we refresh the current week
+        boundaryCallback.onItemAtFrontLoaded(item)
+        verify(firebase).topArtistsPerWeek(eq(1519477200), eq(1526133600), any())
+        // Now we no longer request that week and move onto the next one
         boundaryCallback.onItemAtFrontLoaded(item)
         verify(firebase).topArtistsPerWeek(eq(1520082000), eq(1526738400), any())
     }
