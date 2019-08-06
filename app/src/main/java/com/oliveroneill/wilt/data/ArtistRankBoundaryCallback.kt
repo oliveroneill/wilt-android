@@ -88,12 +88,14 @@ class ArtistRankBoundaryCallback(
         firebase.topArtistsPerWeek(start.toInt(), end.toInt()) { result ->
             result.onSuccess {
                 executor.execute {
-                    dao.insert(it)
+                    // We update the loading state before inserting to avoid jank from
+                    // the inserted elements appearing above the loading spinner
                     loadingState.postValue(
                         Data(
                             PlayHistoryState.LoggedIn(PlayHistoryNetworkState.NotLoading)
                         )
                     )
+                    dao.insert(it)
                 }
             }.onFailure {
                 // Check whether we've logged out
