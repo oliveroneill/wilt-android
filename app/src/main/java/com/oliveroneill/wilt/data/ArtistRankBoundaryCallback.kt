@@ -29,6 +29,12 @@ class ArtistRankBoundaryCallback(
      */
     private var refreshedCurrentWeek = false
     /**
+     * We need to keep track of whether we're just refreshing the current week, so that we don't unnecessarily
+     * try and load the next page
+     */
+    private var refreshingCurrentWeek = false
+
+    /**
      * Database returned 0 items. We should query the backend for more items.
      */
     override fun onZeroItemsLoaded() {
@@ -48,12 +54,20 @@ class ArtistRankBoundaryCallback(
      * Load items that are more recent than [itemAtFront]
      */
     override fun onItemAtFrontLoaded(itemAtFront: ArtistRank) {
+        // If we've just refreshed the current week then don't try and load another page
+        if (refreshingCurrentWeek) {
+            // Next load we can try again
+            refreshingCurrentWeek = false
+            return
+        }
         // Convert request to timestamps
         val date = itemAtFront.date
         // In most cases date will be the current week and we should refresh this since it will change before
         // the week ends. We'll only refresh this once to avoid constantly refreshing and after that
         // we'll skip this week
         val startDate = if (refreshedCurrentWeek) date.plusWeeks(1) else date
+        // Indicate that we're refreshing the current week
+        if (!refreshedCurrentWeek) refreshingCurrentWeek = true
         refreshedCurrentWeek = true
         val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
         // Each page is a week, so we subtract weeks to decide what to request
@@ -87,6 +101,10 @@ class ArtistRankBoundaryCallback(
         loadingState.postValue(Data(PlayHistoryState.LoggedIn(state)))
         firebase.topArtistsPerWeek(start.toInt(), end.toInt()) { result ->
             result.onSuccess {
+                // If the page size is greater than 1 then we've retrieved more than just the
+                // current week, so there could be more data in the next page. Therefore
+                // this isn't just a refresh of the current week
+                if (it.size > 1) refreshingCurrentWeek = false
                 executor.execute {
                     // We update the loading state before inserting to avoid jank from
                     // the inserted elements appearing above the loading spinner

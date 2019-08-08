@@ -331,6 +331,24 @@ class ArtistRankBoundaryCallbackTest {
     }
 
     @Test
+    fun `should not refresh twice`() {
+        val item = ArtistRank(
+            "09-2018",
+            LocalDate.parse("2018-02-25"),
+            "Pinegrove",
+            99,
+            "http://arandomurl.net/img.png"
+        )
+        // First we refresh the current week
+        boundaryCallback.onItemAtFrontLoaded(item)
+        verify(firebase).topArtistsPerWeek(eq(1519477200), eq(1526133600), any())
+        // Now we won't bother updating again since this onItemAtFrontLoaded was triggered
+        // from the refresh
+        boundaryCallback.onItemAtFrontLoaded(item)
+        verifyNoMoreInteractions(firebase)
+    }
+
+    @Test
     fun `should not refresh current week twice`() {
         val item = ArtistRank(
             "09-2018",
@@ -342,7 +360,33 @@ class ArtistRankBoundaryCallbackTest {
         // First we refresh the current week
         boundaryCallback.onItemAtFrontLoaded(item)
         verify(firebase).topArtistsPerWeek(eq(1519477200), eq(1526133600), any())
-        // Now we no longer request that week and move onto the next one
+        // The callback will expect this but we won't update since this is just from
+        // the update of the current week
+        boundaryCallback.onItemAtFrontLoaded(item)
+        verifyNoMoreInteractions(firebase)
+        // If we call again it will now skip that week
+        boundaryCallback.onItemAtFrontLoaded(item)
+        verify(firebase).topArtistsPerWeek(eq(1520082000), eq(1526738400), any())
+    }
+
+    @Test
+    fun `should update next page after refreshing not including current week`() {
+        val item = ArtistRank(
+            "09-2018",
+            LocalDate.parse("2018-02-25"),
+            "Pinegrove",
+            99,
+            "http://arandomurl.net/img.png"
+        )
+        // We'll send back two values so that the callback knows we didn't just refresh the
+        // current week and there may be more data to come
+        whenever(firebase.topArtistsPerWeek(any(), any(), any())).then {
+            it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf(item, item)))
+        }
+        // First we refresh the current week
+        boundaryCallback.onItemAtFrontLoaded(item)
+        verify(firebase).topArtistsPerWeek(eq(1519477200), eq(1526133600), any())
+        // Now we should skip the current week and move onto the next one
         boundaryCallback.onItemAtFrontLoaded(item)
         verify(firebase).topArtistsPerWeek(eq(1520082000), eq(1526738400), any())
     }
