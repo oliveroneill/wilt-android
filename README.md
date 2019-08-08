@@ -17,3 +17,10 @@ Create a file called `app/src/main/res/values/secrets.xml` with contents:
 ```
 Put your `google-services.json` file in `app/`. Generate this file via the
 Firebase console for Android integration.
+
+## The app in action
+(Apologies for the bad compression)
+
+![The profile screen with shimmering load](gifs/profile.gif)
+![The profile screen scrolling](gifs/profile2.gif)
+![The feed](gifs/feed.gif)
