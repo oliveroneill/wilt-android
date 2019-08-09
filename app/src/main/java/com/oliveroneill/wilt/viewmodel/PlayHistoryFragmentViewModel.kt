@@ -13,8 +13,7 @@ import com.oliveroneill.wilt.data.FirebaseAPI
 import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.data.dao.PlayHistoryDatabase
 import com.oliveroneill.wilt.testing.OpenForTesting
-import java.time.LocalDate
-
+`
 /**
  * The data necessary to display the network state for this view model.
  * By default nothing is displayed
@@ -116,11 +115,9 @@ class PlayHistoryFragmentViewModel @JvmOverloads constructor(
     val itemDataSource: LiveData<PagedList<ArtistRank>>
     init {
         val pageSize = 10
-        // Get data from now onwards (back in time)
-        val endDate = LocalDate.now()
         // Create database
         PlayHistoryDatabase.getDatabase(application).historyDao().also {
-            itemDataSource = it.loadPlayHistory(endDate).toLiveData(
+            itemDataSource = it.loadPlayHistory().toLiveData(
                 pageSize = pageSize,
                 // This will be used to make network requests
                 boundaryCallback = ArtistRankBoundaryCallback(it, firebase, _loadingState, pageSize.toLong())
