@@ -13,7 +13,7 @@ import com.oliveroneill.wilt.data.FirebaseAPI
 import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.data.dao.PlayHistoryDatabase
 import com.oliveroneill.wilt.testing.OpenForTesting
-`
+
 /**
  * The data necessary to display the network state for this view model.
  * By default nothing is displayed
