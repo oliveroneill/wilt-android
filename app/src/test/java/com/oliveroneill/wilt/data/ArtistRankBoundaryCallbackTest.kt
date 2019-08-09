@@ -240,7 +240,7 @@ class ArtistRankBoundaryCallbackTest {
                 state.retry()
                 // Ensure that it makes the correct call. This will be the second call
                 verify(firebase, times(2)).topArtistsPerWeek(
-                    eq(1519477200), eq(1526133600), any()
+                    eq(1518958800), eq(1525615200), any()
                 )
             }
             else -> {
@@ -327,7 +327,7 @@ class ArtistRankBoundaryCallbackTest {
             "http://arandomurl.net/img.png"
         )
         boundaryCallback.onItemAtFrontLoaded(item)
-        verify(firebase).topArtistsPerWeek(eq(1519477200), eq(1526133600), any())
+        verify(firebase).topArtistsPerWeek(eq(1518958800), eq(1525615200), any())
     }
 
     @Test
@@ -341,7 +341,7 @@ class ArtistRankBoundaryCallbackTest {
         )
         // First we refresh the current week
         boundaryCallback.onItemAtFrontLoaded(item)
-        verify(firebase).topArtistsPerWeek(eq(1519477200), eq(1526133600), any())
+        verify(firebase).topArtistsPerWeek(eq(1518958800), eq(1525615200), any())
         // Now we won't bother updating again since this onItemAtFrontLoaded was triggered
         // from the refresh
         boundaryCallback.onItemAtFrontLoaded(item)
@@ -359,14 +359,14 @@ class ArtistRankBoundaryCallbackTest {
         )
         // First we refresh the current week
         boundaryCallback.onItemAtFrontLoaded(item)
-        verify(firebase).topArtistsPerWeek(eq(1519477200), eq(1526133600), any())
+        verify(firebase).topArtistsPerWeek(eq(1518958800), eq(1525615200), any())
         // The callback will expect this but we won't update since this is just from
         // the update of the current week
         boundaryCallback.onItemAtFrontLoaded(item)
         verifyNoMoreInteractions(firebase)
         // If we call again it will now skip that week
         boundaryCallback.onItemAtFrontLoaded(item)
-        verify(firebase).topArtistsPerWeek(eq(1520082000), eq(1526738400), any())
+        verify(firebase).topArtistsPerWeek(eq(1519563600), eq(1526220000), any())
     }
 
     @Test
@@ -385,10 +385,10 @@ class ArtistRankBoundaryCallbackTest {
         }
         // First we refresh the current week
         boundaryCallback.onItemAtFrontLoaded(item)
-        verify(firebase).topArtistsPerWeek(eq(1519477200), eq(1526133600), any())
+        verify(firebase).topArtistsPerWeek(eq(1518958800), eq(1525615200), any())
         // Now we should skip the current week and move onto the next one
         boundaryCallback.onItemAtFrontLoaded(item)
-        verify(firebase).topArtistsPerWeek(eq(1520082000), eq(1526738400), any())
+        verify(firebase).topArtistsPerWeek(eq(1519563600), eq(1526220000), any())
     }
 
     @Test

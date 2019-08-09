@@ -10,6 +10,7 @@ import com.oliveroneill.wilt.data.dao.ArtistRank
 import com.oliveroneill.wilt.data.dao.PlayHistoryDao
 import com.oliveroneill.wilt.viewmodel.PlayHistoryNetworkState
 import com.oliveroneill.wilt.viewmodel.PlayHistoryState
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.concurrent.Executor
@@ -38,9 +39,13 @@ class ArtistRankBoundaryCallback(
      * Database returned 0 items. We should query the backend for more items.
      */
     override fun onZeroItemsLoaded() {
-        // The last date we'll request from is one week ahead of now. We add one week since otherwise the
-        // query might not include the current week
-        val endDate = LocalDate.now().plusWeeks(1)
+        val endDate = LocalDate.now()
+            // Ensure requests are always run from the start of the week to avoid missing
+            // earlier plays
+            .with(DayOfWeek.MONDAY)
+            // The last date we'll request from is one week ahead of now. We add one week since otherwise the
+            // query might not include the current week
+            .plusWeeks(1)
         val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
         // Each page is a week, so we subtract weeks to decide what to request
         // Increasing the page size seems to fix scrolling issues
@@ -60,8 +65,9 @@ class ArtistRankBoundaryCallback(
             refreshingCurrentWeek = false
             return
         }
-        // Convert request to timestamps
-        val date = itemAtFront.date
+        // Ensure requests are always run from the start of the week to avoid missing
+        // earlier plays
+        val date = itemAtFront.date.with(DayOfWeek.MONDAY)
         // In most cases date will be the current week and we should refresh this since it will change before
         // the week ends. We'll only refresh this once to avoid constantly refreshing and after that
         // we'll skip this week
@@ -80,8 +86,9 @@ class ArtistRankBoundaryCallback(
      * Load items that are older than [itemAtEnd]
      */
     override fun onItemAtEndLoaded(itemAtEnd: ArtistRank) {
-        val date = itemAtEnd.date
-        // Convert request to timestamps
+        // Ensure requests are always run from the start of the week to avoid missing
+        // earlier plays
+        val date = itemAtEnd.date.with(DayOfWeek.MONDAY)
         // Subtract 1 week so that we don't include the week we've already got
         val endDate = date.minusWeeks(1)
         val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
