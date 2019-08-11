@@ -24,6 +24,10 @@ class ArtistRankBoundaryCallback(
     private val executor: Executor = Executors.newSingleThreadExecutor()
 ): PagedList.BoundaryCallback<ArtistRank>() {
     /**
+     * All dates in the BigQuery database are in GMT timezone
+     */
+    private val gmtZone = ZoneId.of("GMT")
+    /**
      * Keep track of whether the current week has been refreshed, so that we can update it once.
      * We can't always update it because we get stuck in a loop calling [onItemAtFrontLoaded].
      * This flag should be good enough to just update the current week once every time the app is started
@@ -46,12 +50,12 @@ class ArtistRankBoundaryCallback(
             // The last date we'll request from is one week ahead of now. We add one week since otherwise the
             // query might not include the current week
             .plusWeeks(1)
-        val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
+        val end = endDate.atStartOfDay(gmtZone).toEpochSecond()
         // Each page is a week, so we subtract weeks to decide what to request
         // Increasing the page size seems to fix scrolling issues
         val weeksToRequest = pageSize * 2
         val startDate = endDate.minusWeeks(weeksToRequest)
-        val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
+        val start = startDate.atStartOfDay(gmtZone).toEpochSecond()
         topArtists(start, end)
     }
 
@@ -75,10 +79,10 @@ class ArtistRankBoundaryCallback(
         // Indicate that we're refreshing the current week
         if (!refreshedCurrentWeek) refreshingCurrentWeek = true
         refreshedCurrentWeek = true
-        val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
+        val start = startDate.atStartOfDay(gmtZone).toEpochSecond()
         // Each page is a week, so we subtract weeks to decide what to request
         val endDate = startDate.plusWeeks(pageSize)
-        val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
+        val end = endDate.atStartOfDay(gmtZone).toEpochSecond()
         topArtists(start, end)
     }
 
@@ -91,10 +95,10 @@ class ArtistRankBoundaryCallback(
         val date = itemAtEnd.date.with(DayOfWeek.MONDAY)
         // Subtract 1 week so that we don't include the week we've already got
         val endDate = date.minusWeeks(1)
-        val end = endDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
+        val end = endDate.atStartOfDay(gmtZone).toEpochSecond()
         // Each page is a week, so we subtract weeks to decide what to request
         val startDate = endDate.minusWeeks(pageSize)
-        val start = startDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
+        val start = startDate.atStartOfDay(gmtZone).toEpochSecond()
         topArtists(start, end, loadingFromTop = false)
     }
 
