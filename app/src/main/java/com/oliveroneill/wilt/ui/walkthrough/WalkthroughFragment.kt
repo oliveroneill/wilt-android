@@ -52,7 +52,7 @@ class WalkthroughFragment: Fragment() {
         childFragmentManager.let {
             rootView.viewPager.adapter = WalkthroughPagerAdapter(model, it)
         }
-        model.state.observe(this, MessageObserver {
+        model.state.observe(viewLifecycleOwner, MessageObserver {
             when (it) {
                 is WalkthroughFragmentState.Walkthrough -> {
                     binding.loading = false

@@ -42,7 +42,7 @@ class PlayHistoryFragment: Fragment() {
             model.itemDataSource.value?.dataSource?.invalidate()
         }
         binding.historyList.adapter = adapter
-        model.loadingState.observe(this, MessageObserver {
+        model.loadingState.observe(viewLifecycleOwner, MessageObserver {
             when (it) {
                 is PlayHistoryState.LoggedIn -> {
                     adapter.setNetworkState(it.state)
@@ -55,7 +55,7 @@ class PlayHistoryFragment: Fragment() {
             }
 
         })
-        model.itemDataSource.observe(this, Observer {
+        model.itemDataSource.observe(viewLifecycleOwner, Observer {
             rootView.swipe_refresh.isRefreshing = false
             adapter.submitList(it)
         })

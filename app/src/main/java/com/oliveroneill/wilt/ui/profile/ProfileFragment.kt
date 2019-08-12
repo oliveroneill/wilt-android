@@ -35,7 +35,7 @@ class ProfileFragment: Fragment() {
         val adapter = ProfileCardAdapter()
         model = ViewModelProviders.of(this, viewModelFactory).get(ProfileFragmentViewModel::class.java)
         binding.profileInfoList.adapter = adapter
-        model.state.observe(this, MessageObserver {
+        model.state.observe(viewLifecycleOwner, MessageObserver {
             when (it) {
                 is ProfileState.LoggedIn -> {
                     val context = context ?: return@MessageObserver
