@@ -37,6 +37,13 @@ sealed class TimeRange {
 class FirebaseAPI: ProfileRepository {
     private val functions = FirebaseFunctions.getInstance("asia-northeast1")
     private val auth = FirebaseAuth.getInstance()
+    private val gson = Gson()
+    /**
+     * Token types for JSON conversion
+     */
+    private val artistType = object : TypeToken<FirebaseTopArtist>() {}.type
+    private val trackType = object : TypeToken<FirebaseTopTrack>() {}.type
+    private val ranksType = object : TypeToken<List<FirebaseArtistRank>>() {}.type
 
     /**
      * Get the current logged in user, or null if there's no user logged in
@@ -80,9 +87,7 @@ class FirebaseAPI: ProfileRepository {
             }
             .addOnSuccessListener {
                 // Convert list of map into ArtistRank class
-                val gson = Gson()
                 val jsonElement = gson.toJsonTree(it.data)
-                val ranksType = object : TypeToken<List<FirebaseArtistRank>>() {}.type
                 val rankHistory = gson.fromJson<List<FirebaseArtistRank>>(jsonElement, ranksType)
                 callback(Result.success(rankHistory.map { r -> r.toArtistRank() }))
             }
@@ -139,10 +144,8 @@ class FirebaseAPI: ProfileRepository {
                 callback(Result.failure(it))
             }
             .addOnSuccessListener {
-                val gson = Gson()
                 val jsonElement = gson.toJsonTree(it.data)
-                val dataType = object : TypeToken<FirebaseTopArtist>() {}.type
-                val data = gson.fromJson<FirebaseTopArtist>(jsonElement, dataType)
+                val data = gson.fromJson<FirebaseTopArtist>(jsonElement, artistType)
                 callback(Result.success(data.toTopArtist()))
             }
     }
@@ -160,10 +163,8 @@ class FirebaseAPI: ProfileRepository {
                 callback(Result.failure(it))
             }
             .addOnSuccessListener {
-                val gson = Gson()
                 val jsonElement = gson.toJsonTree(it.data)
-                val dataType = object : TypeToken<FirebaseTopTrack>() {}.type
-                val data = gson.fromJson<FirebaseTopTrack>(jsonElement, dataType)
+                val data = gson.fromJson<FirebaseTopTrack>(jsonElement, trackType)
                 callback(Result.success(data.toTopTrack()))
             }
     }
