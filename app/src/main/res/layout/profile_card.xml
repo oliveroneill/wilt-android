@@ -44,7 +44,7 @@
                 android:minHeight="200dp">
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/placeHolderTagText"
+                    android:id="@+id/placeholder_tag_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -56,19 +56,19 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <View
-                    android:id="@+id/placeHolderImageView"
+                    android:id="@+id/placeholder_image_view"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/placeHolderTagText"
+                    app:layout_constraintTop_toBottomOf="@+id/placeholder_tag_text"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:background="@color/lightGray" />
 
                 <TextView
-                    android:id="@+id/placeHolderTitleText"
+                    android:id="@+id/placeholder_title_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -78,10 +78,10 @@
                     android:background="@color/lightGray"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/placeHolderImageView" />
+                    app:layout_constraintTop_toBottomOf="@+id/placeholder_image_view" />
 
                 <TextView
-                    android:id="@+id/placeHolderSubtitle1Text"
+                    android:id="@+id/placeholder_subtitle1_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -89,11 +89,11 @@
                     android:layout_marginEnd="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/placeHolderTitleText"
+                    app:layout_constraintTop_toBottomOf="@+id/placeholder_title_text"
                     android:background="@color/lightGray" />
 
                 <TextView
-                    android:id="@+id/placeHolderSubtitle2Text"
+                    android:id="@+id/placeholder_subtitle2_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -101,7 +101,7 @@
                     android:layout_marginEnd="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/placeHolderSubtitle1Text"
+                    app:layout_constraintTop_toBottomOf="@+id/placeholder_subtitle1_text"
                     android:background="@color/lightGray" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -131,13 +131,13 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:visibleGone="@{!displaying_error}" >
                 <ImageView
-                    android:id="@+id/imageView"
+                    android:id="@+id/image_view"
                     android:contentDescription="@string/profile_card_image_description"
                     android:layout_width="match_parent"
                     android:layout_height="200dp" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/tagTitleText"
+                    android:id="@+id/tag_title_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -148,7 +148,7 @@
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/titleText"
+                android:id="@+id/title_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -162,7 +162,7 @@
                 app:visibleGone="@{!displaying_error}" />
 
             <TextView
-                android:id="@+id/subtitle1Text"
+                android:id="@+id/subtitle1_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -172,11 +172,11 @@
                 android:textAlignment="textStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/titleText"
+                app:layout_constraintTop_toBottomOf="@+id/title_text"
                 app:visibleGone="@{!displaying_error}" />
 
             <TextView
-                android:id="@+id/subtitle2Text"
+                android:id="@+id/subtitle2_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -186,11 +186,11 @@
                 android:textAlignment="textStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/subtitle1Text"
+                app:layout_constraintTop_toBottomOf="@+id/subtitle1_text"
                 app:visibleGone="@{!displaying_error}" />
 
             <TextView
-                android:id="@+id/errorText"
+                android:id="@+id/error_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -200,7 +200,7 @@
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/titleText"
+                app:layout_constraintTop_toBottomOf="@+id/title_text"
                 app:visibleGone="@{displaying_error}"/>
 
             <Button
@@ -210,7 +210,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/errorText"
+                app:layout_constraintTop_toBottomOf="@+id/error_text"
                 android:text="@string/retry"
                 app:visibleGone="@{displaying_error}" />
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,10 +14,10 @@ import com.squareup.picasso.Picasso
  * A view for displaying the most listened to artist for a specific period
  */
 class ArtistRankViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
-    private val topArtistTextView: TextView = view.findViewById(R.id.topArtist)
-    private val playsTextView: TextView = view.findViewById(R.id.playsText)
-    private val dateTextView: TextView = view.findViewById(R.id.dateText)
-    private val imageView: ImageView = view.findViewById(R.id.artistImage)
+    private val topArtistTextView: TextView = view.findViewById(R.id.top_artist)
+    private val playsTextView: TextView = view.findViewById(R.id.plays_text)
+    private val dateTextView: TextView = view.findViewById(R.id.date_text)
+    private val imageView: ImageView = view.findViewById(R.id.artist_image)
 
     fun bind(item: ArtistRank?) {
         item?.let {

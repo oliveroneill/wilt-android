@@ -75,7 +75,7 @@ class WalkthroughFragmentTest {
     fun shouldDisplayWalkthrough() {
         onView(
             allOf(
-                withId(R.id.textView),
+                withId(R.id.text_view),
                 withText(pages[0].title)
             )
         ).check(matches(isDisplayed()))
@@ -84,11 +84,11 @@ class WalkthroughFragmentTest {
     @Test
     fun shouldDisplaySecondPageOnSwipe() {
         // Swipe left
-        onView(withId(R.id.viewPager)).perform(swipeLeft())
+        onView(withId(R.id.view_pager)).perform(swipeLeft())
         // Ensure the second page is displayed
         onView(
             allOf(
-                withId(R.id.textView),
+                withId(R.id.text_view),
                 withText(pages[1].title)
             )
         ).check(matches(isDisplayed()))
@@ -97,13 +97,13 @@ class WalkthroughFragmentTest {
     @Test
     fun shouldDisplayFirstPageWhenSwipingLeftThenRight() {
         // Swipe left
-        onView(withId(R.id.viewPager)).perform(swipeLeft())
+        onView(withId(R.id.view_pager)).perform(swipeLeft())
         // Swipe back
-        onView(withId(R.id.viewPager)).perform(swipeRight())
+        onView(withId(R.id.view_pager)).perform(swipeRight())
         // Ensure the second page is displayed
         onView(
             allOf(
-                withId(R.id.textView),
+                withId(R.id.text_view),
                 withText(pages[0].title)
             )
         ).check(matches(isDisplayed()))
@@ -115,7 +115,7 @@ class WalkthroughFragmentTest {
         val request = SpotifyAuthenticationRequest("", "x", emptyArray())
         stateData.postValue(Event(WalkthroughFragmentState.AuthenticatingSpotify(request)))
         // Ensure that the walkthrough screen is hidden since the Spotify login screen should open
-        onView(withId(R.id.textView)).check(doesNotExist())
+        onView(withId(R.id.text_view)).check(doesNotExist())
         // Not sure whether there's something else to assert here since it's not my view that's opening...
     }
 
@@ -134,7 +134,7 @@ class WalkthroughFragmentTest {
 
     @Test
     fun shouldOpenSpotifyLoginOnClick() {
-        onView(withId(R.id.signInButton)).perform(click())
+        onView(withId(R.id.sign_in_button)).perform(click())
         verify(viewModel).spotifySignup()
     }
 

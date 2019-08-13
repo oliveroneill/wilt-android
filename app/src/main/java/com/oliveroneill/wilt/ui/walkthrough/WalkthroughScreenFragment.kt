@@ -35,8 +35,8 @@ class WalkthroughScreenFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.walkthrough_screen, container, false) as ViewGroup
         // Store the views that we'll display the relevant data on
-        image = rootView.imageView
-        titleView = rootView.textView
+        image = rootView.image_view
+        titleView = rootView.text_view
         return rootView
     }
 

@@ -35,7 +35,7 @@ class ProfileCardViewHolder(private val binding: ProfileCardBinding): RecyclerVi
                 .load(it)
                 .fit()
                 .centerCrop()
-                .into(binding.root.imageView)
+                .into(binding.root.image_view)
         }
     }
 

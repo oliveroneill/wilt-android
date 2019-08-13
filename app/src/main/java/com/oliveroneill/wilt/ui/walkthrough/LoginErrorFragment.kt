@@ -14,7 +14,7 @@ class LoginErrorFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         val rootView = inflater.inflate(R.layout.login_error, container, false) as ViewGroup
-        rootView.tryAgainButton.setOnClickListener {
+        rootView.try_again_button.setOnClickListener {
             NavHostFragment.findNavController(this).popBackStack()
         }
         return rootView

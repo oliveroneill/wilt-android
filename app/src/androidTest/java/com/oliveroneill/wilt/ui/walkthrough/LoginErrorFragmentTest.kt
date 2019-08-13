@@ -37,12 +37,12 @@ class LoginErrorFragmentTest {
     @Test
     fun shouldDisplayMessage() {
         // Seems like a useless test...
-        onView(withId(R.id.textView)).check(matches(withText("Sorry, the Spotify login failed.")))
+        onView(withId(R.id.text_view)).check(matches(withText("Sorry, the Spotify login failed.")))
     }
 
     @Test
     fun shouldGoBackOnTryAgainClick() {
-        onView(withId(R.id.tryAgainButton)).perform(ViewActions.click())
+        onView(withId(R.id.try_again_button)).perform(ViewActions.click())
         verify(navController).popBackStack()
     }
 

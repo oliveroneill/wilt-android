@@ -44,13 +44,13 @@ class WalkthroughFragment: Fragment() {
         )
         setupNavigation()
         val rootView = binding.root
-        rootView.viewPager.offscreenPageLimit = 2
+        rootView.view_pager.offscreenPageLimit = 2
         val model = ViewModelProviders.of(
             this, viewModelFactory
         ).get(WalkthroughFragmentViewModel::class.java)
         // Set adapter
         childFragmentManager.let {
-            rootView.viewPager.adapter = WalkthroughPagerAdapter(model, it)
+            rootView.view_pager.adapter = WalkthroughPagerAdapter(model, it)
         }
         model.state.observe(viewLifecycleOwner, MessageObserver {
             when (it) {
@@ -79,7 +79,7 @@ class WalkthroughFragment: Fragment() {
             }
         })
         // On click of login button notify the ViewModel
-        rootView.signInButton.setOnClickListener {
+        rootView.sign_in_button.setOnClickListener {
             model.spotifySignup()
         }
         return rootView
