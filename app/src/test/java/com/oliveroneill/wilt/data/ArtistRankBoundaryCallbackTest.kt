@@ -427,4 +427,20 @@ class ArtistRankBoundaryCallbackTest {
                 it.getContent() is PlayHistoryState.LoggedOut
             }
     }
+
+    @Test
+    fun `should send no data message when there's nothing available`() {
+        val expected = listOf<ArtistRank>()
+        whenever(firebase.topArtistsPerWeek(any(), any(), any())).then {
+            it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(expected))
+        }
+        boundaryCallback.onZeroItemsLoaded()
+        loadingState
+            .test()
+            .assertHasValue()
+            .assertValue {
+                val state = it.unwrapState()
+                state is PlayHistoryNetworkState.NoRows
+            }
+    }
 }

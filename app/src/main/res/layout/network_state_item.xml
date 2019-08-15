@@ -28,4 +28,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/retry"/>
+
+    <TextView
+        android:id="@+id/no_data_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/empty_data_text"
+        android:textAlignment="center"
+        android:textSize="18sp" />
 </LinearLayout>

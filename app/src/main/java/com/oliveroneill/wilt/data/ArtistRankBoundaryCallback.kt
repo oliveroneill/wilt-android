@@ -56,7 +56,7 @@ class ArtistRankBoundaryCallback(
         val weeksToRequest = pageSize * 2
         val startDate = endDate.minusWeeks(weeksToRequest)
         val start = startDate.atStartOfDay(gmtZone).toEpochSecond()
-        topArtists(start, end)
+        topArtists(start, end, firstLoad = true)
     }
 
     /**
@@ -90,7 +90,8 @@ class ArtistRankBoundaryCallback(
      * Load items that are older than [itemAtEnd]
      */
     override fun onItemAtEndLoaded(itemAtEnd: ArtistRank) {
-        // Ensure requests are always run from the start of the week to avoid missing
+        // Ensure requests are always run from the start of
+        // the week to avoid missing
         // earlier plays
         val date = itemAtEnd.date.with(DayOfWeek.MONDAY)
         // Subtract 1 week so that we don't include the week we've already got
@@ -102,7 +103,7 @@ class ArtistRankBoundaryCallback(
         topArtists(start, end, loadingFromTop = false)
     }
 
-    private fun topArtists(start: Long, end: Long, loadingFromTop: Boolean = true) {
+    private fun topArtists(start: Long, end: Long, firstLoad: Boolean = false, loadingFromTop: Boolean = true) {
         // Update state
         val state = if (loadingFromTop) {
             PlayHistoryNetworkState.LoadingFromTop
@@ -112,6 +113,14 @@ class ArtistRankBoundaryCallback(
         loadingState.postValue(Data(PlayHistoryState.LoggedIn(state)))
         firebase.topArtistsPerWeek(start.toInt(), end.toInt()) { result ->
             result.onSuccess {
+                if (firstLoad && it.isEmpty()) {
+                    loadingState.postValue(
+                        Data(
+                            PlayHistoryState.LoggedIn(PlayHistoryNetworkState.NoRows)
+                        )
+                    )
+                    return@onSuccess
+                }
                 // If the page size is greater than 1 then we've retrieved more than just the
                 // current week, so there could be more data in the next page. Therefore
                 // this isn't just a refresh of the current week

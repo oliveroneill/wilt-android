@@ -22,6 +22,7 @@ data class PlayHistoryNetworkStateViewData(
     val loadingMessageVisible: Boolean = false,
     val progressBarVisible: Boolean = false,
     val retryButtonVisible: Boolean = false,
+    val noDataMessageVisible: Boolean = false,
     // If the error message is null then it should not be displayed
     val errorMessage: String? = null,
     val retry: (() -> Unit)? = null
@@ -37,6 +38,11 @@ sealed class PlayHistoryState {
 }
 
 sealed class PlayHistoryNetworkState {
+    /**
+     * If new rows are being loaded at the top of the list
+     */
+    object NoRows : PlayHistoryNetworkState()
+
     /**
      * If new rows are being loaded at the top of the list
      */
@@ -86,6 +92,9 @@ sealed class PlayHistoryNetworkState {
                 PlayHistoryNetworkStateViewData(
                     progressBarVisible = true, loadingMessageVisible = true
                 )
+            }
+            is NoRows -> {
+                PlayHistoryNetworkStateViewData(noDataMessageVisible = true)
             }
         }
     }

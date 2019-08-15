@@ -18,6 +18,7 @@ class NetworkStateItemViewHolder(val view: View): RecyclerView.ViewHolder(view) 
     private val retry = view.findViewById<Button>(R.id.retry_button)
     private val errorMessage = view.findViewById<TextView>(R.id.error_txt)
     private val loadingMessage = view.findViewById<TextView>(R.id.loading_txt)
+    private val noDataMessage = view.findViewById<TextView>(R.id.no_data_txt)
 
     fun bind(state: PlayHistoryNetworkState?) {
         // Convert state into view data and then modify the view to match
@@ -25,6 +26,7 @@ class NetworkStateItemViewHolder(val view: View): RecyclerView.ViewHolder(view) 
             progressBar.visibility = if (data.progressBarVisible) View.VISIBLE else View.GONE
             loadingMessage.visibility = if (data.loadingMessageVisible) View.VISIBLE else View.GONE
             retry.visibility = if (data.retryButtonVisible) View.VISIBLE else View.GONE
+            noDataMessage.visibility = if (data.noDataMessageVisible) View.VISIBLE else View.GONE
             data.errorMessage?.let { message ->
                 errorMessage.visibility = View.VISIBLE
                 errorMessage.text = message

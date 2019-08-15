@@ -38,6 +38,8 @@ import java.time.LocalDate
 
 @RunWith(AndroidJUnit4::class)
 class PlayHistoryFragmentTest {
+    private val emptyDataMsg = "Check back later! We've just started tracking your favourite artists and don't have enough data yet"
+
     private lateinit var scenario: FragmentScenario<PlayHistoryFragment>
     // Create fake view model for sending events to the UI
     private val viewModel = mock<PlayHistoryFragmentViewModel>()
@@ -433,5 +435,20 @@ class PlayHistoryFragmentTest {
             fragment.onOptionsItemSelected(item)
         }
         verify(navController, timeout(1000)).navigate(eq(PlayHistoryFragmentDirections.showInfo()))
+    }
+
+    @Test
+    fun shouldShowEmptyDataMessage() {
+        loadingStateData.postValue(
+            Data(
+                PlayHistoryState.LoggedIn(
+                    PlayHistoryNetworkState.NoRows
+                )
+            )
+        )
+        // Then
+        onView(withText(emptyDataMsg)).check(matches(isDisplayed()))
+        onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.loading_txt)).check(matches(not(isDisplayed())))
     }
 }

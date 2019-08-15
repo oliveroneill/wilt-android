@@ -8,6 +8,10 @@
     <string name="walkthrough2_text">Once you\'ve signed up we\'ll start tracking your listens and new data will be available daily</string>
     <string name="login_error_text">Sorry, the Spotify login failed.</string>
 
+    <string name="empty_data_text">
+        Check back later! We\'ve just started tracking your favourite artists and don\'t have enough data yet
+    </string>
+
     <string name="retry">Retry</string>
 
     <string name="info">

@@ -21,6 +21,7 @@ class HistoryListAdapter : PagedListAdapter<ArtistRank, RecyclerView.ViewHolder>
      */
     private val loadingIndex
         get() = when(state) {
+            is PlayHistoryNetworkState.NoRows -> 0
             is PlayHistoryNetworkState.LoadingFromTop -> 0
             is PlayHistoryNetworkState.FailureAtTop -> 0
             is PlayHistoryNetworkState.LoadingFromBottom -> itemCount - 1

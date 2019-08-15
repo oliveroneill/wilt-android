@@ -86,4 +86,15 @@ class PlayHistoryFragmentViewModelTest {
             .assertHasValue()
             .assertValue { it.getContent() is PlayHistoryState.LoggedOut }
     }
+
+    @Test
+    fun `should convert state to view data correctly when no data available`() {
+        val data = PlayHistoryNetworkState.NoRows.toViewData()
+        assert(data.noDataMessageVisible)
+        assert(!data.loadingMessageVisible)
+        assert(!data.progressBarVisible)
+        assertNull(data.errorMessage)
+        assertNull(data.retry)
+        assert(!data.retryButtonVisible)
+    }
 }
