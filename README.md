@@ -24,3 +24,8 @@ Firebase console for Android integration.
 ![The profile screen with shimmering load](gifs/profile.gif)
 ![The profile screen scrolling](gifs/profile2.gif)
 ![The feed](gifs/feed.gif)
+
+## TODO
+- Change navigation to reuse fragments when navigating. This is a limitation
+of Navigation component. See discussion
+[here](https://issuetracker.google.com/issues/80029773)
