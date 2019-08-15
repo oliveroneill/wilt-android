@@ -113,6 +113,8 @@ class ArtistRankBoundaryCallback(
         loadingState.postValue(Data(PlayHistoryState.LoggedIn(state)))
         firebase.topArtistsPerWeek(start.toInt(), end.toInt()) { result ->
             result.onSuccess {
+                // If this is the initial load and there's no data available then
+                // we should update the UI
                 if (firstLoad && it.isEmpty()) {
                     loadingState.postValue(
                         Data(
