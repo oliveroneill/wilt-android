@@ -1,6 +1,4 @@
 language: android
-before_script:
-  - export TZ=Australia/Sydney
 android:
   components:
   - android-28
