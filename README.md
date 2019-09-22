@@ -5,7 +5,8 @@
 This is an Android client for displaying Wilt metrics.
 
 The server-side and browser version of the client is [here](https://github.com/oliveroneill/wilt).
-The server-side uses Firebase and BigQuery.
+The server-side uses Firebase and BigQuery. The iOS app is available
+[here](https://github.com/oliveroneill/wilt-ios)
 
 ## Installation
 Create a file called `app/src/main/res/values/secrets.xml` with contents:
