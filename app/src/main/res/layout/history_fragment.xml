@@ -29,8 +29,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/play_history_item" />
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
