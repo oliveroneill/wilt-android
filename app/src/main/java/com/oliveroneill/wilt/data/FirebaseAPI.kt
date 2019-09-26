@@ -60,13 +60,15 @@ class FirebaseAPI: ProfileRepository {
         val date: String,
         val top_artist: String,
         val count: Int,
-        val imageUrl: String
+        val imageUrl: String,
+        val externalUrl: String,
+        val spotifyUrl: String
     ) {
         /**
          * Convert this instance into the Room database entity
          */
         fun toArtistRank(): ArtistRank {
-            return ArtistRank(week, LocalDate.parse(date), top_artist, count, imageUrl)
+            return ArtistRank(week, LocalDate.parse(date), top_artist, count, imageUrl, externalUrl, spotifyUrl)
         }
     }
 
@@ -101,7 +103,9 @@ class FirebaseAPI: ProfileRepository {
     data class FirebaseTopArtist(val name: String,
                                  val count: Int,
                                  val lastPlay: FirebaseDate?,
-                                 val imageUrl: String) {
+                                 val imageUrl: String,
+                                 val externalUrl: String,
+                                 val spotifyUrl: String) {
         fun toTopArtist(): TopArtist {
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             return TopArtist(
@@ -119,7 +123,9 @@ class FirebaseAPI: ProfileRepository {
     data class FirebaseTopTrack(val name: String,
                                 val totalPlayTimeMs: Long,
                                 val lastPlay: FirebaseDate?,
-                                val imageUrl: String) {
+                                val imageUrl: String,
+                                val externalUrl: String,
+                                val spotifyUrl: String) {
         fun toTopTrack(): TopTrack {
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             return TopTrack(

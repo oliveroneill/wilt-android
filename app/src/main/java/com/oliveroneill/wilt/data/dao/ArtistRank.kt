@@ -35,7 +35,15 @@ data class ArtistRank(
     /**
      * A URL for an image of the artist
      */
-    val imageUrl: String
+    val imageUrl: String,
+    /**
+     * An external URL to display this artist in Spotify. Useful if Spotify is not installed
+     */
+    val externalUrl: String,
+    /**
+     * A spotify URI to open this artist in Spotify. To be used if Spotify is installed
+     */
+    val spotifyUrl: String
 )
 
 /**

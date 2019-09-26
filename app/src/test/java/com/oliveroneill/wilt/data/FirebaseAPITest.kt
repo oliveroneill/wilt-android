@@ -11,7 +11,8 @@ class FirebaseAPITest {
     fun `should convert firebase top artist response correctly`() {
         val firebaseDate = FirebaseAPI.FirebaseDate("2019-06-03T22:12:02.311Z")
         val response = FirebaseAPI.FirebaseTopArtist(
-            "Death Grips", 666, firebaseDate, "http://notarealurl.com/album_img.png"
+            "Death Grips", 666, firebaseDate, "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/img.png", "spotify://arandomurl.net/img.png"
         )
         val date = LocalDateTime.of(
             2019, 6, 3, 22, 12, 2, 311000000

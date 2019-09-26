@@ -53,7 +53,6 @@ class PlayHistoryFragment: Fragment() {
                     )
                 }
             }
-
         })
         model.itemDataSource.observe(viewLifecycleOwner, Observer {
             rootView.swipe_refresh.isRefreshing = false

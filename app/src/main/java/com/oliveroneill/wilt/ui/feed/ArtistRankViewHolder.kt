@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.dao.ArtistRank
+import com.oliveroneill.wilt.ui.SpotifyUtil
 import com.squareup.picasso.Picasso
 
 /**
@@ -30,6 +31,10 @@ class ArtistRankViewHolder(private val view: View): RecyclerView.ViewHolder(view
                 .centerCrop()
                 .transform(PicassoCircleTransform())
                 .into(imageView)
+            // TODO: the view model should decide what the click interaction does
+            view.setOnClickListener { view ->
+                SpotifyUtil.openItem(view.context, it.spotifyUrl, it.externalUrl)
+            }
         }
     }
 

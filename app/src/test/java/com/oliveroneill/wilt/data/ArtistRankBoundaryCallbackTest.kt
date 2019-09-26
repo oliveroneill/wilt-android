@@ -71,7 +71,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2019-02-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         boundaryCallback.onItemAtEndLoaded(item)
         verify(firebase).topArtistsPerWeek(eq(1543795200), eq(1550448000), any())
@@ -85,7 +87,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2019-03-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         boundaryCallback.onItemAtEndLoaded(item)
         verify(firebase).topArtistsPerWeek(eq(1550448000), eq(1552867200), any())
@@ -99,14 +103,18 @@ class ArtistRankBoundaryCallbackTest {
                 LocalDate.parse("2019-02-25"),
                 "Pinegrove",
                 99,
-                "http://arandomurl.net/img.png"
+                "http://arandomurl.net/img.png",
+                "http://anotherrandomurl.net/img.png",
+                "spotify://arandomurl.net/img.png"
             ),
             ArtistRank(
                 "52-2018",
                 LocalDate.parse("2018-12-25"),
                 "Bon Iver",
                 12,
-                "http://anotherdomain.com/bla.png"
+                "http://anotherdomain.com/bla.png",
+                "http://anotherrandomurl.net/img.png",
+                "spotify://arandomurl.net/img.png"
             )
         )
         whenever(firebase.topArtistsPerWeek(any(), any(), any())).then {
@@ -117,7 +125,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2018-11-25"),
             "Tyler, The Creator",
             10,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         boundaryCallback.onItemAtFrontLoaded(item)
         verify(dao).insert(eq(expected))
@@ -140,7 +150,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2019-02-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         boundaryCallback.onItemAtFrontLoaded(item)
         // Ensure that we fail if this isn't called since otherwise the assertions are never actually run
@@ -164,7 +176,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2019-02-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         boundaryCallback.onItemAtEndLoaded(item)
         // Ensure that we fail if this isn't called since otherwise the assertions are never actually run
@@ -182,7 +196,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2019-02-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         boundaryCallback.onItemAtFrontLoaded(item)
         loadingState
@@ -204,7 +220,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2019-02-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         boundaryCallback.onItemAtFrontLoaded(item)
         loadingState
@@ -229,7 +247,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2018-02-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         boundaryCallback.onItemAtFrontLoaded(item)
         // Get the state that was sent
@@ -263,7 +283,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2019-02-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         boundaryCallback.onItemAtEndLoaded(item)
         loadingState
@@ -288,7 +310,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2019-02-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         boundaryCallback.onItemAtEndLoaded(item)
         // Get the state that was sent
@@ -324,7 +348,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2018-02-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         boundaryCallback.onItemAtFrontLoaded(item)
         verify(firebase).topArtistsPerWeek(eq(1518998400), eq(1525651200), any())
@@ -337,7 +363,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2018-02-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         // First we refresh the current week
         boundaryCallback.onItemAtFrontLoaded(item)
@@ -355,7 +383,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2018-02-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         // First we refresh the current week
         boundaryCallback.onItemAtFrontLoaded(item)
@@ -376,7 +406,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2018-02-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         // We'll send back two values so that the callback knows we didn't just refresh the
         // current week and there may be more data to come
@@ -398,7 +430,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2019-03-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         boundaryCallback.onItemAtEndLoaded(item)
         verify(firebase).topArtistsPerWeek(eq(1546214400), eq(1552867200), any())
@@ -417,7 +451,9 @@ class ArtistRankBoundaryCallbackTest {
             LocalDate.parse("2019-02-25"),
             "Pinegrove",
             99,
-            "http://arandomurl.net/img.png"
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         boundaryCallback.onItemAtEndLoaded(item)
         loadingState

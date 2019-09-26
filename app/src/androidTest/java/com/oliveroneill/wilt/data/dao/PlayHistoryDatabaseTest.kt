@@ -38,17 +38,81 @@ class PlayHistoryDatabaseTest {
     @Throws(Exception::class)
     fun loadPlayHistory() {
         val items = listOf(
-            ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99, "x.com"),
-            ArtistRank("52-2018", LocalDate.parse("2018-12-25"), "Bon Iver", 12, "y.com"),
-            ArtistRank("26-2019", LocalDate.parse("2019-06-25"), "Lomelda", 9, "s.com"),
-            ArtistRank("25-2019", LocalDate.parse("2019-06-15"), "Hovvdy", 90, "z.com")
+            ArtistRank(
+                "09-2019",
+                LocalDate.parse("2019-02-25"),
+                "Pinegrove",
+                99,
+                "x.com",
+                "x.net",
+                "spotify://z.spotify.com/x"
+            ),
+            ArtistRank(
+                "52-2018",
+                LocalDate.parse("2018-12-25"),
+                "Bon Iver",
+                12,
+                "y.com",
+                "y.net",
+                "spotify://y.spotify.com/y"
+            ),
+            ArtistRank(
+                "26-2019",
+                LocalDate.parse("2019-06-25"),
+                "Lomelda",
+                9,
+                "s.com",
+                "s.net",
+                "spotify://s.spotify.com/s"
+            ),
+            ArtistRank(
+                "25-2019",
+                LocalDate.parse("2019-06-15"),
+                "Hovvdy",
+                90,
+                "z.com",
+                "z.net",
+                "spotify://z.spotify.com/z"
+            )
         )
         // An ordered version of the above list
         val expected = listOf(
-            ArtistRank("26-2019", LocalDate.parse("2019-06-25"), "Lomelda", 9, "s.com"),
-            ArtistRank("25-2019", LocalDate.parse("2019-06-15"), "Hovvdy", 90, "z.com"),
-            ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99, "x.com"),
-            ArtistRank("52-2018", LocalDate.parse("2018-12-25"), "Bon Iver", 12, "y.com")
+            ArtistRank(
+                "26-2019",
+                LocalDate.parse("2019-06-25"),
+                "Lomelda",
+                9,
+                "s.com",
+                "s.net",
+                "spotify://s.spotify.com/s"
+            ),
+            ArtistRank(
+                "25-2019",
+                LocalDate.parse("2019-06-15"),
+                "Hovvdy",
+                90,
+                "z.com",
+                "z.net",
+                "spotify://z.spotify.com/z"
+            ),
+            ArtistRank(
+                "09-2019",
+                LocalDate.parse("2019-02-25"),
+                "Pinegrove",
+                99,
+                "x.com",
+                "x.net",
+                "spotify://z.spotify.com/x"
+            ),
+            ArtistRank(
+                "52-2018",
+                LocalDate.parse("2018-12-25"),
+                "Bon Iver",
+                12,
+                "y.com",
+                "y.net",
+                "spotify://y.spotify.com/y"
+            )
         )
         dao.insert(items)
         // Choose end date that includes everything
@@ -64,10 +128,42 @@ class PlayHistoryDatabaseTest {
     @Throws(Exception::class)
     fun deleteAll() {
         val items = listOf(
-            ArtistRank("09-2019", LocalDate.parse("2019-02-25"), "Pinegrove", 99, "x.com"),
-            ArtistRank("52-2018", LocalDate.parse("2018-12-25"), "Bon Iver", 12, "y.com"),
-            ArtistRank("26-2019", LocalDate.parse("2019-06-25"), "Lomelda", 9, "z.com"),
-            ArtistRank("25-2019", LocalDate.parse("2019-06-15"), "Hovvdy", 90, "s.com")
+            ArtistRank(
+                "09-2019",
+                LocalDate.parse("2019-02-25"),
+                "Pinegrove",
+                99,
+                "x.com",
+                "x.net",
+                "spotify://z.spotify.com/x"
+            ),
+            ArtistRank(
+                "52-2018",
+                LocalDate.parse("2018-12-25"),
+                "Bon Iver",
+                12,
+                "y.com",
+                "y.net",
+                "spotify://y.spotify.com/y"
+            ),
+            ArtistRank(
+                "26-2019",
+                LocalDate.parse("2019-06-25"),
+                "Lomelda",
+                9,
+                "z.com",
+                "z.net",
+                "spotify://z.spotify.com/z"
+            ),
+            ArtistRank(
+                "25-2019",
+                LocalDate.parse("2019-06-15"),
+                "Hovvdy",
+                90,
+                "s.com",
+                "s.net",
+                "spotify://s.spotify.com/s"
+            )
         )
         dao.insert(items)
         // Delete all the elements

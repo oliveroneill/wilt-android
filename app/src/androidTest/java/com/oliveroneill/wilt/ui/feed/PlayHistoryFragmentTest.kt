@@ -80,14 +80,18 @@ class PlayHistoryFragmentTest {
                 LocalDate.parse("2019-02-25"),
                 "Pinegrove",
                 99,
-                "notarealimageurl"
+                "notarealimageurl",
+                "notarealexternalurl",
+                "notarealspotifyurl"
             ),
             ArtistRank(
                 "52-2018",
                 LocalDate.parse("2018-12-25"),
                 "Bon Iver",
                 12,
-                "notarealimageurl"
+                "notarealimageurl",
+                "notarealexternalurl",
+                "notarealspotifyurl"
             )
         )
         val pagedList = mock<PagedList<ArtistRank>>()
@@ -180,14 +184,18 @@ class PlayHistoryFragmentTest {
                 LocalDate.parse("2019-02-25"),
                 "Pinegrove",
                 99,
-                "notarealimageurl"
+                "notarealimageurl",
+                "notarealexternalurl",
+                "notarealspotifyurl"
             ),
             ArtistRank(
                 "52-2018",
                 LocalDate.parse("2018-12-25"),
                 "Bon Iver",
                 12,
-                "notarealimageurl"
+                "notarealimageurl",
+                "notarealexternalurl",
+                "notarealspotifyurl"
             )
         )
         val pagedList = mock<PagedList<ArtistRank>>()
@@ -225,14 +233,18 @@ class PlayHistoryFragmentTest {
                 LocalDate.parse("2019-02-25"),
                 "Pinegrove",
                 99,
-                "notarealimageurl"
+                "notarealimageurl",
+                "notarealexternalurl",
+                "notarealspotifyurl"
             ),
             ArtistRank(
                 "52-2018",
                 LocalDate.parse("2018-12-25"),
                 "Bon Iver",
                 12,
-                "notarealimageurl"
+                "notarealimageurl",
+                "notarealexternalurl",
+                "notarealspotifyurl"
             )
         )
         val pagedList = mock<PagedList<ArtistRank>>()
@@ -270,14 +282,18 @@ class PlayHistoryFragmentTest {
                 LocalDate.parse("2019-02-25"),
                 "Pinegrove",
                 99,
-                "notarealimageurl"
+                "notarealimageurl",
+                "notarealexternalurl",
+                "notarealspotifyurl"
                 ),
             ArtistRank(
                 "52-2018",
                 LocalDate.parse("2018-12-25"),
                 "Bon Iver",
                 12,
-                "notarealimageurl"
+                "notarealimageurl",
+                "notarealexternalurl",
+                "notarealspotifyurl"
             )
         )
         val pagedList = mock<PagedList<ArtistRank>>()
@@ -317,14 +333,18 @@ class PlayHistoryFragmentTest {
                 LocalDate.parse("2019-02-25"),
                 "Pinegrove",
                 99,
-                "notarealimageurl"
+                "notarealimageurl",
+                "notarealexternalurl",
+                "notarealspotifyurl"
             ),
             ArtistRank(
                 "52-2018",
                 LocalDate.parse("2018-12-25"),
                 "Bon Iver",
                 12,
-                "notarealimageurl"
+                "notarealimageurl",
+                "notarealexternalurl",
+                "notarealspotifyurl"
             )
         )
         val pagedList = mock<PagedList<ArtistRank>>()
