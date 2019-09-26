@@ -19,7 +19,9 @@ class ProfileFragmentViewModelAndroidTest {
             "Death Grips",
             666,
             date,
-            "http://notarealurl.com/album_img.png"
+            "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         val state = ProfileCardState.LoadedTopArtist(TimeRange.LongTerm, topArtist)
         val expected = ProfileCardViewData(
@@ -27,7 +29,9 @@ class ProfileFragmentViewModelAndroidTest {
             subtitleFirstLine = "666 plays since joining Wilt",
             subtitleSecondLine = "Last listened to 8 days ago",
             tagTitle = "Your favourite artist ever",
-            imageUrl = "http://notarealurl.com/album_img.png"
+            imageUrl = "http://notarealurl.com/album_img.png",
+            externalUrl = "http://anotherrandomurl.net/link",
+            spotifyUrl = "spotify://arandomurl.net/link"
         )
         TestCase.assertEquals(expected, state.toViewData(ApplicationProvider.getApplicationContext<Context>()))
     }
@@ -39,7 +43,9 @@ class ProfileFragmentViewModelAndroidTest {
             "On GP by Death Grips",
             10_000,
             date,
-            "http://notarealurl.com/album_img.png"
+            "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         val state = ProfileCardState.LoadedTopTrack(TimeRange.LongTerm, topTrack)
         val expected = ProfileCardViewData(
@@ -47,7 +53,9 @@ class ProfileFragmentViewModelAndroidTest {
             subtitleFirstLine = "10 seconds spent listening since joining Wilt",
             subtitleSecondLine = "Last listened to 8 days ago",
             tagTitle = "Your favourite song ever",
-            imageUrl = "http://notarealurl.com/album_img.png"
+            imageUrl = "http://notarealurl.com/album_img.png",
+            externalUrl = "http://anotherrandomurl.net/link",
+            spotifyUrl = "spotify://arandomurl.net/link"
         )
         TestCase.assertEquals(expected, state.toViewData(ApplicationProvider.getApplicationContext<Context>()))
     }

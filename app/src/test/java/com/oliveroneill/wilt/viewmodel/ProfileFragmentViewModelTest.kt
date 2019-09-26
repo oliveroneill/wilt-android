@@ -89,7 +89,9 @@ class ProfileFragmentViewModelTest {
             "Death Grips",
             666,
             LocalDateTime.now(),
-            "http://notarealurl.com/album_img.png"
+            "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         whenever(repository.topArtist(eq(timeRange), eq(index), any())).then {
             (it.getArgument(2) as (Result<TopArtist>) -> Unit).invoke(Result.success(expected))
@@ -188,7 +190,9 @@ class ProfileFragmentViewModelTest {
             "Death Grips",
             666,
             LocalDateTime.now(),
-            "http://notarealurl.com/album_img.png"
+            "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         val state = ProfileCardState.LoadedTopArtist(timeRange, topArtist)
         val expected = ProfileCardViewData(
@@ -196,7 +200,9 @@ class ProfileFragmentViewModelTest {
             subtitleFirstLine = "666 plays",
             subtitleSecondLine = "Last listened to 10 days ago",
             tagTitle = "Your favourite artist ever",
-            imageUrl = "http://notarealurl.com/album_img.png"
+            imageUrl = "http://notarealurl.com/album_img.png",
+            externalUrl = "http://anotherrandomurl.net/link",
+            spotifyUrl = "spotify://arandomurl.net/link"
         )
         whenever(
             application.getString(eq(R.string.plays_format), eq(666))
@@ -213,15 +219,19 @@ class ProfileFragmentViewModelTest {
             "Death Grips",
             666,
             null,
-            "http://notarealurl.com/album_img.png"
-        )
+            "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
+            )
         val state = ProfileCardState.LoadedTopArtist(timeRange, topArtist)
         val expected = ProfileCardViewData(
             title = "Death Grips",
             subtitleFirstLine = "",
             subtitleSecondLine = "",
             tagTitle = "Your favourite artist ever",
-            imageUrl = "http://notarealurl.com/album_img.png"
+            imageUrl = "http://notarealurl.com/album_img.png",
+            externalUrl = "http://anotherrandomurl.net/link",
+            spotifyUrl = "spotify://arandomurl.net/link"
         )
         assertEquals(expected, state.toViewData(application))
     }
@@ -245,7 +255,9 @@ class ProfileFragmentViewModelTest {
             "On GP by Death Grips",
             10_000,
             LocalDateTime.now(),
-            "http://notarealurl.com/album_img.png"
+            "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         whenever(repository.topTrack(eq(timeRange), eq(index), any())).then {
             (it.getArgument(2) as (Result<TopTrack>) -> Unit).invoke(Result.success(expected))
@@ -272,7 +284,9 @@ class ProfileFragmentViewModelTest {
             "On GP by Death Grips",
             10_000,
             LocalDateTime.now(),
-            "http://notarealurl.com/album_img.png"
+            "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         val state = ProfileCardState.LoadedTopTrack(timeRange, topArtist)
         val expected = ProfileCardViewData(
@@ -280,8 +294,10 @@ class ProfileFragmentViewModelTest {
             subtitleFirstLine = "10 seconds played",
             subtitleSecondLine = "Last listened to 10 days ago",
             tagTitle = "Your favourite song ever",
-            imageUrl = "http://notarealurl.com/album_img.png"
-        )
+            imageUrl = "http://notarealurl.com/album_img.png",
+            externalUrl = "http://anotherrandomurl.net/link",
+            spotifyUrl = "spotify://arandomurl.net/link"
+            )
         whenever(
             application.getString(eq(R.string.play_duration_format), eq("10 seconds"))
         ).thenReturn("10 seconds played")

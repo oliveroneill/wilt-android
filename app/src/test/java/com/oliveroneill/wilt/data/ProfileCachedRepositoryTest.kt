@@ -40,7 +40,9 @@ class ProfileCachedRepositoryTest {
             "(Sandy) Alex G",
             124,
             date,
-            "http://notarealurl.com/album_img.png"
+            "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         val cachedElement = TopArtistCacheElement(
             index,
@@ -49,6 +51,8 @@ class ProfileCachedRepositoryTest {
             124,
             date,
             "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link",
             LocalDateTime.now()
         )
         whenever(artistCache.getCachedResult(eq(index), eq(timeRange.toString()))).thenReturn(
@@ -73,7 +77,9 @@ class ProfileCachedRepositoryTest {
             "Death Grips",
             112,
             date.minusWeeks(2),
-            "http://notarealurl.com/album_img.png"
+            "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         whenever(artistCache.getCachedResult(eq(index), eq(timeRange.toString()))).thenReturn(
             listOf(
@@ -84,6 +90,8 @@ class ProfileCachedRepositoryTest {
                     124,
                     date,
                     "http://notarealurl.com/album_img.png",
+                    "http://anotherrandomurl.net/link",
+                    "spotify://arandomurl.net/link",
                     LocalDateTime.now().minusWeeks(1)
                 )
             )
@@ -110,7 +118,9 @@ class ProfileCachedRepositoryTest {
             "Death Grips",
             112,
             date.minusWeeks(2),
-            "http://notarealurl.com/album_img.png"
+            "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         whenever(artistCache.getCachedResult(eq(index), eq(timeRange.toString()))).thenReturn(listOf())
         whenever(networkAPI.topArtist(eq(timeRange), eq(index), any())).then {
@@ -138,7 +148,9 @@ class ProfileCachedRepositoryTest {
                         "Death Grips",
                         112,
                         date.minusWeeks(2),
-                        "http://notarealurl.com/album_img.png"
+                        "http://notarealurl.com/album_img.png",
+                        "http://anotherrandomurl.net/link",
+                        "spotify://arandomurl.net/link"
                     )
                 )
             )
@@ -151,6 +163,8 @@ class ProfileCachedRepositoryTest {
             112,
             date.minusWeeks(2),
             "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link",
             LocalDateTime.now()
         )
         verify(artistCache).insert(argThat {
@@ -172,7 +186,9 @@ class ProfileCachedRepositoryTest {
             "Hope by (Sandy) Alex G",
             10_000,
             date,
-            "http://notarealurl.com/album_img.png"
+            "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         val cachedElement = TopTrackCacheElement(
             index,
@@ -181,6 +197,8 @@ class ProfileCachedRepositoryTest {
             10_000,
             date,
             "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link",
             LocalDateTime.now()
         )
         whenever(trackCache.getCachedResult(eq(index), eq(timeRange.toString()))).thenReturn(
@@ -205,7 +223,9 @@ class ProfileCachedRepositoryTest {
             "Hacker by Death Grips",
             22_000,
             date.minusWeeks(2),
-            "http://notarealurl.com/album_img.png"
+            "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         whenever(trackCache.getCachedResult(eq(index), eq(timeRange.toString()))).thenReturn(
             listOf(
@@ -216,6 +236,8 @@ class ProfileCachedRepositoryTest {
                     10_000,
                     date,
                     "http://notarealurl.com/album_img.png",
+                    "http://anotherrandomurl.net/link",
+                    "spotify://arandomurl.net/link",
                     LocalDateTime.now().minusWeeks(1)
                 )
             )
@@ -241,7 +263,9 @@ class ProfileCachedRepositoryTest {
             "Hacker by Death Grips",
             22_000,
             date.minusWeeks(2),
-            "http://notarealurl.com/album_img.png"
+            "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         whenever(trackCache.getCachedResult(eq(index), eq(timeRange.toString()))).thenReturn(listOf())
         whenever(networkAPI.topTrack(eq(timeRange), eq(index), any())).then {
@@ -269,7 +293,9 @@ class ProfileCachedRepositoryTest {
                         "Hacker by Death Grips",
                         22_000,
                         date.minusWeeks(2),
-                        "http://notarealurl.com/album_img.png"
+                        "http://notarealurl.com/album_img.png",
+                        "http://anotherrandomurl.net/link",
+                        "spotify://arandomurl.net/link"
                     )
                 )
             )
@@ -282,6 +308,8 @@ class ProfileCachedRepositoryTest {
             22_000,
             date.minusWeeks(2),
             "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link",
             LocalDateTime.now()
         )
         verify(trackCache).insert(argThat {

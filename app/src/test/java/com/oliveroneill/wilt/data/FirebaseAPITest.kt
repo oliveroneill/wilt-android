@@ -21,7 +21,9 @@ class FirebaseAPITest {
             "Death Grips",
             666,
             date,
-            "http://notarealurl.com/album_img.png"
+            "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
         )
         assertEquals(response.toTopArtist(), expected)
     }

@@ -7,7 +7,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.marlonlom.utilities.timeago.TimeAgo
 import com.google.firebase.functions.FirebaseFunctionsException
-import com.oliveroneill.wilt.*
+import com.oliveroneill.wilt.Data
+import com.oliveroneill.wilt.Event
+import com.oliveroneill.wilt.Message
+import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.FirebaseAPI
 import com.oliveroneill.wilt.data.ProfileCachedRepository
 import com.oliveroneill.wilt.data.ProfileRepository
@@ -219,9 +222,23 @@ sealed class ProfileState {
 /**
  * A user's favourite artist. [lastPlayed] will be null if it has never been played since joining Wilt
  */
-data class TopArtist(val name: String, val totalPlays: Int, val lastPlayed: LocalDateTime?, val imageUrl: String)
+data class TopArtist(
+    val name: String,
+    val totalPlays: Int,
+    val lastPlayed: LocalDateTime?,
+    val imageUrl: String,
+    val externalUrl: String,
+    val spotifyUrl: String
+)
 
-data class TopTrack(val name: String, val totalPlayTimeMs: Long, val lastPlayed: LocalDateTime?, val imageUrl: String)
+data class TopTrack(
+    val name: String,
+    val totalPlayTimeMs: Long,
+    val lastPlayed: LocalDateTime?,
+    val imageUrl: String,
+    val externalUrl: String,
+    val spotifyUrl: String
+)
 
 /**
  * The viewmodel state when logged in
@@ -259,7 +276,9 @@ sealed class ProfileCardState {
                         // if this artist hasn't been played since joining Wilt
                         subtitleFirstLine = "",
                         subtitleSecondLine = "",
-                        imageUrl = artist.imageUrl
+                        imageUrl = artist.imageUrl,
+                        externalUrl = artist.externalUrl,
+                        spotifyUrl = artist.spotifyUrl
                     )
                 }
                 val lastPlayedRelative = artist.lastPlayed.toRelative()
@@ -268,7 +287,9 @@ sealed class ProfileCardState {
                     title = artist.name,
                     subtitleFirstLine = context.getString(R.string.plays_format, artist.totalPlays),
                     subtitleSecondLine = context.getString(R.string.last_listened_format, lastPlayedRelative),
-                    imageUrl = artist.imageUrl
+                    imageUrl = artist.imageUrl,
+                    externalUrl = artist.externalUrl,
+                    spotifyUrl = artist.spotifyUrl
                 )
             }
             is LoadedTopTrack -> {
@@ -282,7 +303,9 @@ sealed class ProfileCardState {
                         // if this track hasn't been played since joining Wilt
                         subtitleFirstLine = "",
                         subtitleSecondLine = "",
-                        imageUrl = track.imageUrl
+                        imageUrl = track.imageUrl,
+                        externalUrl = track.externalUrl,
+                        spotifyUrl = track.spotifyUrl
                     )
                 }
                 val lastPlayedRelative = track.lastPlayed.toRelative()
@@ -294,7 +317,9 @@ sealed class ProfileCardState {
                         track.totalPlayTimeMs.toDurationFromMilliseconds()
                     ),
                     subtitleSecondLine = context.getString(R.string.last_listened_format, lastPlayedRelative),
-                    imageUrl = track.imageUrl
+                    imageUrl = track.imageUrl,
+                    externalUrl = track.externalUrl,
+                    spotifyUrl = track.spotifyUrl
                 )
             }
             is Failure -> {
@@ -349,6 +374,8 @@ data class ProfileCardViewData(
     val subtitleFirstLine: String? = null,
     val subtitleSecondLine: String? = null,
     val imageUrl: String? = null,
+    val externalUrl: String? = null,
+    val spotifyUrl: String? = null,
     val errorMessage: String? = null,
     val retry: (() -> Unit)? = null
 )

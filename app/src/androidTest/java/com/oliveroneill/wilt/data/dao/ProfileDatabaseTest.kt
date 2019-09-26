@@ -54,6 +54,8 @@ class ProfileDatabaseTest {
             10_000,
             LocalDateTime.now().plusDays(2),
             "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link",
             LocalDateTime.now().minusWeeks(11)
         )
         val element2 = TopTrackCacheElement(
@@ -63,6 +65,8 @@ class ProfileDatabaseTest {
             22_000,
             LocalDateTime.now().minusDays(10),
             "http://adifferenturl.com/album_img.png",
+            "http://anotherdifferenturl.net/link",
+            "spotify://adifferenturl.net/link",
             LocalDateTime.now().minusHours(4)
         )
         trackDao.insert(element1)
@@ -83,6 +87,8 @@ class ProfileDatabaseTest {
             10_000,
             LocalDateTime.now().plusDays(2),
             "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link",
             LocalDateTime.now().minusWeeks(11)
         )
         val element2 = TopTrackCacheElement(
@@ -92,6 +98,8 @@ class ProfileDatabaseTest {
             22_000,
             LocalDateTime.now().minusDays(10),
             "http://anotherurl.com/album_img.png",
+            "http://adifferentrandomurl.net/link",
+            "spotify://ardifferenturl.net/link",
             LocalDateTime.now().minusHours(4)
         )
         trackDao.insert(element1)
@@ -112,6 +120,8 @@ class ProfileDatabaseTest {
             124,
             LocalDateTime.now().plusDays(2),
             "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link",
             LocalDateTime.now().minusWeeks(11)
         )
         val element2 = TopArtistCacheElement(
@@ -121,6 +131,8 @@ class ProfileDatabaseTest {
             666,
             LocalDateTime.now().minusDays(10),
             "http://someotherurl.com/album_img.png",
+            "http://adifferentrandomurl.net/link",
+            "spotify://adifferenturl.net/link",
             LocalDateTime.now().minusHours(4)
         )
         artistDao.insert(element1)
@@ -141,6 +153,8 @@ class ProfileDatabaseTest {
             124,
             LocalDateTime.now().plusDays(2),
             "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link",
             LocalDateTime.now().minusWeeks(11)
         )
         val element2 = TopArtistCacheElement(
@@ -150,6 +164,8 @@ class ProfileDatabaseTest {
             666,
             LocalDateTime.now().minusDays(10),
             "http://urlfornumber2.com/album_img.png",
+            "http://adifferentrandomurl.net/link",
+            "spotify://adifferenturl.net/link",
             LocalDateTime.now().minusHours(4)
         )
         artistDao.insert(element1)
@@ -170,6 +186,8 @@ class ProfileDatabaseTest {
             10_000,
             LocalDateTime.now().plusDays(2),
             "http://notarealurl.com/album_img.png",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link",
             LocalDateTime.now().minusWeeks(11)
         )
         trackDao.insert(element)

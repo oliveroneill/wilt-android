@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.databinding.ProfileCardBinding
+import com.oliveroneill.wilt.ui.SpotifyUtil
 import com.oliveroneill.wilt.viewmodel.ProfileCardViewData
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.profile_card.view.*
@@ -36,6 +37,11 @@ class ProfileCardViewHolder(private val binding: ProfileCardBinding): RecyclerVi
                 .fit()
                 .centerCrop()
                 .into(binding.root.image_view)
+        }
+        if (viewData.externalUrl != null && viewData.spotifyUrl != null) {
+            binding.root.card_view.setOnClickListener {
+                SpotifyUtil.openItem(binding.root.context, viewData.spotifyUrl, viewData.externalUrl)
+            }
         }
     }
 

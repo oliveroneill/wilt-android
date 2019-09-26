@@ -112,7 +112,9 @@ class FirebaseAPI: ProfileRepository {
                 name,
                 count,
                 if (lastPlay == null) null else LocalDateTime.parse(lastPlay.value, formatter),
-                imageUrl
+                imageUrl,
+                externalUrl,
+                spotifyUrl
             )
         }
     }
@@ -132,7 +134,9 @@ class FirebaseAPI: ProfileRepository {
                 name,
                 totalPlayTimeMs,
                 if (lastPlay == null) null else LocalDateTime.parse(lastPlay.value, formatter),
-                imageUrl
+                imageUrl,
+                externalUrl,
+                spotifyUrl
             )
         }
     }

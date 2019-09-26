@@ -112,7 +112,9 @@ class ProfileFragmentTest {
             "Death Grips",
             666,
             LocalDateTime.now().minusMonths(2),
-            "notarealimageurl"
+            "notarealimageurl",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         // When
         stateData.postValue(
@@ -141,7 +143,9 @@ class ProfileFragmentTest {
             "Death Grips",
             666,
             null,
-            "notarealimageurl"
+            "notarealimageurl",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         // When
         stateData.postValue(
@@ -213,13 +217,17 @@ class ProfileFragmentTest {
             "Death Grips",
             666,
             LocalDateTime.now().minusMonths(2),
-            "notarealimageurl"
+            "notarealimageurl",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         val topArtistRecently = TopArtist(
             "(Sandy) Alex G",
             22,
             LocalDateTime.now().minusMonths(4),
-            "notarealimageurl"
+            "notarealimageurl",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         // When
         stateData.postValue(
@@ -257,7 +265,9 @@ class ProfileFragmentTest {
             "On GP by Death Grips",
             10_000,
             LocalDateTime.now().minusMonths(2),
-            "notarealimageurl"
+            "notarealimageurl",
+            "http://anotherrandomurl.net/link",
+            "spotify://arandomurl.net/link"
         )
         // When
         stateData.postValue(

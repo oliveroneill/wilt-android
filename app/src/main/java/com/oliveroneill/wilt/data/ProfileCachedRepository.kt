@@ -84,7 +84,7 @@ class ProfileCachedRepository(
 }
 
 private fun TopTrackCacheElement.toTopTrack(): TopTrack {
-    return TopTrack(name , totalPlayDurationMs, lastPlayed, imageUrl)
+    return TopTrack(name , totalPlayDurationMs, lastPlayed, imageUrl, externalUrl, spotifyUrl)
 }
 
 private fun TopTrack.toTopTrackCacheElement(index: Int, timeRange: TimeRange): TopTrackCacheElement {
@@ -95,6 +95,8 @@ private fun TopTrack.toTopTrackCacheElement(index: Int, timeRange: TimeRange): T
         totalPlayTimeMs,
         lastPlayed,
         imageUrl,
+        externalUrl,
+        spotifyUrl,
         LocalDateTime.now()
     )
 }
@@ -110,7 +112,7 @@ private val TopArtistCacheElement.isExpired: Boolean
     }
 
 private fun TopArtistCacheElement.toTopArtist(): TopArtist {
-    return TopArtist(name, totalPlays, lastPlayed, imageUrl)
+    return TopArtist(name, totalPlays, lastPlayed, imageUrl, externalUrl, spotifyUrl)
 }
 
 private fun TopArtist.toTopArtistCacheElement(index: Int, timeRange: TimeRange): TopArtistCacheElement {
@@ -121,6 +123,8 @@ private fun TopArtist.toTopArtistCacheElement(index: Int, timeRange: TimeRange):
         totalPlays,
         lastPlayed,
         imageUrl,
+        externalUrl,
+        spotifyUrl,
         LocalDateTime.now()
     )
 }
