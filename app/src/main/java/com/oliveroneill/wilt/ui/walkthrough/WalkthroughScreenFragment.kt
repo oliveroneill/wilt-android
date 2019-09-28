@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
 import com.oliveroneill.wilt.R
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.walkthrough_screen.view.*
 
 /**
@@ -45,8 +45,9 @@ class WalkthroughScreenFragment: Fragment() {
         // Set the views using the relevant data. We'll return early if things are missing
         // TODO: maybe crashing makes more sense if things are unset
         titleView?.text = (title ?: return)
-        Glide.with(this)
+        Picasso.get()
             .load(imageResId ?: return)
+            .fit()
             .centerCrop()
             .into(image ?: return)
     }
