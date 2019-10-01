@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/walkthroughFragment">
+    app:startDestination="@id/onboardingFragment">
 
     <fragment
-        android:id="@+id/walkthroughFragment"
-        android:name="com.oliveroneill.wilt.ui.walkthrough.WalkthroughFragment"
+        android:id="@+id/onboardingFragment"
+        android:name="com.oliveroneill.wilt.ui.onboarding.OnboardingFragment"
         android:label="Welcome To Wilt"
-        tools:layout="@layout/walkthrough_fragment">
+        tools:layout="@layout/onboarding_fragment">
         <action
             android:id="@+id/action_login_failure"
             app:destination="@id/loginErrorFragment" />
@@ -24,7 +24,7 @@
 
     <fragment
         android:id="@+id/loginErrorFragment"
-        android:name="com.oliveroneill.wilt.ui.walkthrough.LoginErrorFragment"
+        android:name="com.oliveroneill.wilt.ui.onboarding.LoginErrorFragment"
         android:label="Login Error"
         tools:layout="@layout/login_error" >
         <action
@@ -38,7 +38,7 @@
         tools:layout="@layout/history_fragment" >
         <action
             android:id="@+id/action_logout"
-            app:destination="@id/walkthroughFragment" />
+            app:destination="@id/onboardingFragment" />
         <action
             android:id="@+id/action_info"
             app:destination="@id/infoFragment" />
@@ -50,7 +50,7 @@
         tools:layout="@layout/profile_fragment">
         <action
             android:id="@+id/action_logout"
-            app:destination="@id/walkthroughFragment" />
+            app:destination="@id/onboardingFragment" />
         <action
             android:id="@+id/action_info"
             app:destination="@id/infoFragment" />

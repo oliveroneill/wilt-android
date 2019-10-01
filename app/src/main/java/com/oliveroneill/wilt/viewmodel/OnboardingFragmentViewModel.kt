@@ -17,20 +17,20 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 /**
- * States that the walkthrough screen can be in
+ * States that the onboarding screen can be in
  */
-sealed class WalkthroughFragmentState {
-    // Initial state for displaying the walkthrough
-    object Walkthrough : WalkthroughFragmentState()
-    data class AuthenticatingSpotify(val request: SpotifyAuthenticationRequest): WalkthroughFragmentState()
-    data class LoggedIn(val username: String): WalkthroughFragmentState()
-    data class LoginError(val error: String): WalkthroughFragmentState()
+sealed class OnboardingFragmentState {
+    // Initial state for displaying onboarding
+    object Onboarding : OnboardingFragmentState()
+    data class AuthenticatingSpotify(val request: SpotifyAuthenticationRequest): OnboardingFragmentState()
+    data class LoggedIn(val username: String): OnboardingFragmentState()
+    data class LoginError(val error: String): OnboardingFragmentState()
 }
 
 /**
  * A page that the user will swipe through to get an intro to the app
  */
-data class WalkthroughPage(
+data class OnboardingPage(
     /**
      * The subtitle to the image that will displayed on this page
      */
@@ -42,10 +42,10 @@ data class WalkthroughPage(
 )
 
 /**
- * ViewModel for walkthrough. This primarily handles login
+ * ViewModel for onboarding. This primarily handles login
  */
 @OpenForTesting
-class WalkthroughFragmentViewModel
+class OnboardingFragmentViewModel
 @JvmOverloads
 constructor(application: Application,
             private val firebase: FirebaseAuthentication = FirebaseAuthentication(application),
@@ -62,23 +62,23 @@ constructor(application: Application,
      * The pages to display
      */
     val pages = listOf(
-        WalkthroughPage(title = application.getString(R.string.walkthrough1_text), imageResID = R.drawable.walkthrough1),
-        WalkthroughPage(title = application.getString(R.string.walkthrough2_text), imageResID = R.drawable.walkthrough2)
+        OnboardingPage(title = application.getString(R.string.walkthrough1_text), imageResID = R.drawable.walkthrough1),
+        OnboardingPage(title = application.getString(R.string.walkthrough2_text), imageResID = R.drawable.walkthrough2)
     )
 
     /**
      * Set this value to receive Spotify sign in events
      */
-    private val _state = MutableLiveData<Message<WalkthroughFragmentState>>()
-    val state : LiveData<Message<WalkthroughFragmentState>>
+    private val _state = MutableLiveData<Message<OnboardingFragmentState>>()
+    val state : LiveData<Message<OnboardingFragmentState>>
         get() = _state
 
     init {
         // Set initial state
         _state.value = firebase.currentUser?.let {
-            Event(WalkthroughFragmentState.LoggedIn(it))
+            Event(OnboardingFragmentState.LoggedIn(it))
         } ?: run {
-            Data(WalkthroughFragmentState.Walkthrough)
+            Data(OnboardingFragmentState.Onboarding)
         }
     }
 
@@ -88,7 +88,7 @@ constructor(application: Application,
     fun spotifySignup() {
         _state.postValue(
             Event(
-                WalkthroughFragmentState.AuthenticatingSpotify(
+                OnboardingFragmentState.AuthenticatingSpotify(
                     SpotifyAuthenticationRequest(
                         clientID,
                         redirectUri,
@@ -112,7 +112,7 @@ constructor(application: Application,
                 }
             }
             is SpotifyAuthenticationResponse.Failure -> {
-                _state.postValue(Event(WalkthroughFragmentState.LoginError(response.error)))
+                _state.postValue(Event(OnboardingFragmentState.LoginError(response.error)))
             }
         }
     }
@@ -135,16 +135,16 @@ constructor(application: Application,
                 firebase.login(firebaseToken) { result ->
                     _state.postValue(
                         result.fold({userId ->
-                            Event(WalkthroughFragmentState.LoggedIn(userId))
+                            Event(OnboardingFragmentState.LoggedIn(userId))
                         }, { error ->
                             error.printStackTrace()
-                            Event(WalkthroughFragmentState.LoginError("Firebase auth failed"))
+                            Event(OnboardingFragmentState.LoginError("Firebase auth failed"))
                         })
                     )
                 }
             }.onFailure { error ->
                 error.printStackTrace()
-                _state.postValue(Event(WalkthroughFragmentState.LoginError("Firebase signUp failed")))
+                _state.postValue(Event(OnboardingFragmentState.LoginError("Firebase signUp failed")))
             }
         }
     }

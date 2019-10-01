@@ -15,7 +15,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 
-class WalkthroughFragmentViewModelTest {
+class OnboardingFragmentViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -23,7 +23,7 @@ class WalkthroughFragmentViewModelTest {
         // Mock value so that getString doesn't throw
         on { getString(anyInt()) } doReturn ""
     }
-    private lateinit var model: WalkthroughFragmentViewModel
+    private lateinit var model: OnboardingFragmentViewModel
     private lateinit var firebase: FirebaseAuthentication
     private lateinit var feedDao: PlayHistoryDao
     private lateinit var trackCache: TopTrackDao
@@ -35,7 +35,7 @@ class WalkthroughFragmentViewModelTest {
         feedDao = mock()
         trackCache = mock()
         artistCache = mock()
-        model = WalkthroughFragmentViewModel(
+        model = OnboardingFragmentViewModel(
             application, firebase,
             feedDao = feedDao, artistCache = artistCache, trackCache = trackCache,
             // Run login tasks on current thread
@@ -49,14 +49,14 @@ class WalkthroughFragmentViewModelTest {
         model.state
             .test()
             .assertHasValue()
-            .assertValue { it.getContent() is WalkthroughFragmentState.Walkthrough }
+            .assertValue { it.getContent() is OnboardingFragmentState.Onboarding }
     }
 
     @Test
     fun `should set initial state to logged in if the user is logged in`() {
         val expected = "username123"
         whenever(firebase.currentUser).thenReturn(expected)
-        model = WalkthroughFragmentViewModel(application, firebase, feedDao, artistCache, trackCache)
+        model = OnboardingFragmentViewModel(application, firebase, feedDao, artistCache, trackCache)
         // Assert that state gets set correctly
         model.state
             .test()
@@ -64,7 +64,7 @@ class WalkthroughFragmentViewModelTest {
             .assertValue {
                 val state = it.getContent()
                 when(state) {
-                    is WalkthroughFragmentState.LoggedIn -> state.username == expected
+                    is OnboardingFragmentState.LoggedIn -> state.username == expected
                     else -> false
                 }
             }
@@ -78,7 +78,7 @@ class WalkthroughFragmentViewModelTest {
         model.state
             .test()
             .assertHasValue()
-            .assertValue { it.getContent() is WalkthroughFragmentState.AuthenticatingSpotify }
+            .assertValue { it.getContent() is OnboardingFragmentState.AuthenticatingSpotify }
     }
 
     @Test
@@ -101,7 +101,7 @@ class WalkthroughFragmentViewModelTest {
             .assertValue {
                 val state = it.getContent()
                 when(state) {
-                    is WalkthroughFragmentState.LoggedIn -> state.username == expected
+                    is OnboardingFragmentState.LoggedIn -> state.username == expected
                     else -> false
                 }
             }
@@ -128,7 +128,7 @@ class WalkthroughFragmentViewModelTest {
             .assertValue {
                 val state = it.getContent()
                 when(state) {
-                    is WalkthroughFragmentState.LoginError -> state.error == expected
+                    is OnboardingFragmentState.LoginError -> state.error == expected
                     else -> false
                 }
             }
@@ -151,7 +151,7 @@ class WalkthroughFragmentViewModelTest {
             .assertValue {
                 val state = it.getContent()
                 when(state) {
-                    is WalkthroughFragmentState.LoginError -> state.error == expected
+                    is OnboardingFragmentState.LoginError -> state.error == expected
                     else -> false
                 }
             }
@@ -177,7 +177,7 @@ class WalkthroughFragmentViewModelTest {
             .assertValue {
                 val state = it.getContent()
                 when(state) {
-                    is WalkthroughFragmentState.LoginError -> state.error == expected
+                    is OnboardingFragmentState.LoginError -> state.error == expected
                     else -> false
                 }
             }

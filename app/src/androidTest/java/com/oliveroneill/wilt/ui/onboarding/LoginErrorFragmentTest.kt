@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.ui.walkthrough
+package com.oliveroneill.wilt.ui.onboarding
 
 import android.view.MenuItem
 import androidx.fragment.app.testing.FragmentScenario
@@ -54,6 +54,6 @@ class LoginErrorFragmentTest {
         scenario.onFragment { fragment ->
             fragment.onOptionsItemSelected(item)
         }
-        verify(navController, timeout(1000)).navigate(eq(WalkthroughFragmentDirections.showInfo()))
+        verify(navController, timeout(1000)).navigate(eq(OnboardingFragmentDirections.showInfo()))
     }
 }

@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.ui.walkthrough
+package com.oliveroneill.wilt.ui.onboarding
 
 import android.os.Bundle
 import android.view.*
@@ -27,7 +27,7 @@ class LoginErrorFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_info -> {
             NavHostFragment.findNavController(this).navigate(
-                WalkthroughFragmentDirections.showInfo()
+                OnboardingFragmentDirections.showInfo()
             )
             true
         }

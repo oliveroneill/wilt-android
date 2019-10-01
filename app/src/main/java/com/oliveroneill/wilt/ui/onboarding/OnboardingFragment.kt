@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.ui.walkthrough
+package com.oliveroneill.wilt.ui.onboarding
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,16 +15,16 @@ import androidx.navigation.ui.NavigationUI
 import com.oliveroneill.wilt.MessageObserver
 import com.oliveroneill.wilt.R
 import com.oliveroneill.wilt.data.SpotifyAuthenticationResponse
-import com.oliveroneill.wilt.databinding.WalkthroughFragmentBinding
-import com.oliveroneill.wilt.viewmodel.WalkthroughFragmentState
-import com.oliveroneill.wilt.viewmodel.WalkthroughFragmentViewModel
+import com.oliveroneill.wilt.databinding.OnboardingFragmentBinding
+import com.oliveroneill.wilt.viewmodel.OnboardingFragmentState
+import com.oliveroneill.wilt.viewmodel.OnboardingFragmentViewModel
 import com.spotify.sdk.android.authentication.AuthenticationClient
-import kotlinx.android.synthetic.main.walkthrough_fragment.view.*
+import kotlinx.android.synthetic.main.onboarding_fragment.view.*
 
 /**
- * Fragment that displays pager of walkthrough screens
+ * Fragment that displays pager of onboarding screens
  */
-class WalkthroughFragment: Fragment() {
+class OnboardingFragment: Fragment() {
     companion object {
         // Random number for checking that login response comes from matching request
         private const val SPOTIFY_REQUEST_CODE: Int = 7253
@@ -36,9 +36,9 @@ class WalkthroughFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        val binding = DataBindingUtil.inflate<WalkthroughFragmentBinding>(
+        val binding = DataBindingUtil.inflate<OnboardingFragmentBinding>(
             inflater,
-            R.layout.walkthrough_fragment,
+            R.layout.onboarding_fragment,
             container,
             false
         )
@@ -47,17 +47,17 @@ class WalkthroughFragment: Fragment() {
         rootView.view_pager.offscreenPageLimit = 2
         val model = ViewModelProviders.of(
             this, viewModelFactory
-        ).get(WalkthroughFragmentViewModel::class.java)
+        ).get(OnboardingFragmentViewModel::class.java)
         // Set adapter
         childFragmentManager.let {
-            rootView.view_pager.adapter = WalkthroughPagerAdapter(model, it)
+            rootView.view_pager.adapter = OnboardingPagerAdapter(model, it)
         }
         model.state.observe(viewLifecycleOwner, MessageObserver {
             when (it) {
-                is WalkthroughFragmentState.Walkthrough -> {
+                is OnboardingFragmentState.Onboarding -> {
                     binding.loading = false
                 }
-                is WalkthroughFragmentState.AuthenticatingSpotify -> {
+                is OnboardingFragmentState.AuthenticatingSpotify -> {
                     binding.loading = true
                     // Start login activity
                     AuthenticationClient.openLoginActivity(
@@ -66,14 +66,14 @@ class WalkthroughFragment: Fragment() {
                         it.request.toAuthenticationRequest()
                     )
                 }
-                is WalkthroughFragmentState.LoggedIn -> {
+                is OnboardingFragmentState.LoggedIn -> {
                     findNavController(this).navigate(
-                        WalkthroughFragmentDirections.showPlayHistory()
+                        OnboardingFragmentDirections.showPlayHistory()
                     )
                 }
-                is WalkthroughFragmentState.LoginError -> {
+                is OnboardingFragmentState.LoginError -> {
                     findNavController(this).navigate(
-                        WalkthroughFragmentDirections.showLoginError()
+                        OnboardingFragmentDirections.showLoginError()
                     )
                 }
             }
@@ -92,10 +92,10 @@ class WalkthroughFragment: Fragment() {
         // Set up the action bar so that the title is set via the Navigation graph
         (activity as? AppCompatActivity)?.let {
             // Set the fragments that cannot have a back button. The play history fragment should not have a back
-            // button so that you cannot return to the walkthrough
+            // button so that you cannot return to onboarding
             val appBarConfiguration = AppBarConfiguration(
                 setOf(
-                    R.id.walkthroughFragment, R.id.navigation_feed, R.id.navigation_profile
+                    R.id.onboardingFragment, R.id.navigation_feed, R.id.navigation_profile
                 )
             )
             NavigationUI.setupActionBarWithNavController(it, findNavController(this), appBarConfiguration)
@@ -106,7 +106,7 @@ class WalkthroughFragment: Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode != SPOTIFY_REQUEST_CODE) return
         // This will be called due to Spotify authentication response
-        val model = ViewModelProviders.of(this, viewModelFactory).get(WalkthroughFragmentViewModel::class.java)
+        val model = ViewModelProviders.of(this, viewModelFactory).get(OnboardingFragmentViewModel::class.java)
         val response = AuthenticationClient.getResponse(resultCode, data)
         // Notify ViewModel
         model.onSpotifyLoginResponse(
@@ -123,7 +123,7 @@ class WalkthroughFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_info -> {
             findNavController(this).navigate(
-                WalkthroughFragmentDirections.showInfo()
+                OnboardingFragmentDirections.showInfo()
             )
             true
         }

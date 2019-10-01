@@ -1,4 +1,4 @@
-package com.oliveroneill.wilt.ui.walkthrough
+package com.oliveroneill.wilt.ui.onboarding
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,16 +9,16 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.oliveroneill.wilt.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.walkthrough_screen.view.*
+import kotlinx.android.synthetic.main.onboarding_screen.view.*
 
 /**
- * Individual screen used in walkthrough
+ * Individual screen used in onboarding
  *
  * I've decided to keep this logic here instead of within a ViewModel as it's
  * mostly related to setting up views and storing the strings and images in another class
  * has no benefit that I can see.
  */
-class WalkthroughScreenFragment: Fragment() {
+class OnboardingScreenFragment: Fragment() {
     // Optional views and data to be set
     private var image: ImageView? = null
     private var imageResId: Int? = null
@@ -33,7 +33,7 @@ class WalkthroughScreenFragment: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.walkthrough_screen, container, false) as ViewGroup
+        val rootView = inflater.inflate(R.layout.onboarding_screen, container, false) as ViewGroup
         // Store the views that we'll display the relevant data on
         image = rootView.image_view
         titleView = rootView.text_view
@@ -56,8 +56,8 @@ class WalkthroughScreenFragment: Fragment() {
         private const val IMG_ID = "imgId"
         private const val TITLE_ID = "titleId"
 
-        fun newInstance(imageResId: Int, title: String): WalkthroughScreenFragment {
-            return WalkthroughScreenFragment().also {
+        fun newInstance(imageResId: Int, title: String): OnboardingScreenFragment {
+            return OnboardingScreenFragment().also {
                 // Set arguments to be read by onCreate() above
                 val args = Bundle()
                 args.putInt(IMG_ID, imageResId)
