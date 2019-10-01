@@ -48,7 +48,7 @@ data class OnboardingPage(
 class OnboardingFragmentViewModel
 @JvmOverloads
 constructor(application: Application,
-            private val firebase: FirebaseAuthentication = FirebaseAuthentication(application),
+            private val firebase: FirebaseAuthentication = FirebaseAuthentication(),
             // Database objects are passed in so we can clear them between each user
             private val feedDao: PlayHistoryDao = PlayHistoryDatabase.getDatabase(application).historyDao(),
             private val artistCache: TopArtistDao = TopArtistDatabase.getDatabase(application).topArtistCache(),

@@ -1,6 +1,5 @@
 package com.oliveroneill.wilt.data
 
-import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.functions.FirebaseFunctions
 import com.oliveroneill.wilt.testing.OpenForTesting
@@ -9,7 +8,7 @@ import com.oliveroneill.wilt.testing.OpenForTesting
  * Authentication helper for logging in with Firebase. Used for signing up new users
  */
 @OpenForTesting
-class FirebaseAuthentication(context: Context) {
+class FirebaseAuthentication {
     private val auth = FirebaseAuth.getInstance()
     private val functions = FirebaseFunctions.getInstance("asia-northeast1")
 
