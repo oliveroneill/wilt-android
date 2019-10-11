@@ -2,6 +2,7 @@ package com.oliveroneill.wilt.ui.feed
 
 import android.os.Bundle
 import android.view.*
+import androidx.activity.addCallback
 import androidx.annotation.VisibleForTesting
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -58,6 +59,9 @@ class PlayHistoryFragment: Fragment() {
             rootView.swipe_refresh.isRefreshing = false
             adapter.submitList(it)
         })
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            requireActivity().moveTaskToBack(true)
+        }
         return rootView
     }
 

@@ -2,6 +2,7 @@ package com.oliveroneill.wilt.ui.profile
 
 import android.os.Bundle
 import android.view.*
+import androidx.activity.addCallback
 import androidx.annotation.VisibleForTesting
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -54,6 +55,9 @@ class ProfileFragment: Fragment() {
                 }
             }
         })
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            requireActivity().moveTaskToBack(true)
+        }
         return binding.root
     }
 
