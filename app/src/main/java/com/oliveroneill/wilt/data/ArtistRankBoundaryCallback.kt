@@ -148,12 +148,12 @@ class ArtistRankBoundaryCallback(
                 }
                 val failure = if (loadingFromTop) {
                     PlayHistoryNetworkState.FailureAtTop(
-                        it.localizedMessage
+                        it.localizedMessage ?: it.message ?: "Unknown error"
                         // Retry
                     ) { topArtists(start, end) }
                 } else {
                     PlayHistoryNetworkState.FailureAtBottom(
-                        it.localizedMessage
+                        it.localizedMessage ?: it.message ?: "Unknown error"
                         // Retry
                     ) { topArtists(start, end) }
                 }
