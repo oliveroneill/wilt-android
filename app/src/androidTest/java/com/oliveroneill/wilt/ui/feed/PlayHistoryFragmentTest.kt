@@ -471,4 +471,68 @@ class PlayHistoryFragmentTest {
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.loading_txt)).check(matches(not(isDisplayed())))
     }
+
+    @Test
+    fun shouldShowNewItemsOnRetry() {
+        val list = mutableListOf(
+            ArtistRank(
+                "09-2019",
+                LocalDate.parse("2019-02-25"),
+                "Pinegrove",
+                99,
+                "notarealimageurl",
+                "notarealexternalurl",
+                "notarealspotifyurl"
+            ),
+            ArtistRank(
+                "52-2018",
+                LocalDate.parse("2018-12-25"),
+                "Bon Iver",
+                12,
+                "notarealimageurl",
+                "notarealexternalurl",
+                "notarealspotifyurl"
+            )
+        )
+        // Given
+        val pagedList = mock<PagedList<ArtistRank>>()
+        `when`(pagedList[ArgumentMatchers.anyInt()]).then { invocation ->
+            val index = invocation.arguments.first() as Int
+            list[index]
+        }
+        `when`(pagedList.size).thenReturn(list.size)
+        loadingStateData.postValue(
+            Data(
+                PlayHistoryState.LoggedIn(
+                    PlayHistoryNetworkState.FailureAtBottom("Some random error message string") {
+                        list.add(
+                            ArtistRank(
+                                "50-2018",
+                                LocalDate.parse("2018-12-11"),
+                                "These New South Whales",
+                                16,
+                                "notarealimageurl",
+                                "notarealexternalurl",
+                                "notarealspotifyurl"
+                            )
+                        )
+                        `when`(pagedList[ArgumentMatchers.anyInt()]).then { invocation ->
+                            val index = invocation.arguments.first() as Int
+                            list[index]
+                        }
+                        `when`(pagedList.size).thenReturn(list.size)
+                        loadingStateData.postValue(Data(PlayHistoryState.LoggedIn(PlayHistoryNetworkState.NotLoading)))
+                        itemStateData.postValue(pagedList)
+                    }
+                )
+            )
+        )
+        itemStateData.postValue(pagedList)
+        // When
+        onView(withId(R.id.retry_button)).perform(click())
+        // Then
+        onView(withText("Pinegrove")).check(matches(isDisplayed()))
+        onView(withText("Bon Iver")).check(matches(isDisplayed()))
+        onView(withText("These New South Whales")).check(matches(isDisplayed()))
+    }
 }
