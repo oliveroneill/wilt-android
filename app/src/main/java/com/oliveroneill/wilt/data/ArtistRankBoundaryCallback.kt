@@ -150,12 +150,12 @@ class ArtistRankBoundaryCallback(
                     PlayHistoryNetworkState.FailureAtTop(
                         it.localizedMessage ?: it.message ?: "Unknown error"
                         // Retry
-                    ) { topArtists(start, end) }
+                    ) { topArtists(start, end, firstLoad, loadingFromTop) }
                 } else {
                     PlayHistoryNetworkState.FailureAtBottom(
                         it.localizedMessage ?: it.message ?: "Unknown error"
                         // Retry
-                    ) { topArtists(start, end) }
+                    ) { topArtists(start, end, firstLoad, loadingFromTop) }
                 }
                 loadingState.postValue(Data(PlayHistoryState.LoggedIn(failure)))
             }

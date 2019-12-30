@@ -479,4 +479,108 @@ class ArtistRankBoundaryCallbackTest {
                 state is PlayHistoryNetworkState.NoRows
             }
     }
+
+    @Test
+    fun `should update loading state correctly when retrying from top`() {
+        // We'll make the mock send back an error
+        whenever(firebase.topArtistsPerWeek(any(), any(), any())).then {
+            it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.failure(IOException("")))
+        }
+        val item = ArtistRank(
+            "09-2019",
+            LocalDate.parse("2019-02-25"),
+            "Pinegrove",
+            99,
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
+        )
+        boundaryCallback.onItemAtFrontLoaded(item)
+        // Get the state that was sent
+        val state = loadingState.value?.unwrapState()
+        when (state) {
+            is PlayHistoryNetworkState.FailureAtTop -> {
+                // Do nothing on the next call so that it stays in the loading state
+                whenever(firebase.topArtistsPerWeek(any(), any(), any())).then { }
+                // Call retry
+                state.retry()
+                // Ensure it goes into loading from bottom state
+                loadingState
+                    .test()
+                    .assertHasValue()
+                    .assertValue { it.unwrapState() is PlayHistoryNetworkState.LoadingFromTop }
+            }
+            else -> {
+                // Fail if we didn't get an error
+                TestCase.fail()
+            }
+        }
+    }
+
+    @Test
+    fun `should update loading state correctly when retrying from bottom`() {
+        // We'll make the mock send back an error
+        whenever(firebase.topArtistsPerWeek(any(), any(), any())).then {
+            it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.failure(IOException("")))
+        }
+        val item = ArtistRank(
+            "09-2019",
+            LocalDate.parse("2019-02-25"),
+            "Pinegrove",
+            99,
+            "http://arandomurl.net/img.png",
+            "http://anotherrandomurl.net/img.png",
+            "spotify://arandomurl.net/img.png"
+        )
+        boundaryCallback.onItemAtEndLoaded(item)
+        // Get the state that was sent
+        val state = loadingState.value?.unwrapState()
+        when (state) {
+            is PlayHistoryNetworkState.FailureAtBottom -> {
+                // Do nothing on the next call so that it stays in the loading state
+                whenever(firebase.topArtistsPerWeek(any(), any(), any())).then { }
+                // Call retry
+                state.retry()
+                // Ensure it goes into loading from bottom state
+                loadingState
+                    .test()
+                    .assertHasValue()
+                    .assertValue { it.unwrapState() is PlayHistoryNetworkState.LoadingFromBottom }
+            }
+            else -> {
+                // Fail if we didn't get an error
+                TestCase.fail()
+            }
+        }
+    }
+
+    @Test
+    fun `should update no rows state correctly when retrying`() {
+        // We'll make the mock send back an error
+        whenever(firebase.topArtistsPerWeek(any(), any(), any())).then {
+            it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.failure(IOException("")))
+        }
+        boundaryCallback.onZeroItemsLoaded()
+        // Get the state that was sent
+        val state = loadingState.value?.unwrapState()
+        when (state) {
+            is PlayHistoryNetworkState.FailureAtTop -> {
+                // Send back an empty response to ensure we will respond with no rows state
+                whenever(firebase.topArtistsPerWeek(any(), any(), any())).then {
+                    it.getArgument<(Result<List<ArtistRank>>) -> Unit>(2)(Result.success(listOf()))
+                }
+                // Call retry
+                state.retry()
+                // Ensure it goes into loading from bottom state
+                loadingState
+                    .test()
+                    .assertHasValue()
+                    .assertValue { it.unwrapState() is PlayHistoryNetworkState.NoRows }
+            }
+            else -> {
+                // Fail if we didn't get an error
+                TestCase.fail()
+            }
+        }
+    }
 }
